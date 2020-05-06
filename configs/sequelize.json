@@ -1,0 +1,22 @@
+{
+  "development": {
+    "username": "apass",
+    "password": "thwlsWkd123",
+    "database": "apass",
+    "host": "127.0.0.1",
+    "port": "3306",
+    "dialect": "mysql",
+    "timezone": "+09:00",
+    "logging": true
+  },
+  "production": {
+    "username": "apass",
+    "password": "thwlsWkd123",
+    "database": "apass",
+    "host": "apass_db",
+    "port": "3306",
+    "dialect": "mysql",
+    "timezone": "+09:00",
+    "logging": false
+  }
+}
