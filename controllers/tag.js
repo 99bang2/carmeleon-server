@@ -24,8 +24,8 @@ exports.create = async function (ctx) {
 
 exports.list = async function (ctx) {
 	let _ = ctx.request.query
-	if( ctx.admin.grade !== 'SUPER' && Number(ctx.admin.complexUid) !== Number(_.complexUid) ) {
-		response.forbidden(ctx)
+	if(ctx.admin.grade === 'COMPLEX') {
+		_.complexUid = ctx.admin.complexUid
 	}
 	let tags = await models.tag.search(_, models)
 	response.send(ctx, tags)

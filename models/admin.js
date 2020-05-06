@@ -117,11 +117,14 @@ module.exports = (sequelize, DataTypes) => {
         return data
     }
 
-    admin.getById = async function (id) {
+    admin.getById = async function (id, models) {
         let data = await admin.scope('login').findOne({
             where: {
                 id: id
-            }
+            },
+            include: [{
+                model: models.complex
+            }]
         })
         return data
     }

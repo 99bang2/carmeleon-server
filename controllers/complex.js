@@ -70,6 +70,9 @@ exports.bulkDelete = async function (ctx) {
 
 exports.userList = async function (ctx) {
 	let _ = ctx.request.query
+	if(ctx.admin.grade === 'COMPLEX') {
+		_.complexUid = ctx.admin.complexUid
+	}
 	let users = await models.userComplex.search(_, models)
 	response.send(ctx, users)
 }

@@ -21,7 +21,7 @@ exports.update = async function (ctx) {
 }
 
 exports.changePassword = async function (ctx) {
-	let admin = await models.admin.getById(ctx.admin.id)
+	let admin = await models.admin.getById(ctx.admin.id, models)
 	let _ = ctx.request.body
 	let verifyPassword = await admin.verifyPassword(_.oldPassword)
 	if (!verifyPassword) {
@@ -37,7 +37,7 @@ exports.changePassword = async function (ctx) {
 
 exports.login = async function (ctx) {
 	let _ = ctx.request.body
-	let admin = await models.admin.getById(_.id)
+	let admin = await models.admin.getById(_.id, models)
 	if (!admin) {
 		ctx.throw({
 			code: 400,
@@ -57,7 +57,8 @@ exports.login = async function (ctx) {
 			id: admin.id,
 			grade: admin.grade,
 			name: admin.name,
-			complexUid: admin.complexUid
+			complexUid: admin.complexUid,
+			complexName: admin.complex ? admin.complex.name : null
 		},
 		secret
 	)

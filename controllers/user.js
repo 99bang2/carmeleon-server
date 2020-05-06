@@ -1,7 +1,8 @@
 const models = require('../models')
 const response = require('../libs/response')
 const redisModel = require('../redis_models')
-const pCrypto = require('crypto');
+const pCrypto = require('crypto')
+const smsSender =require('../libs/smsSender')
 function createCode() {
 	let min = 100000
 	let max = 999999
@@ -18,13 +19,18 @@ exports.sendAuthCode = async function (ctx) {
 		response.customError(ctx, '휴대전화번호를 입력해주세요.')
 	}
 	let alreadySendCode = await redisModel.authCode.read(_.phoneNumber)
+	console.log(alreadySendCode)
 	if(alreadySendCode) {
 		response.customError(ctx, '이미 발송된 인증번호가 있습니다.')
 	}
 	let codeVal = createCode()
 	await redisModel.authCode.save(_.phoneNumber, codeVal)
 	
-	//todo : sms 발송
+	await smsSender.sendSMS(
+		`[A-PASS] 인증번호 안내`,
+		`인증번호(${codeVal})를 입력해주세요.`,
+		_.phoneNumber
+		)
 	response.send(ctx, codeVal)
 }
 

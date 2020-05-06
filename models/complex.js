@@ -77,6 +77,10 @@ module.exports = (sequelize, DataTypes) => {
 		let data = await complex.findByPk(uid, {
 			include: [{
 				model: models.admin
+			},{
+				model: models.tag
+			},{
+				model: models.door
 			}]
 		})
 		if (!data) {
