@@ -8,7 +8,7 @@
 		}
 	},
 	"production": {
-		"listenPort": 3030,
+		"listenPort": 3000,
 		"secretKey": "rocket2020",
 		"redis": {
 			"host": "localhost",
