@@ -13,7 +13,7 @@
     "username": "apass",
     "password": "thwlsWkd123",
     "database": "apass",
-    "host": "apass_db",
+    "host": "apassdb",
     "port": "3306",
     "dialect": "mysql",
     "timezone": "+09:00",
