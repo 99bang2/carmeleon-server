@@ -67,7 +67,7 @@ module.exports = (sequelize, DataTypes) => {
 		let order = [['createdAt', 'ASC']]
 		if(params.uids && params.uids.length > 0) {
 			where.uid = {
-				[Sequelize.Op]: params.uids
+				[Sequelize.Op.in]: params.uids
 			}
 			order = [['complexUid', 'ASC'], ['name', 'ASC']]
 		}

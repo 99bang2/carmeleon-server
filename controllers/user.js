@@ -61,7 +61,31 @@ exports.verifyAuthCode = async function (ctx) {
 
 exports.searchComplexes = async function (ctx) {
 	let _ = ctx.request.query
-	let complexes = await models.complex.search(_, models)
+	let where = {}
+	if(_.addressCode) {
+		where.addressCode = _.addressCode
+	}
+	if(_.addressDetailCode) {
+		where.addressDetailCode = _.addressDetailCode
+	}
+	if (_.keyword) {
+		where[models.Sequelize.Op.or] = [
+			{
+				fullAddress: {
+					[models.Sequelize.Op.like]: '%' + _.keyword + '%'
+				}
+			},
+			{
+				name: {
+					[models.Sequelize.Op.like]: '%' + _.keyword + '%'
+				}
+			},
+		]
+	}
+	let complexes = await models.complex.findAll({
+		order: [['name', 'ASC']],
+		where: where,
+	})
 	response.send(ctx, complexes)
 }
 
@@ -90,16 +114,24 @@ exports.getComplexes = async function (ctx) {
 }
 
 exports.getDoors = async function (ctx) {
-	let _ = ctx.request.query
-
 	let user = await models.user.getByUid(ctx, ctx.user.uid)
 	let complexes = await user.getComplexes()
 	let doorUids = []
 	for(let complex of complexes) {
 		if(complex.userComplex.confirmed) {
-			doorUids.concat(complex.userComplex.doors)
+			doorUids = doorUids.concat(complex.userComplex.doors)
 		}
 	}
-	let doors = doorUids.length > 0 ? await models.door.search({uids: doorUids}, models) : []
+	let doors = await models.door.findAll({
+		order: [['complexUid', 'ASC'], ['name', 'ASC']],
+		where: {
+			uid: {
+				[models.Sequelize.Op.in]: doorUids
+			}
+		},
+		include:[{
+			model: models.complex
+		}]
+	})
 	response.send(ctx, doors)
 }
