@@ -11,7 +11,7 @@
 		"listenPort": 3000,
 		"secretKey": "rocket2020",
 		"redis": {
-			"host": "redis",
+			"host": "apass_redis",
 			"port": 6379
 		}
 	}
