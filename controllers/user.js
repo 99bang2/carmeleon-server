@@ -6,8 +6,7 @@ const smsSender =require('../libs/smsSender')
 function createCode() {
 	let min = 100000
 	let max = 999999
-	let ranNum = Math.floor(Math.random()*(max-min+1)) + min
-	return ranNum
+	return Math.floor(Math.random() * (max - min + 1)) + min
 }
 function createAk(uid) {
 	return pCrypto.randomBytes(16).toString('hex') + String(uid);
@@ -19,7 +18,6 @@ exports.sendAuthCode = async function (ctx) {
 		response.customError(ctx, '휴대전화번호를 입력해주세요.')
 	}
 	let alreadySendCode = await redisModel.authCode.read(_.phoneNumber)
-	console.log(alreadySendCode)
 	if(alreadySendCode) {
 		response.customError(ctx, '이미 발송된 인증번호가 있습니다.')
 	}

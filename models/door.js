@@ -13,6 +13,10 @@ module.exports = (sequelize, DataTypes) => {
 			type: DataTypes.STRING,
 			allowNull: false
 		},
+		bleName: {
+			type: DataTypes.STRING,
+			allowNull: true
+		},
 		complexUid: {
 			type: DataTypes.INTEGER,
 			allowNull: false
@@ -31,6 +35,11 @@ module.exports = (sequelize, DataTypes) => {
 		},
 		keyOpenDoor: {
 			type: DataTypes.STRING
+		},
+		rssiOpen: {
+			type: DataTypes.INTEGER,
+			allowNull: true,
+			defaultValue: -50,
 		},
 		memo: {
 			type: DataTypes.TEXT
