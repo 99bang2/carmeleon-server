@@ -1,7 +1,7 @@
 'use strict'
 const mysql = require('mysql2/promise')
 let pool = mysql.createPool({
-	host: '1.226.84.233',
+	host: '1.234.4.99',
 	port: 23306,
 	user: 'neptune',
 	password: 'thwlsWkd123',
