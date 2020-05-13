@@ -104,6 +104,7 @@ module.exports = (sequelize, DataTypes) => {
 		let result = await complex.findAll({
 			order: order,
 			where: where,
+			paranoid: false,
 			include: [{
 				model: models.admin
 			},{

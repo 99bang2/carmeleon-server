@@ -87,7 +87,8 @@ module.exports = (sequelize, DataTypes) => {
 			order: order,
 			where: where,
 			include:[{
-				model: models.complex
+				model: models.complex,
+				paranoid: false
 			},{
 				model: models.tag
 			}]

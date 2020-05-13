@@ -86,7 +86,8 @@ module.exports = (sequelize, DataTypes) => {
             include: [{
                 model: models.user
             },{
-                model: models.complex
+                model: models.complex,
+                paranoid: false,
             }]
         })
         let count = await userComplex.count({
@@ -94,7 +95,8 @@ module.exports = (sequelize, DataTypes) => {
             include: [{
                 model: models.user
             },{
-                model: models.complex
+                model: models.complex,
+                paranoid: false,
             }]
         })
         return {
