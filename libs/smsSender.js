@@ -9,17 +9,15 @@ let pool = mysql.createPool({
 })
 let SEND_NUMBER = '0316049907'
 
-exports.sendSMS = async (title, content, phone) => {
+exports.sendSMS = async (content, phone) => {
 	const connection = await pool.getConnection(async conn => conn)
 	let sendData = {
-		SUBJECT: title,
-		PHONE: phone,
-		CALLBACK: SEND_NUMBER,
-		STATUS: 0,
-		REQDATE: new Date(),
-		MSG: content
+		TR_PHONE: phone,
+		TR_CALLBACK: SEND_NUMBER,
+		TR_SENDDATE: new Date(),
+		TR_MSG: content
 	}
-	let result = await connection.query('INSERT INTO MMS_MSG SET ?', sendData)
+	let result = await connection.query('INSERT INTO SC_TRAN SET ?', sendData)
 	connection.release()
 	return result
 }

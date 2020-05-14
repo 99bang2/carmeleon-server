@@ -25,8 +25,7 @@ exports.sendAuthCode = async function (ctx) {
 	await redisModel.authCode.save(_.phoneNumber, codeVal)
 	
 	await smsSender.sendSMS(
-		`[KEY-FREE] 인증번호 안내`,
-		`<#>인증번호(${codeVal})를 입력해주세요. Lq8FKb3Fi8R`,
+		`<#> [KEY-FREE] 인증번호(${codeVal})를 입력해주세요. Lq8FKb3Fi8R`,
 		_.phoneNumber
 		)
 	response.send(ctx, codeVal)
