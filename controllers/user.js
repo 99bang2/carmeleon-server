@@ -89,7 +89,7 @@ exports.searchComplexes = async function (ctx) {
 exports.addComplexes = async function (ctx) {
 	let _ = ctx.request.body
 	let user = ctx.user
-	if(!_.complexUid || !_.userName || !_.userDong || !_.userHo) {
+	if(!_.complexUid || !_.userName || !_.userHo) {
 		response.customError(ctx, '필수 입력값이 누락되었습니다.')
 	}
 	let userComplex = await models.userComplex.create({
