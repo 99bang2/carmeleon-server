@@ -2,7 +2,7 @@
 const Sequelize = require('sequelize')
 const moment = require('moment')
 module.exports = (sequelize, DataTypes) => {
-    const userComplex = sequelize.define('userComplex', {
+    const openDoorLog = sequelize.define('openDoorLog', {
         uid: {
             type: DataTypes.INTEGER,
             allowNull: false,
@@ -19,33 +19,23 @@ module.exports = (sequelize, DataTypes) => {
             allowNull: false,
             index: true
         },
-        userName: {
-            type: DataTypes.STRING,
+        doorUid: {
+            type: DataTypes.INTEGER,
+            allowNull: false,
+            index: true
         },
-        userDong: {
-            type: DataTypes.STRING,
-        },
-        userHo: {
-            type: DataTypes.STRING,
-        },
-        confirmed: {
-            type: DataTypes.BOOLEAN,
-            defaultValue: false
-        },
-        doors: {
-            type: DataTypes.JSON
-        }
     }, {
         timestamps: true,
         underscored: true
     })
 
-    userComplex.associate = function (models) {
-        userComplex.belongsTo(models.user)
-        userComplex.belongsTo(models.complex)
+    openDoorLog.associate = function (models) {
+        openDoorLog.belongsTo(models.user)
+        openDoorLog.belongsTo(models.complex)
+        openDoorLog.belongsTo(models.door)
     }
 
-    userComplex.search = async (params, models) => {
+    openDoorLog.search = async (params, models) => {
         let where = {}
         if(params.complexUid) {
             where.complexUid = params.complexUid
@@ -81,7 +71,7 @@ module.exports = (sequelize, DataTypes) => {
         if(params.order && params.orderDir) {
             order = [[params.order, params.orderDir]]
         }
-        let result = await userComplex.findAll({
+        let result = await openDoorLog.findAll({
             order: order,
             where: where,
             include: [{
@@ -91,7 +81,7 @@ module.exports = (sequelize, DataTypes) => {
                 paranoid: false,
             }]
         })
-        let count = await userComplex.count({
+        let count = await openDoorLog.count({
             where: where,
             include: [{
                 model: models.user
@@ -106,17 +96,17 @@ module.exports = (sequelize, DataTypes) => {
         }
     }
 
-    userComplex.getByUid = async function (ctx, uid) {
-        let data = await userComplex.findByPk(uid)
+    openDoorLog.getByUid = async function (ctx, uid) {
+        let data = await openDoorLog.findByPk(uid)
         if (!data) {
             response.badRequest(ctx)
         }
         return data
     }
 
-    userComplex.getByUserAndComplex = async function (userUid, complexUid) {
+    openDoorLog.getByUserAndComplex = async function (userUid, complexUid) {
         let todayBaseDate = moment().subtract(1, 'days').format('YYYY-MM-DD HH:mm:ss')
-        let data = await userComplex.findOne({
+        let data = await openDoorLog.findOne({
             where: {
                 userUid: userUid,
                 complexUid: complexUid,
@@ -128,9 +118,9 @@ module.exports = (sequelize, DataTypes) => {
         return data
     }
 
-    userComplex.searchUserComplex = async (userUid, models) => {
+    openDoorLog.searchUserComplex = async (userUid, models) => {
         let todayBaseDate = moment().subtract(1, 'days').format('YYYY-MM-DD HH:mm:ss')
-        let result = await userComplex.findAll({
+        let result = await openDoorLog.findAll({
             where: {
                 userUid: userUid,
                 createdAt: {
@@ -148,5 +138,5 @@ module.exports = (sequelize, DataTypes) => {
         return result
     }
 
-    return userComplex
+    return openDoorLog
 }

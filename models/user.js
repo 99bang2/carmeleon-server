@@ -36,9 +36,7 @@ module.exports = (sequelize, DataTypes) => {
 	})
 
 	user.associate = function (models) {
-		user.belongsToMany(models.complex, {
-			through: models.userComplex
-		})
+		user.hasMany(models.userComplex)
 	}
 
 	user.getByUid = async function (ctx, uid) {

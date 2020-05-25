@@ -75,4 +75,8 @@ api.get('/codes', async function (ctx) {
     response.send(ctx, codes)
 })
 
+
+api.post('/user/open/door', auth.isUserLoggedIn, userController.openDoor)
+
+
 module.exports = api

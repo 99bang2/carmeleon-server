@@ -1,6 +1,6 @@
 module.exports = {
 	apps: [{
-		name: 'A-PASS-SERVER',
+		name: 'SAFE-PASS-SERVER',
 		script: 'index.js',
 		watch: false,
 		ignore_watch: ['node_modules', '*.log', 'package.json', 'package-lock.json', '.idea', '.git'],

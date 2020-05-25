@@ -1,19 +1,19 @@
 {
   "development": {
-    "username": "apass",
+    "username": "safepass",
     "password": "thwlsWkd123",
-    "database": "apass",
+    "database": "safepass",
     "host": "127.0.0.1",
-    "port": "3306",
+    "port": "53306",
     "dialect": "mysql",
     "timezone": "+09:00",
     "logging": true
   },
   "production": {
-    "username": "apass",
+    "username": "safepass",
     "password": "thwlsWkd123",
-    "database": "apass",
-    "host": "apassdb",
+    "database": "safepass",
+    "host": "safe-pass-db",
     "port": "3306",
     "dialect": "mysql",
     "timezone": "+09:00",

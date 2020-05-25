@@ -89,15 +89,16 @@ exports.searchComplexes = async function (ctx) {
 exports.addComplexes = async function (ctx) {
 	let _ = ctx.request.body
 	let user = ctx.user
-	if(!_.complexUid || !_.userName || !_.userHo) {
+	if(!_.complexUid) {
 		response.customError(ctx, '필수 입력값이 누락되었습니다.')
+	}
+	let alreadyUser = await models.userComplex.getByUserAndComplex(user.uid, _.complexUid)
+	if(alreadyUser) {
+		response.customError(ctx, '이미 등록한 업소입니다.')
 	}
 	let userComplex = await models.userComplex.create({
 		userUid: user.uid,
 		complexUid: _.complexUid,
-		userName: _.userName,
-		userDong: _.userDong,
-		userHo: _.userHo,
 		confirmed: false
 	})
 	response.send(ctx, userComplex)
@@ -105,30 +106,41 @@ exports.addComplexes = async function (ctx) {
 
 exports.getComplexes = async function (ctx) {
 	let _ = ctx.request.query
-	let user = await models.user.getByUid(ctx, ctx.user.uid)
-	let complexes = await user.getComplexes()
+	let userComplexes = await models.userComplex.searchUserComplex(ctx.user.uid, models)
+	let complexes = []
+	for(let userComplex of userComplexes) {
+		userComplex.complex.dataValues.confirmed = userComplex.confirmed
+		complexes.push(userComplex.complex)
+	}
 	response.send(ctx, complexes)
 }
 
 exports.getDoors = async function (ctx) {
-	let user = await models.user.getByUid(ctx, ctx.user.uid)
-	let complexes = await user.getComplexes()
-	let doorUids = []
-	for(let complex of complexes) {
-		if(complex.userComplex.confirmed) {
-			doorUids = doorUids.concat(complex.userComplex.doors)
-		}
+	let userComplexes = await models.userComplex.searchUserComplex(ctx.user.uid, models)
+	let doors = []
+	for(let userComplex of userComplexes) {
+		doors.push(userComplex.complex.doors)
 	}
-	let doors = await models.door.findAll({
-		order: [['complexUid', 'ASC'], ['name', 'ASC']],
-		where: {
-			uid: {
-				[models.Sequelize.Op.in]: doorUids
-			}
-		},
-		include:[{
-			model: models.complex
-		}]
-	})
 	response.send(ctx, doors)
+}
+
+
+exports.openDoor = async function (ctx) {
+	let _ = ctx.request.body
+	let user = ctx.user
+	if(!_.doorUid) {
+		response.customError(ctx, '필수 입력값이 누락되었습니다.')
+	}
+	let door = await models.door.getByUid(ctx, _.doorUid)
+	let userComplex = await models.userComplex.getByUserAndComplex(user.uid, door.complexUid)
+	if(userComplex) {
+		userComplex.confirmed = true
+		await userComplex.save()
+	}
+	let log = await models.openDoorLog.create({
+		userUid: user.uid,
+		complexUid: door.complexUid,
+		doorUid: door.uid
+	})
+	response.send(ctx, log)
 }

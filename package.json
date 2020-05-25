@@ -1,13 +1,13 @@
 {
-	"name": "a-pass-server",
+	"name": "safe-pass-server",
 	"version": "0.1.0",
-	"description": "A-pass Service API Server",
+	"description": "safe-pass Service API Server",
 	"author": "Rocketlaunch",
 	"private": true,
 	"scripts": {
 		"start": "pm2 start",
-		"stop": "pm2 stop A-PASS-SERVER --watch  && pm2 delete A-PASS-SERVER",
-		"restart": "pm2 stop A-PASS-SERVER && pm2 delete A-PASS-SERVER && pm2 start"
+		"stop": "pm2 stop SAFE-PASS-SERVER --watch  && pm2 delete SAFE-PASS-SERVER",
+		"restart": "pm2 stop SAFE-PASS-SERVER && pm2 delete SAFE-PASS-SERVER && pm2 start"
 	},
 	"dependencies": {
 		"bcrypt-nodejs": "0.0.3",

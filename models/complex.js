@@ -68,9 +68,7 @@ module.exports = (sequelize, DataTypes) => {
 		complex.hasOne(models.admin)
 		complex.hasMany(models.tag)
 		complex.hasMany(models.door)
-		complex.belongsToMany(models.user, {
-			through: models.userComplex
-		})
+		complex.hasMany(models.userComplex)
 	}
 
 	complex.getByUid = async function (ctx, uid, models) {
