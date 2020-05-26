@@ -8,6 +8,7 @@ const complexController = require('../controllers/complex')
 const doorController = require('../controllers/door')
 const tagController = require('../controllers/tag')
 const userController = require('../controllers/user')
+const logController = require('../controllers/log')
 const auth = require('../libs/auth')
 
 /**
@@ -54,6 +55,9 @@ api.post('/tags/bulkDelete', auth.isAdminLoggedIn, tagController.bulkDelete)
 /**
  * 사용자 관리
  */
+api.get('/users', auth.isAdminLoggedIn, userController.list)
+api.get('/logs', auth.isAdminLoggedIn, logController.list)
+
 api.get('/complex/users', auth.isAdminLoggedIn, complexController.userList)
 api.post('/complex/users', auth.isAdminLoggedIn, complexController.createUser)
 api.put('/complex/users/:uid', auth.isAdminLoggedIn, complexController.updateUser)

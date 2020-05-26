@@ -25,7 +25,7 @@ exports.sendAuthCode = async function (ctx) {
 	await redisModel.authCode.save(_.phoneNumber, codeVal)
 	
 	await smsSender.sendSMS(
-		`<#> [KEY-FREE] 인증번호(${codeVal})를 입력해주세요. Lq8FKb3Fi8R`,
+		`<#> [KEY-FREE] 인증번호(${codeVal})를 입력해주세요. FUr6olIpEe1`,
 		_.phoneNumber
 		)
 	response.send(ctx, codeVal)
@@ -143,4 +143,10 @@ exports.openDoor = async function (ctx) {
 		doorUid: door.uid
 	})
 	response.send(ctx, log)
+}
+
+exports.list = async function (ctx) {
+	let _ = ctx.request.query
+	let users = await models.user.search(_)
+	response.send(ctx, users)
 }

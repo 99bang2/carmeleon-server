@@ -19,6 +19,9 @@ module.exports = (sequelize, DataTypes) => {
 				}
 			}
 		},
+		name: {
+			type: DataTypes.STRING
+		},
 		ak: {
 			type: DataTypes.STRING
 		},
@@ -74,5 +77,39 @@ module.exports = (sequelize, DataTypes) => {
 		})
 		return result
 	}
+	user.search = async (params) => {
+		let where = {}
+		if (params.searchKeyword) {
+			where[Sequelize.Op.or] = [
+				{
+					name: {
+						[Sequelize.Op.like]: '%' + params.searchKeyword + '%'
+					}
+				},
+				{
+					phone: {
+						[Sequelize.Op.like]: '%' + params.searchKeyword + '%'
+					}
+				}
+			]
+		}
+		let order = [['createdAt', 'DESC']]
+		if(params.order && params.orderDir) {
+			order = [[params.order, params.orderDir]]
+		}
+		let result = await user.findAll({
+			order: order,
+			where: where
+		})
+		let count = await user.count({
+			where: where,
+		})
+		return {
+			rows: result,
+			count: count
+		}
+	}
+
+
 	return user
 }

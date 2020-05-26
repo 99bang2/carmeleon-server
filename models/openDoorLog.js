@@ -40,23 +40,27 @@ module.exports = (sequelize, DataTypes) => {
         if(params.complexUid) {
             where.complexUid = params.complexUid
         }
-        if(params.searchConfirmed) {
-            where.confirmed = Boolean(params.searchConfirmed === 'true')
+        if(params.searchDate) {
+            if(params.searchDate.split('~').length > 1) {
+                where.createdAt = {
+                    [Sequelize.Op.between]: [
+                        moment(params.searchDate.split(' ~ ')[0]).format('YYYY-MM-DD'),
+                        moment(params.searchDate.split(' ~ ')[1]).add(1, 'days').format('YYYY-MM-DD')
+                    ]
+                }
+            }else {
+                where.createdAt = {
+                    [Sequelize.Op.between]: [
+                        moment(params.searchDate).format('YYYY-MM-DD'),
+                        moment(params.searchDate).add(1, 'days').format('YYYY-MM-DD')
+                    ]
+                }
+            }
         }
         if (params.searchKeyword) {
             where[Sequelize.Op.or] = [
                 {
-                    userName: {
-                        [Sequelize.Op.like]: '%' + params.searchKeyword + '%'
-                    }
-                },
-                {
-                    userDong: {
-                        [Sequelize.Op.like]: '%' + params.searchKeyword + '%'
-                    }
-                },
-                {
-                    userHo: {
+                    '$user.name$': {
                         [Sequelize.Op.like]: '%' + params.searchKeyword + '%'
                     }
                 },
@@ -64,7 +68,18 @@ module.exports = (sequelize, DataTypes) => {
                     '$user.phone$': {
                         [Sequelize.Op.like]: '%' + params.searchKeyword + '%'
                     }
+                },
+                {
+                    '$complex.name$': {
+                        [Sequelize.Op.like]: '%' + params.searchKeyword + '%'
+                    }
+                },
+                {
+                    '$complex.full_address$': {
+                        [Sequelize.Op.like]: '%' + params.searchKeyword + '%'
+                    }
                 }
+
             ]
         }
         let order = [['createdAt', 'DESC']]
@@ -74,8 +89,12 @@ module.exports = (sequelize, DataTypes) => {
         let result = await openDoorLog.findAll({
             order: order,
             where: where,
+            offset: params.offset ? Number(params.offset) : 0,
+            limit: params.limit ? Number(params.limit) : 10,
             include: [{
                 model: models.user
+            },{
+                model: models.door
             },{
                 model: models.complex,
                 paranoid: false,
@@ -85,6 +104,8 @@ module.exports = (sequelize, DataTypes) => {
             where: where,
             include: [{
                 model: models.user
+            },{
+                model: models.door
             },{
                 model: models.complex,
                 paranoid: false,
@@ -96,47 +117,6 @@ module.exports = (sequelize, DataTypes) => {
         }
     }
 
-    openDoorLog.getByUid = async function (ctx, uid) {
-        let data = await openDoorLog.findByPk(uid)
-        if (!data) {
-            response.badRequest(ctx)
-        }
-        return data
-    }
-
-    openDoorLog.getByUserAndComplex = async function (userUid, complexUid) {
-        let todayBaseDate = moment().subtract(1, 'days').format('YYYY-MM-DD HH:mm:ss')
-        let data = await openDoorLog.findOne({
-            where: {
-                userUid: userUid,
-                complexUid: complexUid,
-                createdAt: {
-                    [Sequelize.Op.gt]: todayBaseDate
-                }
-            }
-        })
-        return data
-    }
-
-    openDoorLog.searchUserComplex = async (userUid, models) => {
-        let todayBaseDate = moment().subtract(1, 'days').format('YYYY-MM-DD HH:mm:ss')
-        let result = await openDoorLog.findAll({
-            where: {
-                userUid: userUid,
-                createdAt: {
-                    [Sequelize.Op.gt]: todayBaseDate
-                }
-            },
-            include: [{
-                model: models.complex,
-                paranoid: false,
-                include: [{
-                    model: models.door,
-                }]
-            }]
-        })
-        return result
-    }
 
     return openDoorLog
 }
