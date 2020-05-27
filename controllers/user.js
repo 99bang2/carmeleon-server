@@ -25,7 +25,7 @@ exports.sendAuthCode = async function (ctx) {
 	await redisModel.authCode.save(_.phoneNumber, codeVal)
 	
 	await smsSender.sendSMS(
-		`<#> [KEY-FREE] 인증번호(${codeVal})를 입력해주세요. FUr6olIpEe1`,
+		`<#> [SAFE-PASS] 인증번호(${codeVal})를 입력해주세요. FUr6olIpEe1`,
 		_.phoneNumber
 		)
 	response.send(ctx, codeVal)
@@ -119,7 +119,7 @@ exports.getDoors = async function (ctx) {
 	let userComplexes = await models.userComplex.searchUserComplex(ctx.user.uid, models)
 	let doors = []
 	for(let userComplex of userComplexes) {
-		doors.push(userComplex.complex.doors)
+		doors = doors.concat(userComplex.complex.doors)
 	}
 	response.send(ctx, doors)
 }
