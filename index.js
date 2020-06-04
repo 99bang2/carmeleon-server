@@ -23,16 +23,6 @@ models.sequelize.sync().then(function () {
 			message: `Server listening on ${config.listenPort}`,
 			badge: true
 		})
-		let superAdmin = await models.admin.getById('admin', models)
-		if(!superAdmin) {
-			models.admin.create({
-				id: 'admin',
-				password: 'admin',
-				name: '최고관리자',
-				isActive: true,
-				grade: 'SUPER'
-			})
-		}
 	})
 })
 

@@ -1,14 +1,4 @@
 {
-	"adminGrade": {
-		"SUPER": "최고관리자",
-		"COMPLEX": "관리자"
-	},
-	"complexType": {
-		"APT": "아파트단지",
-		"OFFICETEL": "오피스텔",
-		"BUILDING": "일반건물",
-		"ETC": "기타"
-	},
 	"addressCode": {
 		"11": {
 			"code": 11,
