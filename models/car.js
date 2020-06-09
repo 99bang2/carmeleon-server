@@ -1,0 +1,45 @@
+'use strict'
+const response = require('../libs/response')
+module.exports = (sequelize, DataTypes) => {
+	const car = sequelize.define('car', {
+		uid: {
+			type: DataTypes.INTEGER,
+			allowNull: false,
+			autoIncrement: true,
+			primaryKey: true,
+		},
+		carType: {
+			type: DataTypes.STRING
+		},
+		carModel: {
+			type: DataTypes.STRING
+		},
+		carPlate: {
+			type: DataTypes.STRING
+		},
+		userUid: {
+			type: DataTypes.STRING
+		}
+	}, {
+		timestamps: true,
+		underscored: true
+	})
+	car.associate = function (models) {
+		car.belongsTo(models.user)
+	}
+	car.getByUid = async function (ctx, uid) {
+		let data = await car.findByPk(uid)
+		if (!data) {
+			response.badRequest(ctx)
+		}
+		return data
+	}
+	car.search = async (params) => {
+		let where = {}
+		let result = await car.findAll({
+			where: where
+		})
+		return result
+	}
+	return car
+}
