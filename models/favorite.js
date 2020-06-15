@@ -19,11 +19,12 @@ module.exports = (sequelize, DataTypes) => {
 		}
 	}, {
 		timestamps: true,
-		underscored: true
+		underscored: true,
+		paranoid: true
 	})
 	favorite.associate = function (models) {
 		favorite.belongsTo(models.user)
-		favorite.belongsTo(models.parkingSite)
+		favorite.belongsTo(models.parkingSite, {foreignKey: 'site_uid', targetKey: 'uid'})
 	}
 	favorite.getByUid = async function (ctx, uid) {
 		let data = await favorite.findByPk(uid)

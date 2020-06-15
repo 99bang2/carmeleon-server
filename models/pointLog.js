@@ -4,19 +4,19 @@ const bcrypt = Promise.promisifyAll(require('bcrypt-nodejs'))
 const response = require('../libs/response')
 
 module.exports = (sequelize, DataTypes) => {
-    const point = sequelize.define('point', {
+    const pointLog = sequelize.define('pointLog', {
         uid: {
-            type: DataTypes.INT,
+            type: DataTypes.INTEGER,
             allowNull: false,
             autoIncrement: true,
             primaryKey: true,
         },
         userUid: {
-            type: DataTypes.INT,
+            type: DataTypes.INTEGER,
             allowNull: false,
         },
         point: {
-            type: DataTypes.INT,
+            type: DataTypes.INTEGER,
             allowNull: false,
         },
         reason: {
@@ -32,23 +32,23 @@ module.exports = (sequelize, DataTypes) => {
         paranoid: true,
         underscored: true
     })
-    point.associate = function (models) {
-        point.belongsTo(models.user)
+	pointLog.associate = function (models) {
+		pointLog.belongsTo(models.user)
     }
-    point.getByUid = async function (ctx, uid) {
-        let data = await point.findByPk(uid)
+	pointLog.getByUid = async function (ctx, uid) {
+        let data = await pointLog.findByPk(uid)
         if (!data) {
             response.badRequest(ctx)
         }
         return data
     }
 
-    point.search = async (params) => {
+	pointLog.search = async (params) => {
         let where = {}
-        let result = await point.findAll({
+        let result = await pointLog.findAll({
             where: where
         })
         return result
     }
-    return point
+    return pointLog
 }

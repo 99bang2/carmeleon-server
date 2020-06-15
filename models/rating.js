@@ -1,7 +1,7 @@
 'use strict'
 const response = require('../libs/response')
 module.exports = (sequelize, DataTypes) => {
-	const rate = sequelize.define('rate', {
+	const rating = sequelize.define('rating', {
 		uid: {
 			type: DataTypes.INTEGER,
 			allowNull: false,
@@ -21,28 +21,30 @@ module.exports = (sequelize, DataTypes) => {
 			type: DataTypes.STRING
 		},
 		rateType: {
-			type: DataTypes.CHAR
+			type: DataTypes.BOOLEAN
 		}
 	}, {
 		timestamps: true,
-		underscored: true
+		underscored: true,
+		paranoid: true
 	})
-	rate.associate = function (models) {
-		rate.belongsTo(models.user)
+	rating.associate = function (models) {
+		rating.belongsTo(models.user),
+		rating.belongsTo(models.parkingSite, {foreignKey: 'site_uid', targetKey: 'uid'})
 	}
-	rate.getByUid = async function (ctx, uid) {
+	rating.getByUid = async function (ctx, uid) {
 		let data = await rate.findByPk(uid)
 		if (!data) {
 			response.badRequest(ctx)
 		}
 		return data
 	}
-	rate.search = async (params) => {
+	rating.search = async (params) => {
 		let where = {}
-		let result = await rate.findAll({
+		let result = await rating.findAll({
 			where: where
 		})
 		return result
 	}
-	return rate
+	return rating
 }

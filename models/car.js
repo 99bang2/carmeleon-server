@@ -17,12 +17,19 @@ module.exports = (sequelize, DataTypes) => {
 		carPlate: {
 			type: DataTypes.STRING
 		},
+		carGear: {
+			type: DataTypes.INTEGER
+		},
 		userUid: {
-			type: DataTypes.STRING
+			type: DataTypes.INTEGER
+		},
+		isMain: {
+			type: DataTypes.BOOLEAN
 		}
 	}, {
 		timestamps: true,
-		underscored: true
+		underscored: true,
+		paranoid: true
 	})
 	car.associate = function (models) {
 		car.belongsTo(models.user)

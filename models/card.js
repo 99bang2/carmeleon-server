@@ -16,10 +16,14 @@ module.exports = (sequelize, DataTypes) => {
 		},
 		nickname: {
 			type: DataTypes.STRING
+		},
+		isMain: {
+			type: DataTypes.BOOLEAN
 		}
 	}, {
 		timestamps: true,
-		underscored: true
+		underscored: true,
+		paranoid: true
 	})
 	card.associate = function (models) {
 		card.belongsTo(models.user)

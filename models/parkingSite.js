@@ -3,98 +3,98 @@ const Promise = require('bluebird')
 const response = require('../libs/response')
 
 module.exports = (sequelize, DataTypes) => {
-    const parkingSite = sequelize.define('parkingSite', {
-        uid: {
-            type: DataTypes.INTEGER,
-            allowNull: false,
-            autoIncrement: true,
-            primaryKey: true,
-        },
-        name: {
-            type: DataTypes.STRING,
-            allowNull: false
-        },
-        siteType: {
-            type: DataTypes.INT
-        },
-        lat: {
-            type: DataTypes.DOUBLE
-        },
-        lon: {
-            type: DataTypes.DOUBLE
-        },
-        parkingLot: {
-            type: DataTypes.INTEGER
-        },
-        tel: {
-            type: DataTypes.STRING
-        },
-        phone: {
-            type: DataTypes.STRING
-        },
-        email: {
-            type: DataTypes.STRING
-        },
-        manager: {
-            type: DataTypes.STRING
-        },
-        active: {
-            type: DataTypes.STRING
-        },
-        paymentTag: {
-            type: DataTypes.JSON
-        },
-        brandTag: {
-            type: DataTypes.JSON
-        },
-        productTag: {
-            type: DataTypes.JSON
-        },
-        optionTag: {
-            type: DataTypes.JSON
-        },
-        carTag: {
-            type: DataTypes.JSON
-        },
-        rating: {
-            type: DataTypes.JSON
-        },
-        price: {
-            type: DataTypes.INTEGER
-        },
-        address: {
-            type: DataTypes.STRING
-        },
-        info: {
-            type: DataTypes.TEXT
-        },
-        priceInfo: {
-            type: DataTypes.TEXT
-        },
-        picture: {
-            type: DataTypes.JSON
-        }
-    }, {
-        timestamps: true,
-        paranoid: true,
-        underscored: true,
-    })
-    parkingSite.getByUid = async function (ctx, uid) {
-        let data = await parkingSite.findByPk(uid)
-        if (!data) {
-            response.badRequest(ctx)
-        }
-        return data
-    }
+	const parkingSite = sequelize.define('parkingSite', {
+		uid: {
+			type: DataTypes.INTEGER,
+			allowNull: false,
+			autoIncrement: true,
+			primaryKey: true,
+		},
+		name: {
+			type: DataTypes.STRING,
+			allowNull: false
+		},
+		siteType: {
+			type: DataTypes.INTEGER
+		},
+		lat: {
+			type: DataTypes.DOUBLE
+		},
+		lon: {
+			type: DataTypes.DOUBLE
+		},
+		parkingLot: {
+			type: DataTypes.INTEGER
+		},
+		tel: {
+			type: DataTypes.STRING
+		},
+		phone: {
+			type: DataTypes.STRING
+		},
+		email: {
+			type: DataTypes.STRING
+		},
+		manager: {
+			type: DataTypes.STRING
+		},
+		active: {
+			type: DataTypes.STRING
+		},
+		paymentTag: {
+			type: DataTypes.JSON
+		},
+		brandTag: {
+			type: DataTypes.JSON
+		},
+		productTag: {
+			type: DataTypes.JSON
+		},
+		optionTag: {
+			type: DataTypes.JSON
+		},
+		carTag: {
+			type: DataTypes.JSON
+		},
+		rating: {
+			type: DataTypes.JSON
+		},
+		price: {
+			type: DataTypes.INTEGER
+		},
+		address: {
+			type: DataTypes.STRING
+		},
+		info: {
+			type: DataTypes.TEXT
+		},
+		priceInfo: {
+			type: DataTypes.TEXT
+		},
+		picture: {
+			type: DataTypes.JSON
+		}
+	}, {
+		timestamps: true,
+		paranoid: true,
+		underscored: true,
+	})
+	parkingSite.getByUid = async function (ctx, uid) {
+		let data = await parkingSite.findByPk(uid)
+		if (!data) {
+			response.badRequest(ctx)
+		}
+		return data
+	}
 
-    parkingSite.search = async (params) => {
-        let where = {}
-        let order = [['createdAt', 'DESC']]
-        let result = await parkingSite.findAll({
-            order: order,
-            where: where
-        })
-        return result
-    }
-    return parkingSite
+	parkingSite.search = async (params) => {
+		let where = {}
+		let order = [['createdAt', 'DESC']]
+		let result = await parkingSite.findAll({
+			order: order,
+			where: where
+		})
+		return result
+	}
+	return parkingSite
 }

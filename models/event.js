@@ -11,18 +11,31 @@ module.exports = (sequelize, DataTypes) => {
 		title: {
 			type: DataTypes.STRING
 		},
-		content: {
+		mainPicture: {
 			type: DataTypes.STRING
 		},
-		picture: {
+		subPicture: {
 			type: DataTypes.STRING
 		},
 		adminUid: {
-			type: DataTypes.STRING
+			type: DataTypes.INTEGER
+		},
+		startDate: {
+			type: DataTypes.DATE
+		},
+		endDate: {
+			type: DataTypes.DATE
+		},
+		eventType: {
+			type: DataTypes.INTEGER
+		},
+		isOpen: {
+			type: DataTypes.BOOLEAN
 		}
 	}, {
 		timestamps: true,
-		underscored: true
+		underscored: true,
+		paranoid: true
 	})
 	event.associate = function (models) {
 		event.belongsTo(models.admin)

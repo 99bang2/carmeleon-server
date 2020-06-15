@@ -22,11 +22,12 @@ module.exports = (sequelize, DataTypes) => {
 		}
 	}, {
 		timestamps: true,
-		underscored: true
+		underscored: true,
+		paranoid: true
 	})
 	payLog.associate = function (models) {
 		payLog.belongsTo(models.user)
-		payLog.belongsTo(models.parkingSite)
+		payLog.belongsTo(models.parkingSite, {foreignKey: 'site_uid', targetKey: 'uid'})
 	}
 	payLog.getByUid = async function (ctx, uid) {
 		let data = await payLog.findByPk(uid)

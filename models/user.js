@@ -37,14 +37,14 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.STRING
         },
         point: {
-            type: DataTypes.INTEGER,
+            type: DataTypes.INTEGER
         },
-        lat: {
-            type: DataTypes.DOUBLE,
-        },
-        lon: {
-            type: DataTypes.DOUBLE,
-        },
+		push: {
+        	type: DataTypes.BOOLEAN
+		},
+		marketing: {
+			type: DataTypes.BOOLEAN
+		},
         memo: {
             type: DataTypes.TEXT
         }

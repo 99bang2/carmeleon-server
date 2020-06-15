@@ -3,7 +3,7 @@ const response = require('../libs/response')
 module.exports = (sequelize, DataTypes) => {
 	const notice = sequelize.define('notice', {
 		uid: {
-			type: DataTypes.INT,
+			type: DataTypes.INTEGER,
 			allowNull: false,
 			autoIncrement: true,
 			primaryKey: true,
@@ -13,14 +13,14 @@ module.exports = (sequelize, DataTypes) => {
 		},
 		content: {
 			type: DataTypes.STRING
-
 		},
 		adminUid: {
-			type: DataTypes.STRING
+			type: DataTypes.INTEGER
 		}
 	}, {
 		timestamps: true,
-		underscored: true
+		underscored: true,
+		paranoid: true
 	})
 	notice.associate = function (models) {
 		notice.belongsTo(models.admin)
