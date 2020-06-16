@@ -1,8 +1,8 @@
 {
   "development": {
-    "username": "username",
+    "username": "carmeleon",
     "password": "thwlsWkd123",
-    "database": "database",
+    "database": "carmeleon-db",
     "host": "127.0.0.1",
     "port": "3306",
     "dialect": "mysql",
@@ -10,9 +10,9 @@
     "logging": true
   },
   "production": {
-    "username": "username",
+    "username": "carmeleon",
     "password": "thwlsWkd123",
-    "database": "database",
+    "database": "carmeleon-db",
     "host": "host-db",
     "port": "3306",
     "dialect": "mysql",

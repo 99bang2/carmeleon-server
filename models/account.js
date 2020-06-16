@@ -1,7 +1,7 @@
 'use strict'
 const response = require('../libs/response')
 module.exports = (sequelize, DataTypes) => {
-	const admin = sequelize.define('admin', {
+	const account = sequelize.define('account', {
 		uid: {
 			type: DataTypes.INTEGER,
 			allowNull: false,
@@ -25,19 +25,19 @@ module.exports = (sequelize, DataTypes) => {
 		paranoid: true,
 		underscored: true
 	})
-	admin.getByUid = async function (ctx, uid) {
-		let data = await admin.findByPk(uid)
+	account.getByUid = async function (ctx, uid) {
+		let data = await account.findByPk(uid)
 		if (!data) {
 			response.badRequest(ctx)
 		}
 		return data
 	}
-	admin.search = async (params) => {
+	account.search = async (params) => {
 		let where = {}
-		let result = await admin.findAll({
+		let result = await account.findAll({
 			where: where
 		})
 		return result
 	}
-	return admin
+	return account
 }

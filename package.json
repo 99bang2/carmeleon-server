@@ -6,8 +6,8 @@
 	"private": true,
 	"scripts": {
 		"start": "pm2 start",
-		"stop": "pm2 stop BASE-SERVER --watch  && pm2 delete BASE-SERVER ",
-		"restart": "pm2 stop BASE-SERVER && pm2 delete BASE-SERVER && pm2 start"
+		"stop": "pm2 stop CARMELEON-SERVER --watch  && pm2 delete CARMELEON-SERVER ",
+		"restart": "pm2 stop CARMELEON-SERVER && pm2 delete CARMELEON-SERVER && pm2 start"
 	},
 	"dependencies": {
 		"bcrypt-nodejs": "0.0.3",
