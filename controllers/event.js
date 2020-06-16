@@ -3,6 +3,8 @@ const response = require('../libs/response')
 
 exports.create = async function (ctx) {
 	let _ = ctx.request.body
+	_.bannerImg = ctx.request.files.bannerImg.path
+	_.mainImg = ctx.request.files.mainImg.path
 	let event = await models.event.create(_)
 	response.send(ctx, event)
 }
@@ -33,4 +35,14 @@ exports.delete = async function (ctx) {
 	let event = await models.event.getByUid(ctx, uid)
 	await event.destroy()
 	response.send(ctx, event)
+}
+
+exports.bulkDelete = async function (ctx) {
+	let _ = ctx.request.body
+	let deleteResult = await models.event.destroy({
+		where: {
+			uid: _.uids
+		}
+	})
+	response.send(ctx, deleteResult)
 }

@@ -15,7 +15,14 @@ const config = require(__dirname + '/configs/config.json')[env]
 
 router.use('/api', response.res, apiV1Router.routes())
 app.use(cors())
-app.use(koaBody())
+app.use(koaBody({
+	formidable: {
+		uploadDir: './uploads',
+		//maxFileSize:200 * 1024 * 1024, //Upload file size
+		keepExtensions: true //  Extensions to save images
+	},
+	multipart: true,
+}))
 app.use(router.routes()).use(router.allowedMethods())
 models.sequelize.sync().then(function () {
 	app.listen(config.listenPort, async () => {
