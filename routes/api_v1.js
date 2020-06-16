@@ -43,6 +43,6 @@ api.get('/events', eventController.list)
 api.get('/events/:uid', eventController.read)
 api.put('/events/:uid', eventController.update)
 api.delete('/events/:uid', eventController.delete)
-// api.post('/notices/bulkDelete', eventController.bulkDelete) //복수삭제
+api.post('/notices/bulkDelete', eventController.bulkDelete) //복수삭제
 
 module.exports = api
