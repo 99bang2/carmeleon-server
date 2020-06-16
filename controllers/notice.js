@@ -34,3 +34,13 @@ exports.delete = async function (ctx) {
 	await notice.destroy()
 	response.send(ctx, notice)
 }
+
+exports.bulkDelete = async function (ctx) {
+	let _ = ctx.request.body
+	let deleteResult = await models.notice.destroy({
+		where: {
+			uid: _.uids
+		}
+	})
+	response.send(ctx, deleteResult)
+}

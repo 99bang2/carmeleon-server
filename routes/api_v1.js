@@ -34,6 +34,7 @@ api.get('/notices', noticeController.list)
 api.get('/notices/:uid', noticeController.read)
 api.put('/notices/:uid', noticeController.update)
 api.delete('/notices/:uid', noticeController.delete)
+api.post('/notices/bulkDelete', noticeController.bulkDelete) //복수삭제
 /**
  * 이벤트 관리
  */
@@ -42,5 +43,6 @@ api.get('/events', eventController.list)
 api.get('/events/:uid', eventController.read)
 api.put('/events/:uid', eventController.update)
 api.delete('/events/:uid', eventController.delete)
+api.post('/notices/bulkDelete', eventController.bulkDelete) //복수삭제
 
 module.exports = api
