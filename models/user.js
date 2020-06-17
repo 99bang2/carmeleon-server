@@ -84,20 +84,48 @@ module.exports = (sequelize, DataTypes) => {
         }
     })
 
-    user.getByUid = async function (ctx, uid) {
-        let data = await user.findByPk(uid)
-        if (!data) {
-            response.badRequest(ctx)
-        }
-        return data
-    }
+	user.applyScope = function (models) {
+		user.addScope('defaultScope', {
+			attributes: { exclude: ['password'] },
+		})
+		user.addScope('login', {
+			attributes: ['uid', 'id', 'password', 'name', 'grade', 'freePassTicketCount', 'passTicketCount'],
+		})
+	}
+
+	user.prototype.verifyPassword = function (password) {
+		return bcrypt.compareAsync(password, this.password)
+	}
+
+	user.getByUid = async function (ctx, uid) {
+		let data = await user.findByPk(uid)
+		if (!data) {
+			response.badRequest(ctx)
+		}
+		return data
+	}
+
+	user.getById = async function (ctx, id) {
+		let data = await user.scope('login').findOne({
+			where: {
+				id: id
+			}
+		})
+		return data
+	}
 
     user.search = async (params) => {
-        let where = {}
-        let result = await user.findAll({
-            where: where
-        })
-        return result
+		let where = {}
+		let order = [['createdAt', 'DESC']]
+		if(params.grade) {
+			where.grade = params.grade
+		}
+		let result = await user.findAll({
+			order: order,
+			where: where
+		})
+		return result
     }
+
     return user
 }
