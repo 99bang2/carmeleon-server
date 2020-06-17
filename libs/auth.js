@@ -22,21 +22,8 @@ exports.getAdmin = async (ctx) => {
 	}
 }
 
-exports.getUser = async (ctx) => {
-	if (ctx.request.headers.ak) {
-		let ak = ctx.request.headers.ak
-		let user = await models.user.getByAk(ak)
-		return user ? {
-			uid: user.uid,
-			phone: user.phone
-		} : null
-	} else {
-		return null
-	}
-}
-
 exports.isAdminLoggedIn = async (ctx, next) => {
-	if(!ctx.admin){
+	if(!ctx.account){
 		response.unauthorized(ctx)
 	}
 	await next()
