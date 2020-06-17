@@ -19,6 +19,9 @@ module.exports = (sequelize, DataTypes) => {
 		},
 		grade: {
 			type: DataTypes.INTEGER
+		},
+		isActive: {
+			type: DataTypes.BOOLEAN
 		}
 	}, {
 		timestamps: true,

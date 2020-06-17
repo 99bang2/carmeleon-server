@@ -17,7 +17,7 @@ module.exports = (sequelize, DataTypes) => {
 		subPicture: {
 			type: DataTypes.STRING
 		},
-		adminUid: {
+		accountUid: {
 			type: DataTypes.INTEGER
 		},
 		startDate: {
@@ -38,7 +38,7 @@ module.exports = (sequelize, DataTypes) => {
 		paranoid: true
 	})
 	event.associate = function (models) {
-		event.belongsTo(models.admin)
+		event.belongsTo(models.account)
 	}
 	event.getByUid = async function (ctx, uid) {
 		let data = await event.findByPk(uid)

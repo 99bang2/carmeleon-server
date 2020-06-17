@@ -14,7 +14,7 @@ module.exports = (sequelize, DataTypes) => {
 		content: {
 			type: DataTypes.STRING
 		},
-		adminUid: {
+		accountUid: {
 			type: DataTypes.INTEGER
 		}
 	}, {
@@ -23,7 +23,7 @@ module.exports = (sequelize, DataTypes) => {
 		paranoid: true
 	})
 	notice.associate = function (models) {
-		notice.belongsTo(models.admin)
+		notice.belongsTo(models.account)
 	}
 	notice.getByUid = async function (ctx, uid) {
 		let data = await notice.findByPk(uid)
