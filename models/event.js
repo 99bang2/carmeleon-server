@@ -43,17 +43,24 @@ module.exports = (sequelize, DataTypes) => {
 	event.associate = function (models) {
 		event.belongsTo(models.account)
 	}
-	event.getByUid = async function (ctx, uid) {
-		let data = await event.findByPk(uid)
+	event.getByUid = async function (ctx, uid, models) {
+		let data = await event.findByPk(uid, {
+			include: [{
+				model: models.account
+			}]
+		})
 		if (!data) {
 			response.badRequest(ctx)
 		}
 		return data
 	}
-	event.search = async (params) => {
+	event.search = async (params, models) => {
 		let where = {}
 		let result = await event.findAll({
-			where: where
+			where: where,
+			include: [{
+				model: models.account
+			}]
 		})
 		return result
 	}

@@ -26,17 +26,24 @@ module.exports = (sequelize, DataTypes) => {
 	notice.associate = function (models) {
 		notice.belongsTo(models.account)
 	}
-	notice.getByUid = async function (ctx, uid) {
-		let data = await notice.findByPk(uid)
+	notice.getByUid = async function (ctx, uid, models) {
+		let data = await notice.findByPk(uid, {
+			include: [{
+				model: models.account
+			}]
+		})
 		if (!data) {
 			response.badRequest(ctx)
 		}
 		return data
 	}
-	notice.search = async (params) => {
+	notice.search = async (params, models) => {
 		let where = {}
 		let result = await notice.findAll({
-			where: where
+			where: where,
+			include: [{
+				model: models.account
+			}]
 		})
 		return result
 	}
