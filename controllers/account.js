@@ -1,6 +1,9 @@
+'use strict'
 const models = require('../models')
 const response = require('../libs/response')
 const jwt = require('jsonwebtoken')
+const env = process.env.NODE_ENV || 'development'
+const config = require('../configs/config.json')[env]
 const secret = config.secretKey
 
 exports.create = async function (ctx) {
@@ -48,16 +51,31 @@ exports.bulkDelete = async function (ctx) {
 	response.send(ctx, deleteResult)
 }
 
+exports.changePassword = async function (ctx) {
+	let account = await models.account.getById(ctx.account.id, models)
+	let _ = ctx.request.body
+	let verifyPassword = await account.verifyPassword(_.oldPassword)
+	if (!verifyPassword) {
+		ctx.throw({
+			code: 400,
+			message: '기존 비밀번호가 일치하지 않습니다.'
+		})
+	}
+	account.password = _.newPassword
+	await account.save()
+	response.send(ctx, admin)
+}
+
 exports.login = async function (ctx) {
 	let _ = ctx.request.body
-	let admin = await models.admin.getById(_.id, models)
-	if (!admin) {
+	let account = await models.account.getById(_.id, models)
+	if (!account) {
 		ctx.throw({
 			code: 400,
 			message: '가입하지 않은 아이디이거나, 잘못된 비밀번호입니다.'
 		})
 	}
-	let verifyPassword = await admin.verifyPassword(_.password)
+	let verifyPassword = await account.verifyPassword(_.password)
 	if (!verifyPassword) {
 		ctx.throw({
 			code: 400,
@@ -66,10 +84,10 @@ exports.login = async function (ctx) {
 	}
 	const accessToken = jwt.sign(
 		{
-			uid: admin.uid,
-			id: admin.id,
-			grade: admin.grade,
-			name: admin.name,
+			uid: account.uid,
+			id: account.id,
+			grade: account.grade,
+			name: account.name,
 		},
 		secret
 	)
@@ -80,7 +98,7 @@ exports.login = async function (ctx) {
 
 exports.check = async function (ctx) {
 	response.send(ctx, {
-		admin: ctx.admin
+		account: ctx.account
 	})
 }
 exports.logout = async function (ctx) {
@@ -89,13 +107,13 @@ exports.logout = async function (ctx) {
 
 exports.checkUniqueId = async function (ctx) {
 	let {id} = ctx.params
-	let admin = await models.admin.findOne({
+	let account = await models.account.findOne({
 		attributes: ['uid', 'id'],
 		where: {
 			id: id
 		},
 		paranoid: false
 	})
-	let result = !admin
+	let result = !account
 	response.send(ctx, result)
 }
