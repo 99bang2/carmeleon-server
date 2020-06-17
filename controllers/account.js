@@ -1,5 +1,7 @@
 const models = require('../models')
 const response = require('../libs/response')
+const jwt = require('jsonwebtoken')
+const secret = config.secretKey
 
 exports.create = async function (ctx) {
 	let _ = ctx.request.body
@@ -44,4 +46,56 @@ exports.bulkDelete = async function (ctx) {
 		}
 	})
 	response.send(ctx, deleteResult)
+}
+
+exports.login = async function (ctx) {
+	let _ = ctx.request.body
+	let admin = await models.admin.getById(_.id, models)
+	if (!admin) {
+		ctx.throw({
+			code: 400,
+			message: '가입하지 않은 아이디이거나, 잘못된 비밀번호입니다.'
+		})
+	}
+	let verifyPassword = await admin.verifyPassword(_.password)
+	if (!verifyPassword) {
+		ctx.throw({
+			code: 400,
+			message: '가입하지 않은 아이디이거나, 잘못된 비밀번호입니다.'
+		})
+	}
+	const accessToken = jwt.sign(
+		{
+			uid: admin.uid,
+			id: admin.id,
+			grade: admin.grade,
+			name: admin.name,
+		},
+		secret
+	)
+	response.send(ctx, {
+		token: accessToken
+	})
+}
+
+exports.check = async function (ctx) {
+	response.send(ctx, {
+		admin: ctx.admin
+	})
+}
+exports.logout = async function (ctx) {
+	response.send(ctx, {})
+}
+
+exports.checkUniqueId = async function (ctx) {
+	let {id} = ctx.params
+	let admin = await models.admin.findOne({
+		attributes: ['uid', 'id'],
+		where: {
+			id: id
+		},
+		paranoid: false
+	})
+	let result = !admin
+	response.send(ctx, result)
 }

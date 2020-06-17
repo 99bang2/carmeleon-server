@@ -15,9 +15,10 @@ const eventController = require('../controllers/event')
 /**
  * 인증
  */
-api.post('/auth/login', auth.login)
-api.get('/auth/logout', auth.logout)
-// api.get('/auth/check', auth.check)
+api.post('/admin/login', accountController.login)
+api.get('/admin/logout', accountController.logout)
+api.get('/admin/check', accountController.check)
+api.get('/admin/unique/:id', accountController.checkUniqueId) //아이디중복체크
 /**
  * 관리자 관리
  */
