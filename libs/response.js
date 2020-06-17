@@ -1,7 +1,7 @@
 'use strict'
 const consola = require('consola')
 const resCode = require('../configs/response-code.json')
-//const auth = require('../libs/auth')
+const auth = require('../libs/auth')
 /**
  * 로그 및 에러 캐치
  * @param ctx
@@ -19,7 +19,7 @@ exports.res = async (ctx, next) => {
 			params: params
 		})
 		//ctx.admin = await auth.getAdmin(ctx)
-		//ctx.user = await auth.getUser(ctx)
+		ctx.account = await auth.getAccount(ctx)
 		await next()
     } catch (err) {
 		consola.error(err)

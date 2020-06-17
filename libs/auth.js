@@ -7,7 +7,7 @@ const env = process.env.NODE_ENV || 'development'
 const config = require('../configs/config.json')[env]
 const secret = config.secretKey
 
-exports.getAdmin = async (ctx) => {
+exports.getAccount = async (ctx) => {
 	if (ctx.request.headers.authorization && ctx.request.headers.authorization.split(' ')[0] === 'Bearer') {
 		try{
 			let accessToken = ctx.request.headers.authorization.split(' ')[1]
