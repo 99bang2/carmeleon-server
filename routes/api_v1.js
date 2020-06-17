@@ -22,29 +22,29 @@ api.get('/account/unique/:id', accountController.checkUniqueId)
 /**
  * 관리자 관리
  */
-api.post('/accounts', accountController.create)
-api.get('/accounts', accountController.list)
-api.get('/accounts/:uid', accountController.read)
-api.put('/accounts/:uid', accountController.update)
-api.delete('/accounts/:uid', accountController.delete)
-api.post('/accounts/bulkDelete', accountController.bulkDelete)//복수삭제
+api.post('/accounts', auth.isAdminLoggedIn, accountController.create)
+api.get('/accounts', auth.isAdminLoggedIn, accountController.list)
+api.get('/accounts/:uid', auth.isAdminLoggedIn, accountController.read)
+api.put('/accounts/:uid', auth.isAdminLoggedIn, accountController.update)
+api.delete('/accounts/:uid', auth.isAdminLoggedIn, accountController.delete)
+api.post('/accounts/bulkDelete', auth.isAdminLoggedIn, accountController.bulkDelete)//복수삭제
 /**
  * 공지사항 관리
  */
-api.post('/notices', noticeController.create)
-api.get('/notices', noticeController.list)
-api.get('/notices/:uid', noticeController.read)
-api.put('/notices/:uid', noticeController.update)
-api.delete('/notices/:uid', noticeController.delete)
-api.post('/notices/bulkDelete', noticeController.bulkDelete) //복수삭제
+api.post('/notices', auth.isAdminLoggedIn, noticeController.create)
+api.get('/notices', auth.isAdminLoggedIn, noticeController.list)
+api.get('/notices/:uid', auth.isAdminLoggedIn, noticeController.read)
+api.put('/notices/:uid', auth.isAdminLoggedIn, noticeController.update)
+api.delete('/notices/:uid', auth.isAdminLoggedIn, noticeController.delete)
+api.post('/notices/bulkDelete', auth.isAdminLoggedIn, noticeController.bulkDelete) //복수삭제
 /**
  * 이벤트 관리
  */
-api.post('/events', eventController.create)
-api.get('/events', eventController.list)
-api.get('/events/:uid', eventController.read)
-api.put('/events/:uid', eventController.update)
-api.delete('/events/:uid', eventController.delete)
-api.post('/events/bulkDelete', eventController.bulkDelete) //복수삭제
+api.post('/events', auth.isAdminLoggedIn, eventController.create)
+api.get('/events', auth.isAdminLoggedIn, eventController.list)
+api.get('/events/:uid', auth.isAdminLoggedIn, eventController.read)
+api.put('/events/:uid', auth.isAdminLoggedIn, eventController.update)
+api.delete('/events/:uid', auth.isAdminLoggedIn, eventController.delete)
+api.post('/events/bulkDelete', auth.isAdminLoggedIn, eventController.bulkDelete) //복수삭제
 
 module.exports = api

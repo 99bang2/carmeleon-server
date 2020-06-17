@@ -18,7 +18,8 @@ module.exports = (sequelize, DataTypes) => {
 			type: DataTypes.STRING
 		},
 		accountUid: {
-			type: DataTypes.INTEGER
+			type: DataTypes.INTEGER,
+			allowNull: false
 		},
 		startDate: {
 			type: DataTypes.DATE
@@ -27,10 +28,12 @@ module.exports = (sequelize, DataTypes) => {
 			type: DataTypes.DATE
 		},
 		eventType: {
-			type: DataTypes.INTEGER
+			type: DataTypes.INTEGER,
+			allowNull: false
 		},
 		isOpen: {
-			type: DataTypes.BOOLEAN
+			type: DataTypes.BOOLEAN,
+			allowNull: false
 		}
 	}, {
 		timestamps: true,
