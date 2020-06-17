@@ -28,6 +28,7 @@ api.get('/accounts/:uid', auth.isAdminLoggedIn, accountController.read)
 api.put('/accounts/:uid', auth.isAdminLoggedIn, accountController.update)
 api.delete('/accounts/:uid', auth.isAdminLoggedIn, accountController.delete)
 api.post('/accounts/bulkDelete', auth.isAdminLoggedIn, accountController.bulkDelete)//복수삭제
+api.put('/accounts/changePassword/:uid', auth.isAdminLoggedIn, accountController.changePassword)// 비밀번호 변경
 /**
  * 공지사항 관리
  */

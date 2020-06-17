@@ -63,7 +63,7 @@ exports.changePassword = async function (ctx) {
 	}
 	account.password = _.newPassword
 	await account.save()
-	response.send(ctx, admin)
+	response.send(ctx, account)
 }
 
 exports.login = async function (ctx) {
