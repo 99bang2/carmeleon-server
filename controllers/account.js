@@ -3,6 +3,7 @@ const response = require('../libs/response')
 
 exports.create = async function (ctx) {
 	let _ = ctx.request.body
+	console.log(_)
 	let account = await models.account.create(_)
 	response.send(ctx, account)
 }

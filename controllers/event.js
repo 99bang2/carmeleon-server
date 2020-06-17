@@ -3,8 +3,9 @@ const response = require('../libs/response')
 
 exports.create = async function (ctx) {
 	let _ = ctx.request.body
-	_.bannerImg = ctx.request.files.bannerImg.path
-	_.mainImg = ctx.request.files.mainImg.path
+	_.bannerImage = ctx.request.files.bannerImage.path
+	_.mainImage = ctx.request.files.mainImage.path
+	console.log("도착",_)
 	let event = await models.event.create(_)
 	response.send(ctx, event)
 }

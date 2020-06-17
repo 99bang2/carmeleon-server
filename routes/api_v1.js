@@ -15,8 +15,8 @@ const eventController = require('../controllers/event')
 /**
  * 인증
  */
-// api.post('/auth/login', auth.login)
-// api.get('/auth/logout', auth.logout)
+api.post('/auth/login', auth.login)
+api.get('/auth/logout', auth.logout)
 // api.get('/auth/check', auth.check)
 /**
  * 관리자 관리

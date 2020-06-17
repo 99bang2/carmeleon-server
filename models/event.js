@@ -11,10 +11,10 @@ module.exports = (sequelize, DataTypes) => {
 		title: {
 			type: DataTypes.STRING
 		},
-		mainPicture: {
+		mainImage: {
 			type: DataTypes.STRING
 		},
-		subPicture: {
+		bannerImage: {
 			type: DataTypes.STRING
 		},
 		accountUid: {

@@ -48,3 +48,37 @@ exports.isUserLoggedIn = async (ctx, next) => {
 	}
 	await next()
 }
+
+//login
+exports.login = async function (ctx) {
+	let _ = ctx.request.body
+	let account = await models.account.getById(ctx, _.id)
+	if (!account) {
+		ctx.throw({
+			code: 400,
+			message: '가입하지 않은 아이디이거나, 잘못된 비밀번호입니다.'
+		})
+	}
+	let verifyPassword = await account.verifyPassword(_.password)
+	if (!verifyPassword) {
+		ctx.throw({
+			code: 400,
+			message: '가입하지 않은 아이디이거나, 잘못된 비밀번호입니다.'
+		})
+	}
+	const accessToken = jwt.sign(
+		{
+			uid: account.uid,
+			id: account.id,
+			grade: account.grade,
+			name: account.name,
+		},
+		secret
+	)
+
+}
+
+//logout
+exports.logout = async function (ctx) {
+	response.send(ctx, {})
+}
