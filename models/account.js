@@ -1,6 +1,7 @@
 'use strict'
-const response = require('../libs/response')
+const Promise = require('bluebird')
 const bcrypt = Promise.promisifyAll(require('bcrypt-nodejs'))
+const response = require('../libs/response')
 
 module.exports = (sequelize, DataTypes) => {
 	const account = sequelize.define('account', {
