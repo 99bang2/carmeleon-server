@@ -12,6 +12,7 @@ const models = require('./models')
 const response = require('./libs/response')
 const env = process.env.NODE_ENV || 'development'
 const config = require(__dirname + '/configs/config.json')[env]
+const fs = require('fs');
 
 router.use('/api', response.res, apiV1Router.routes())
 app.use(cors())
@@ -24,6 +25,14 @@ app.use(koaBody({
 	multipart: true,
 }))
 app.use(router.routes()).use(router.allowedMethods())
+global.imageUpload = function imageUpload(path, dir, imageName){
+	if (!fs.existsSync(dir)) {
+		fs.mkdirSync(dir)
+	}
+	let newPath = dir + imageName
+	fs.renameSync(path, newPath)
+	return newPath
+}
 models.sequelize.sync().then(function () {
 	app.listen(config.listenPort, async () => {
 		consola.ready({

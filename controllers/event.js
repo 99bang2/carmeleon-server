@@ -3,9 +3,14 @@ const response = require('../libs/response')
 
 exports.create = async function (ctx) {
 	let _ = ctx.request.body
-	_.bannerImage = ctx.request.files.bannerImage.path
-	_.mainImage = ctx.request.files.mainImage.path
-	console.log("도착",_)
+	let dir = './uploads/event/'
+	//파일 이름 정의, 이미지 확장자 체크, 파일명 중복 처리 필요//
+	let bannerImageName = 'evt_banner_'+ctx.request.files.bannerImage.name
+	let mainImageName = 'evt_banner_'+ctx.request.files.bannerImage.name
+	let bannerImage = imageUpload(ctx.request.files.bannerImage.path, dir, bannerImageName)
+	let mainImage = imageUpload(ctx.request.files.bannerImage.path, dir, mainImageName)
+	_.bannerImage = bannerImage
+	_.mainImage = mainImage
 	let event = await models.event.create(_)
 	response.send(ctx, event)
 }
