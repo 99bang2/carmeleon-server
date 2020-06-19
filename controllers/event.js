@@ -6,7 +6,7 @@ exports.create = async function (ctx) {
 	let dir = './uploads/event/'
 	//파일 이름 정의, 이미지 확장자 체크, 파일명 중복 처리 필요//
 	let bannerImageName = 'evt_banner_'+ctx.request.files.bannerImage.name
-	let mainImageName = 'evt_banner_'+ctx.request.files.bannerImage.name
+	let mainImageName = 'evt_banner_'+ctx.request.files.mainImage.name
 	let bannerImage = imageUpload(ctx.request.files.bannerImage.path, dir, bannerImageName)
 	let mainImage = imageUpload(ctx.request.files.mainImage.path, dir, mainImageName)
 	_.bannerImage = bannerImage

@@ -33,7 +33,20 @@ global.imageUpload = function imageUpload(path, dir, imageName){
 	fs.renameSync(path, newPath)
 	return newPath
 }
-models.sequelize.sync().then(function () {
+models.sequelize.sync().then(async function () {
+	let superAdmin = await models.account.findOne({
+		where: {
+			id: 'admin'
+		}
+	})
+	if(!superAdmin) {
+		models.account.create({
+			id: 'admin',
+			password: 'admin',
+			name: '관리자',
+			grade: 0
+		})
+	}
 	app.listen(config.listenPort, async () => {
 		consola.ready({
 			message: `Server listening on ${config.listenPort}`,
