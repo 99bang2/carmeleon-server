@@ -15,13 +15,13 @@ exports.list = async function (ctx) {
 
 exports.read = async function (ctx) {
 	let {uid} = ctx.params
-	let notice = await models.notice.getByUid(ctx, uid)
+	let notice = await models.notice.getByUid(ctx, uid, models)
 	response.send(ctx, notice)
 }
 
 exports.update = async function (ctx) {
 	let {uid} = ctx.params
-	let notice = await models.notice.getByUid(ctx, uid)
+	let notice = await models.notice.getByUid(ctx, uid, models)
 	let _ = ctx.request.body
 	Object.assign(notice, _)
 	await notice.save()
@@ -30,7 +30,7 @@ exports.update = async function (ctx) {
 
 exports.delete = async function (ctx) {
 	let {uid} = ctx.params
-	let notice = await models.notice.getByUid(ctx, uid)
+	let notice = await models.notice.getByUid(ctx, uid, models)
 	await notice.destroy()
 	response.send(ctx, notice)
 }

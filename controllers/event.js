@@ -8,7 +8,7 @@ exports.create = async function (ctx) {
 	let bannerImageName = 'evt_banner_'+ctx.request.files.bannerImage.name
 	let mainImageName = 'evt_banner_'+ctx.request.files.bannerImage.name
 	let bannerImage = imageUpload(ctx.request.files.bannerImage.path, dir, bannerImageName)
-	let mainImage = imageUpload(ctx.request.files.bannerImage.path, dir, mainImageName)
+	let mainImage = imageUpload(ctx.request.files.mainImage.path, dir, mainImageName)
 	_.bannerImage = bannerImage
 	_.mainImage = mainImage
 	let event = await models.event.create(_)
@@ -23,13 +23,13 @@ exports.list = async function (ctx) {
 
 exports.read = async function (ctx) {
 	let {uid} = ctx.params
-	let event = await models.event.getByUid(ctx, uid)
+	let event = await models.getByUid(ctx, uid, models)
 	response.send(ctx, event)
 }
 
 exports.update = async function (ctx) {
 	let {uid} = ctx.params
-	let event = await models.event.getByUid(ctx, uid)
+	let event = await models.event.getByUid(ctx, uid, models)
 	let _ = ctx.request.body
 	Object.assign(event, _)
 	await event.save()
@@ -38,7 +38,7 @@ exports.update = async function (ctx) {
 
 exports.delete = async function (ctx) {
 	let {uid} = ctx.params
-	let event = await models.event.getByUid(ctx, uid)
+	let event = await models.event.getByUid(ctx, uid, models)
 	await event.destroy()
 	response.send(ctx, event)
 }
