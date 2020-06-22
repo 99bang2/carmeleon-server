@@ -3,6 +3,7 @@
 const koa = require('koa')
 const Router = require('koa-router')
 const koaBody = require('koa-body')
+const koaStatic = require('koa-static')
 const cors = require('koa2-cors')
 const consola = require('consola')
 const app = new koa()
@@ -12,7 +13,6 @@ const models = require('./models')
 const response = require('./libs/response')
 const env = process.env.NODE_ENV || 'development'
 const config = require(__dirname + '/configs/config.json')[env]
-const fs = require('fs');
 
 router.use('/api', response.res, apiV1Router.routes())
 app.use(cors())
@@ -25,14 +25,8 @@ app.use(koaBody({
 	multipart: true,
 }))
 app.use(router.routes()).use(router.allowedMethods())
-global.imageUpload = function imageUpload(path, dir, imageName){
-	if (!fs.existsSync(dir)) {
-		fs.mkdirSync(dir)
-	}
-	let newPath = dir + imageName
-	fs.renameSync(path, newPath)
-	return newPath
-}
+//static
+app.use(koaStatic('./uploads'));
 models.sequelize.sync().then(async function () {
 	let superAdmin = await models.account.findOne({
 		where: {

@@ -1,14 +1,28 @@
 const models = require('../models')
 const response = require('../libs/response')
+const imageUpload = require('../libs/imageUpload')
+const dir = './uploads/event/'
+const folder = 'event/'
 
 exports.create = async function (ctx) {
 	let _ = ctx.request.body
-	let dir = './uploads/event/'
+	let bannerPath = ctx.request.files.bannerImage.path
+	let mainPath = ctx.request.files.mainImage.path
+	if(!bannerPath){
+		ctx.throw({
+			code: 400,
+			message: '배너 이미지가 등록되지 않았습니다.'
+		})
+	}
+	if(!mainPath){
+		ctx.throw({
+			code: 400,
+			message: '메인 이미지가 등록되지 않았습니다.'
+		})
+	}
 	//파일 이름 정의, 이미지 확장자 체크, 파일명 중복 처리 필요//
-	let bannerImageName = 'evt_banner_'+ctx.request.files.bannerImage.name
-	let mainImageName = 'evt_banner_'+ctx.request.files.mainImage.name
-	let bannerImage = imageUpload(ctx.request.files.bannerImage.path, dir, bannerImageName)
-	let mainImage = imageUpload(ctx.request.files.mainImage.path, dir, mainImageName)
+	let bannerImage = imageUpload.imageUpload(bannerPath, dir, folder,'evt_banner_')
+	let mainImage = imageUpload.imageUpload(mainPath, dir, folder,'evt_main_')
 	_.bannerImage = bannerImage
 	_.mainImage = mainImage
 	let event = await models.event.create(_)
@@ -31,6 +45,25 @@ exports.update = async function (ctx) {
 	let {uid} = ctx.params
 	let event = await models.event.getByUid(ctx, uid, models)
 	let _ = ctx.request.body
+	let bannerPath = ctx.request.files.bannerImage.path
+	let mainPath = ctx.request.files.mainImage.path
+	if(!bannerPath){
+		ctx.throw({
+			code: 400,
+			message: '배너 이미지가 등록되지 않았습니다.'
+		})
+	}
+	if(!mainPath){
+		ctx.throw({
+			code: 400,
+			message: '메인 이미지가 등록되지 않았습니다.'
+		})
+	}
+	//파일 이름 정의, 이미지 확장자 체크, 파일명 중복 처리 필요//
+	let bannerImage = imageUpload.imageUpload(bannerPath, dir, folder,'evt_banner_')
+	let mainImage = imageUpload.imageUpload(mainPath, dir, folder,'evt_main_')
+	_.bannerImage = bannerImage
+	_.mainImage = mainImage
 	Object.assign(event, _)
 	await event.save()
 	response.send(ctx, event)

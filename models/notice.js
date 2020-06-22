@@ -14,6 +14,13 @@ module.exports = (sequelize, DataTypes) => {
 		content: {
 			type: DataTypes.STRING
 		},
+		noticeType:{
+			type: DataTypes.INTEGER,
+		},
+		isOpen: {
+			type: DataTypes.BOOLEAN,
+			allowNull: false,
+		},
 		accountUid: {
 			type: DataTypes.INTEGER,
 			allowNull: false
