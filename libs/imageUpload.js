@@ -12,7 +12,7 @@ exports.imageUpload = function imageUpload(imagePath, dir, folder, name){
 	if (!fs.existsSync(dir)) {
 		fs.mkdirSync(dir)
 	}
-	let address = ip.address()+':'+config.listenPort+'/'
+	let address = 'http://'+ip.address()+':'+config.listenPort+'/'
 	let fileExt = path.extname(imagePath)
 	if(!name){
 		name = common.randomString(5)
