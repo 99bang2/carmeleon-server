@@ -53,10 +53,10 @@ api.post('/events/bulkDelete', auth.isAdminLoggedIn, eventController.bulkDelete)
 /**
  * 주차장 관리
  */
-api.post('/parkigs', parkingController.create)
-api.get('/parkigs', parkingController.list)
-api.get('/parkigs/:uid', parkingController.read)
-api.put('/parkigs/:uid', parkingController.update)
+api.post('/parkings', parkingController.create)
+api.get('/parkings', parkingController.list)
+api.get('/parkings/:uid', parkingController.read)
+api.put('/parkings/:uid', parkingController.update)
 /**
  * 리뷰 관리
  */
