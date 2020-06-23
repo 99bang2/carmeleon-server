@@ -90,6 +90,9 @@ module.exports = (sequelize, DataTypes) => {
 	parkingSite.search = async (params) => {
 		let where = {}
 		let order = [['createdAt', 'DESC']]
+		if(params.siteType) {
+			where.siteType = params.siteType
+		}
 		let result = await parkingSite.findAll({
 			order: order,
 			where: where

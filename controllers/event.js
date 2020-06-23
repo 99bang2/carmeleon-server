@@ -19,8 +19,8 @@ exports.create = async function (ctx) {
 		})
 	}
 	//파일 이름 정의, 이미지 확장자 체크, 파일명 중복 처리 필요//
-	_.bannerImage = imageUpload.imageUpload(ctx.request.files.bannerImage.path, dir, folder,'evt_banner_')
-	_.mainImage = imageUpload.imageUpload(ctx.request.files.mainImage.path, dir, folder,'evt_main_')
+	_.bannerImage = imageUpload.imageUpload(ctx, ctx.request.files.bannerImage, dir, folder,'evt_banner_')
+	_.mainImage = imageUpload.imageUpload(ctx, ctx.request.files.mainImage, dir, folder,'evt_main_')
 	let event = await models.event.create(_)
 	response.send(ctx, event)
 }
@@ -42,10 +42,10 @@ exports.update = async function (ctx) {
 	let event = await models.event.getByUid(ctx, uid, models)
 	let _ = ctx.request.body
 	if(ctx.request.files.bannerImage){
-		_.bannerImage = imageUpload.imageUpload(ctx.request.files.bannerImage.path, dir, folder, 'evt_banner_')
+		_.bannerImage = imageUpload.imageUpload(ctx, ctx.request.files.bannerImage, dir, folder, 'evt_banner_')
 	}
 	if(ctx.request.files.mainImage){
-		_.mainImage = imageUpload.imageUpload(ctx.request.files.mainImage.path, dir, folder, 'evt_main_')
+		_.mainImage = imageUpload.imageUpload(ctx, ctx.request.files.mainImage, dir, folder, 'evt_main_')
 	}
 	Object.assign(event, _)
 	await event.save()

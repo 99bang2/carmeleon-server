@@ -114,6 +114,12 @@ exports.checkUniqueId = async function (ctx) {
 		},
 		paranoid: false
 	})
+	if (account) {
+		ctx.throw({
+			code: 400,
+			message: '이미 존재 하는 아이디 입니다.'
+		})
+	}
 	let result = !account
 	response.send(ctx, result)
 }
