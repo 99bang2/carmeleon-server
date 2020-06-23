@@ -56,8 +56,10 @@ module.exports = (sequelize, DataTypes) => {
 	}
 	event.search = async (params, models) => {
 		let where = {}
+		let order = [['createdAt', 'DESC']]
 		let result = await event.findAll({
 			where: where,
+			order: order,
 			include: [{
 				model: models.account
 			}]
