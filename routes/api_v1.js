@@ -57,6 +57,8 @@ api.post('/parkings', parkingController.create)
 api.get('/parkings', parkingController.list)
 api.get('/parkings/:uid', parkingController.read)
 api.put('/parkings/:uid', parkingController.update)
+api.delete('/parkings/:uid',accountController.delete)
+api.post('/parkings/bulkDelete', accountController.bulkDelete)//복수삭제
 /**
  * 리뷰 관리
  */

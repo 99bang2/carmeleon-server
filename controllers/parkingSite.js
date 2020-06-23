@@ -34,3 +34,13 @@ exports.delete = async function (ctx) {
     await parkingSite.destroy()
     response.send(ctx, parkingSite)
 }
+
+exports.bulkDelete = async function (ctx) {
+    let _ = ctx.request.body
+    let deleteResult = await models.parkingSite.destroy({
+        where: {
+            uid: _.uids
+        }
+    })
+    response.send(ctx, deleteResult)
+}
