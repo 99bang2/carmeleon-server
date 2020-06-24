@@ -13,7 +13,8 @@ exports.imageUpload = function imageUpload(ctx, file, dir, folder, name){
 		fs.mkdirSync(dir)
 	}
 	//확장자 체크
-	if(!file.type.indexOf('image')){
+	if(file.type.indexOf('image') === -1){
+		fs.unlinkSync(file.path)
 		ctx.throw({
 			code: 400,
 			message: '확장자가 이지미 파일이어야 합니다.'
@@ -24,7 +25,7 @@ exports.imageUpload = function imageUpload(ctx, file, dir, folder, name){
 	let address = 'http://'+ip.address()+':'+config.listenPort+'/'
 	let fileExt = path.extname(imagePath)
 	if(!name){
-		name = common.randomString(5)
+		name = common.randomString(5)+'_'
 	}
 	let fileName = name + time + fileExt
 	let newPath = dir + fileName

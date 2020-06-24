@@ -1,8 +1,20 @@
 const models = require('../models')
 const response = require('../libs/response')
+const imageUpload = require('../libs/imageUpload')
+const dir = './uploads/site/'
+const folder = 'site/'
 
 exports.create = async function (ctx) {
     let _ = ctx.request.body
+	console.log(_)
+	console.log(ctx.request.files)
+	console.log('lenth', ctx.request.files.images.length)
+	let fileImages = ctx.request.files.images
+	let imageArray = []
+	for(let i = 0; i < fileImages.length; i++){
+		imageArray.push(imageUpload.imageUpload(ctx, fileImages[i], dir, folder))
+	}
+	_.picture = imageArray
     let parkingSite = await models.parkingSite.create(_)
     response.send(ctx, parkingSite)
 }

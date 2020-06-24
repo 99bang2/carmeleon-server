@@ -9,10 +9,12 @@ module.exports = (sequelize, DataTypes) => {
 			primaryKey: true,
 		},
 		siteUid: {
-			type: DataTypes.INTEGER
+			type: DataTypes.INTEGER,
+			allowNull: false
 		},
 		userUid: {
-			type: DataTypes.INTEGER
+			type: DataTypes.INTEGER,
+			allowNull: false
 		},
 		rate: {
 			type: DataTypes.DOUBLE
@@ -21,7 +23,9 @@ module.exports = (sequelize, DataTypes) => {
 			type: DataTypes.STRING
 		},
 		rateType: {
-			type: DataTypes.BOOLEAN
+			type: DataTypes.BOOLEAN,
+			allowNull: false,
+			defaultValue: '0'
 		}
 	}, {
 		timestamps: true,
@@ -32,17 +36,39 @@ module.exports = (sequelize, DataTypes) => {
 		rating.belongsTo(models.user),
 		rating.belongsTo(models.parkingSite, {foreignKey: 'site_uid', targetKey: 'uid'})
 	}
-	rating.getByUid = async function (ctx, uid) {
-		let data = await rate.findByPk(uid)
+	rating.getByUid = async function (ctx, uid, models) {
+		let data = await rate.findByPk(uid, {
+			include: [{
+				model: models.account
+			}]
+		})
 		if (!data) {
 			response.badRequest(ctx)
 		}
 		return data
 	}
-	rating.search = async (params) => {
+	rating.getBySiteUid = async function (ctx, siteUid) {
 		let where = {}
-		let result = await rating.findAll({
+		if(siteUid) {
+			where.siteUid = siteUid
+		}
+		let data = await rating.findAll({
 			where: where
+		})
+		if (!data) {
+			response.badRequest(ctx)
+		}
+		return data
+	}
+	rating.search = async (params, models) => {
+		let where = {}
+		let order = [['createdAt', 'DESC']]
+		let result = await rating.findAll({
+			where: where,
+			order: order,
+			include: [{
+				model: models.parkingSite
+			}]
 		})
 		return result
 	}
