@@ -6,9 +6,6 @@ const folder = 'site/'
 
 exports.create = async function (ctx) {
     let _ = ctx.request.body
-	console.log(_)
-	console.log(ctx.request.files)
-	console.log('lenth', ctx.request.files.images.length)
 	let fileImages = ctx.request.files.images
 	let imageArray = []
 	for(let i = 0; i < fileImages.length; i++){
