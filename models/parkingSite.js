@@ -38,8 +38,9 @@ module.exports = (sequelize, DataTypes) => {
 		manager: {
 			type: DataTypes.STRING
 		},
-		active: {
-			type: DataTypes.STRING
+		isActive: {
+			type: DataTypes.Boolean,
+			allowNull: false,
 		},
 		paymentTag: {
 			type: DataTypes.JSON
