@@ -39,7 +39,7 @@ module.exports = (sequelize, DataTypes) => {
 			type: DataTypes.STRING
 		},
 		isActive: {
-			type: DataTypes.Boolean,
+			type: DataTypes.BOOLEAN,
 			allowNull: false,
 		},
 		paymentTag: {
