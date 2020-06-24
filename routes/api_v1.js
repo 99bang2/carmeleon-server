@@ -17,7 +17,7 @@ const rateController = require('../controllers/rate')
 /**
  * 인증
  */
-api.post('/accounts/login', accountController.login)
+api.post('/account/login', accountController.login)
 api.get('/account/logout', accountController.logout)
 api.get('/account/check', accountController.check)
 /**
@@ -57,8 +57,8 @@ api.post('/parkings', parkingController.create)
 api.get('/parkings', parkingController.list)
 api.get('/parkings/:uid', parkingController.read)
 api.put('/parkings/:uid', parkingController.update)
-api.delete('/parkings/:uid',accountController.delete)
-api.post('/parkings/bulkDelete', accountController.bulkDelete)//복수삭제
+api.delete('/parkings/:uid',parkingController.delete)
+api.post('/parkings/bulkDelete', parkingController.bulkDelete)//복수삭제
 /**
  * 리뷰 관리
  */
