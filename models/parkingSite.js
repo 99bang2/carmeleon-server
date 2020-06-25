@@ -80,6 +80,9 @@ module.exports = (sequelize, DataTypes) => {
 		paranoid: true,
 		underscored: true,
 	})
+	parkingSite.associate = function (models) {
+		parkingSite.hasMany(models.rating, {foreignKey: 'site_uid', sourceKey: 'uid'})
+	}
 	parkingSite.getByUid = async function (ctx, uid) {
 		let data = await parkingSite.findByPk(uid)
 		if (!data) {
@@ -88,7 +91,7 @@ module.exports = (sequelize, DataTypes) => {
 		return data
 	}
 
-	parkingSite.search = async (params) => {
+	parkingSite.search = async (params, models) => {
 		let where = {}
 		let order = [['createdAt', 'DESC']]
 		if(params.siteType) {
@@ -97,6 +100,22 @@ module.exports = (sequelize, DataTypes) => {
 		let result = await parkingSite.findAll({
 			order: order,
 			where: where
+		})
+		return result
+	}
+
+	parkingSite.searchList = async (params, models) => {
+		let where = {}
+		let order = [['createdAt', 'DESC']]
+		if(params.siteType) {
+			where.siteType = params.siteType
+		}
+		let result = await parkingSite.findAll({
+			order: order,
+			where: where,
+			include: [{
+				model: models.rating
+			}]
 		})
 		return result
 	}
