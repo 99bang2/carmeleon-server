@@ -10,3 +10,16 @@ exports.randomString = function randomString(length) {
 	}
 	return randomstring;
 }
+
+exports.makeArray = function makeArray(obj){
+	let isArray = Array.isArray(obj)
+	let tempArray = []
+	if(typeof obj === 'undefined' || obj === null || obj === ''){
+		return tempArray
+	}else if(isArray){
+		tempArray = obj
+	}else{
+		tempArray.push(obj)
+	}
+	return tempArray
+}
