@@ -7,19 +7,12 @@ const folder = 'site/'
 
 exports.create = async function (ctx) {
     let _ = ctx.request.body
-	let file = ctx.request.files
-	let fileImages = []
-	fileImages.push(file.images)
-	let imageArray = []
-	for(let i = 0; i < fileImages.length; i++){
-		imageArray.push(imageUpload.imageUpload(ctx, fileImages[i], dir, folder))
-	}
 	_.paymentTag = common.makeArray(_.paymentTag)
 	_.brandTag = common.makeArray(_.brandTag)
 	_.productTag = common.makeArray(_.productTag)
 	_.optionTag = common.makeArray(_.optionTag)
 	_.carTag = common.makeArray(_.carTag)
-	_.picture = imageArray
+	_.picture = common.makeArray(_.picture)
     let parkingSite = await models.parkingSite.create(_)
     response.send(ctx, parkingSite)
 }
