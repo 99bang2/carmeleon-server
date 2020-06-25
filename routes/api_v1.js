@@ -2,6 +2,7 @@
 const Router = require('koa-router')
 const api = new Router()
 const auth = require('../libs/auth')
+const commonController = require('../controllers/common')
 const accountController = require('../controllers/account')
 const noticeController = require('../controllers/notice')
 const eventController = require('../controllers/event')
@@ -59,6 +60,7 @@ api.get('/parkings/:uid', parkingController.read)
 api.put('/parkings/:uid', parkingController.update)
 api.delete('/parkings/:uid',parkingController.delete)
 api.post('/parkings/bulkDelete', parkingController.bulkDelete)//복수삭제
+api.get('/parkingLists', parkingController.searchList)
 /**
  * 리뷰 관리
  */
@@ -68,5 +70,10 @@ api.get('/rates/:uid', rateController.read)
 api.get('/rates/site/:siteUid', rateController.siteList)
 api.put('/rates/:uid', rateController.update)
 api.delete('/rates/:uid', rateController.delete)
+
+/**
+ * 공통 컨트롤러
+ */
+api.post('/uploads', commonController.fileUpload)
 
 module.exports = api
