@@ -78,7 +78,7 @@ module.exports = (sequelize, DataTypes) => {
 		underscored: true,
 	})
 	parkingSite.associate = function (models) {
-		parkingSite.hasMany(models.rating, {foreignKey: 'site_uid', sourceKey: 'uid'})
+		parkingSite.hasMany(models.rating, {foreignKey:'site_uid'})
 	}
 	parkingSite.getByUid = async function (ctx, uid) {
 		let data = await parkingSite.findByPk(uid)
@@ -101,20 +101,5 @@ module.exports = (sequelize, DataTypes) => {
 		return result
 	}
 
-	parkingSite.searchList = async (params, models) => {
-		let where = {}
-		let order = [['createdAt', 'DESC']]
-		if(params.siteType) {
-			where.siteType = params.siteType
-		}
-		let result = await parkingSite.findAll({
-			order: order,
-			where: where,
-			include: [{
-				model: models.rating
-			}]
-		})
-		return result
-	}
 	return parkingSite
 }

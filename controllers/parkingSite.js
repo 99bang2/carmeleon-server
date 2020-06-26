@@ -44,9 +44,3 @@ exports.bulkDelete = async function (ctx) {
     })
     response.send(ctx, deleteResult)
 }
-
-// exports.searchList = async function (ctx) {
-// 	let _ = ctx.request.query
-// 	let parkingSite = await models.parkingSite.search(_, models)
-// 	response.send(ctx, parkingSite)
-// }

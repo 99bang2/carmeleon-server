@@ -65,10 +65,7 @@ module.exports = (sequelize, DataTypes) => {
 		let order = [['createdAt', 'DESC']]
 		let result = await rating.findAll({
 			where: where,
-			order: order,
-			include: [{
-				model: models.parkingSite
-			}]
+			order: order
 		})
 		return result
 	}

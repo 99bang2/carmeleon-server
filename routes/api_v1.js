@@ -60,7 +60,6 @@ api.get('/parkings/:uid', parkingController.read)
 api.put('/parkings/:uid', parkingController.update)
 api.delete('/parkings/:uid',parkingController.delete)
 api.post('/parkings/bulkDelete', parkingController.bulkDelete)//복수삭제
-api.get('/parkingLists', parkingController.searchList)
 /**
  * 리뷰 관리
  */
@@ -74,6 +73,7 @@ api.delete('/rates/:uid', rateController.delete)
 /**
  * 공통 컨트롤러
  */
+
 api.post('/uploads', commonController.fileUpload)
 
 module.exports = api
