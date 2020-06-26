@@ -36,8 +36,8 @@ api.get('/account/unique/:id', auth.isAdminLoggedIn, accountController.checkUniq
  * 공지사항 관리
  */
 api.post('/notices', auth.isAdminLoggedIn, noticeController.create)
-api.get('/notices', auth.isEitherLoggedIn, noticeController.list)
-api.get('/notices/:uid', auth.isEitherLoggedIn, noticeController.read)
+api.get('/notices',  noticeController.list)
+api.get('/notices/:uid', noticeController.read)
 api.put('/notices/:uid', auth.isAdminLoggedIn, noticeController.update)
 api.delete('/notices/:uid', auth.isAdminLoggedIn, noticeController.delete)
 api.post('/notices/bulkDelete', auth.isAdminLoggedIn, noticeController.bulkDelete) //복수삭제
@@ -46,8 +46,8 @@ api.post('/notices/bulkDelete', auth.isAdminLoggedIn, noticeController.bulkDelet
  */
 api.post('/events', eventController.create)
 //api.post('/events', auth.isEitherLoggedIn, eventController.create)
-api.get('/events', auth.isEitherLoggedIn, eventController.list)
-api.get('/events/:uid', auth.isEitherLoggedIn, eventController.read)
+api.get('/events', eventController.list)
+api.get('/events/:uid', eventController.read)
 api.put('/events/:uid', auth.isAdminLoggedIn, eventController.update)
 api.delete('/events/:uid', auth.isAdminLoggedIn, eventController.delete)
 api.post('/events/bulkDelete', auth.isAdminLoggedIn, eventController.bulkDelete) //복수삭제

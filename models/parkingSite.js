@@ -57,9 +57,6 @@ module.exports = (sequelize, DataTypes) => {
 		carTag: {
 			type: DataTypes.JSON
 		},
-		rating: {
-			type: DataTypes.JSON
-		},
 		price: {
 			type: DataTypes.INTEGER
 		},
