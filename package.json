@@ -10,6 +10,7 @@
 		"restart": "pm2 stop CARMELEON-SERVER && pm2 delete CARMELEON-SERVER && pm2 start"
 	},
 	"dependencies": {
+		"axios": "^0.19.2",
 		"bcrypt-nodejs": "0.0.3",
 		"bluebird": "^3.5.5",
 		"consola": "^2.11.3",
