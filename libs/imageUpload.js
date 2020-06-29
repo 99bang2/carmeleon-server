@@ -27,8 +27,10 @@ exports.imageUpload = function imageUpload(ctx, file, dir, folder, name){
 	if(!name){
 		name = common.randomString(5)+'_'
 	}
-	let fileName = name + time + fileExt
+	let fileName = name + common.randomString(5)+'_' +time + fileExt
 	let newPath = dir + fileName
 	fs.renameSync(imagePath, newPath)
+	console.log(time)
+	console.log(address + folder + fileName)
 	return address + folder + fileName
 }
