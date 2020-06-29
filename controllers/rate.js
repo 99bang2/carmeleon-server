@@ -35,6 +35,16 @@ exports.delete = async function (ctx) {
 	response.send(ctx, rate)
 }
 
+exports.bulkDelete = async function (ctx) {
+	let _ = ctx.request.body
+	let deleteResult = await models.rating.destroy({
+		where: {
+			uid: _.uids
+		}
+	})
+	response.send(ctx, deleteResult)
+}
+
 //주차장 uid로 조회
 exports.siteList = async function (ctx) {
 	let {siteUid} = ctx.params

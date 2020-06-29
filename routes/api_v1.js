@@ -69,6 +69,7 @@ api.get('/rates/:uid', rateController.read)
 api.get('/rates/site/:siteUid', rateController.siteList)
 api.put('/rates/:uid', rateController.update)
 api.delete('/rates/:uid', rateController.delete)
+api.post('/rates/bulkDelete', rateController.bulkDelete)//복수삭제
 
 /**
  * 공통 컨트롤러
@@ -76,6 +77,8 @@ api.delete('/rates/:uid', rateController.delete)
 
 api.post('/uploads', commonController.fileUpload)
 api.post('/searchLocal', commonController.searchLocal)
+//address : '주소'
 api.post('/searchList', commonController.searchList)
+//keyword : '주차장'
 
 module.exports = api
