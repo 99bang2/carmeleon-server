@@ -75,5 +75,7 @@ api.delete('/rates/:uid', rateController.delete)
  */
 
 api.post('/uploads', commonController.fileUpload)
+api.post('/searchLocal', commonController.searchLocal)
+api.post('/searchList', commonController.searchList)
 
 module.exports = api
