@@ -8,7 +8,7 @@ const noticeController = require('../controllers/notice')
 const eventController = require('../controllers/event')
 const parkingController = require('../controllers/parkingSite')
 const rateController = require('../controllers/rate')
-
+const reviewTemplateController = require('../controllers/reviewTemplate')
 /*
 * Carmelon Sever
 * */
@@ -70,6 +70,16 @@ api.get('/rates/site/:siteUid', rateController.siteList)
 api.put('/rates/:uid', rateController.update)
 api.delete('/rates/:uid', rateController.delete)
 api.post('/rates/bulkDelete', rateController.bulkDelete)//복수삭제
+
+/**
+ * 리뷰 템플릿 관리
+ */
+api.post('/reviewTemplates',auth.isAdminLoggedIn, reviewTemplateController.create)
+api.get('/reviewTemplates', reviewTemplateController.list)
+api.get('/reviewTemplates/:uid', reviewTemplateController.read)
+api.put('/reviewTemplates/:uid',auth.isAdminLoggedIn, reviewTemplateController.update)
+api.delete('/reviewTemplates/:uid',auth.isAdminLoggedIn, reviewTemplateController.delete)
+api.post('/reviewTemplates/bulkDelete',auth.isAdminLoggedIn, reviewTemplateController.bulkDelete)
 
 /**
  * 공통 컨트롤러
