@@ -13,6 +13,9 @@ module.exports = (sequelize, DataTypes) => {
         },
         price: {
             type: DataTypes.INTEGER
+        },
+        addPoint: {
+            type:DataTypes.INTEGER
         }
     }, {
         timestamps: true,
@@ -20,6 +23,7 @@ module.exports = (sequelize, DataTypes) => {
         paranoid: true
     })
     pointProduct.getByUid = async function (ctx, uid, models) {
+        console.log('uid', uid)
         let data = await pointProduct.findByPk(uid)
         if(!data) response.badRequest(ctx)
         return data
