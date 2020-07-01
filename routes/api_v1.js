@@ -89,6 +89,7 @@ api.post('/pointProducts', auth.isAdminLoggedIn,pointProductController.create)
 api.get('/pointProducts', pointProductController.list)
 api.get('/pointProducts/:uid', pointProductController.read)
 api.put('/pointProducts/:uid', auth.isAdminLoggedIn,pointProductController.update)
+api.post('/pointProducts/addPoint', auth.isAdminLoggedIn,pointProductController.addPoint)
 api.delete('/pointProducts/:uid',auth.isAdminLoggedIn, pointProductController.delete)
 api.post('/pointProducts/bulkDelete', auth.isAdminLoggedIn,pointProductController.bulkDelete)
 
