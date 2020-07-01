@@ -14,7 +14,6 @@ exports.list = async function (ctx) {
 	let parkingSiteArray = []
 	if(_.radius){
 		for(let i=0; i<parkingSiteList.length; i++){
-			console.log(parkingSiteList[i].distance)
 			if(parkingSiteList[i].distance <= _.radius){
 				parkingSiteArray.push(parkingSiteList[i])
 			}
