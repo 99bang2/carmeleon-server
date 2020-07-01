@@ -9,6 +9,7 @@ const eventController = require('../controllers/event')
 const parkingController = require('../controllers/parkingSite')
 const rateController = require('../controllers/rate')
 const reviewTemplateController = require('../controllers/reviewTemplate')
+const pointProductController = require('../controllers/pointProduct')
 /*
 * Carmelon Sever
 * */
@@ -74,12 +75,22 @@ api.post('/rates/bulkDelete', rateController.bulkDelete)//복수삭제
 /**
  * 리뷰 템플릿 관리
  */
-api.post('/reviewTemplates',auth.isAdminLoggedIn, reviewTemplateController.create)
+api.post('/reviewTemplates', auth.isAdminLoggedIn,reviewTemplateController.create)
 api.get('/reviewTemplates', reviewTemplateController.list)
 api.get('/reviewTemplates/:uid', reviewTemplateController.read)
-api.put('/reviewTemplates/:uid',auth.isAdminLoggedIn, reviewTemplateController.update)
+api.put('/reviewTemplates/:uid', auth.isAdminLoggedIn,reviewTemplateController.update)
 api.delete('/reviewTemplates/:uid',auth.isAdminLoggedIn, reviewTemplateController.delete)
-api.post('/reviewTemplates/bulkDelete',auth.isAdminLoggedIn, reviewTemplateController.bulkDelete)
+api.post('/reviewTemplates/bulkDelete', auth.isAdminLoggedIn,reviewTemplateController.bulkDelete)
+
+/**
+ * 포인트 상품 관리
+ */
+api.post('/pointProducts', auth.isAdminLoggedIn,pointProductController.create)
+api.get('/pointProducts', pointProductController.list)
+api.get('/pointProducts/:uid', pointProductController.read)
+api.put('/pointProducts/:uid', auth.isAdminLoggedIn,pointProductController.update)
+api.delete('/pointProducts/:uid',auth.isAdminLoggedIn, pointProductController.delete)
+api.post('/pointProducts/bulkDelete', auth.isAdminLoggedIn,pointProductController.bulkDelete)
 
 /**
  * 공통 컨트롤러
