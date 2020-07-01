@@ -1,5 +1,5 @@
 'use strict';
-const faker = require('faker');
+const faker = require('faker')
 faker.locale = 'ko'
 const parkingSite = [...Array(100)].map((parkingSite) => (
 	{
@@ -8,8 +8,16 @@ const parkingSite = [...Array(100)].map((parkingSite) => (
 			'min': 0,
 			'max': 2
 		}),
-		lat: faker.address.latitude(),
-		lon: faker.address.longitude(),
+		lat: faker.random.number({
+			min: 37.359166,
+			max: 37.372645,
+			precision: 0.000001
+		}),
+		lon: faker.random.number({
+			min: 127.104852,
+			max: 127.122220,
+			precision: 0.000001
+		}),
 		parking_lot: faker.random.number(),
 		tel: faker.phone.phoneNumber(),
 		phone: faker.phone.phoneNumber(),
