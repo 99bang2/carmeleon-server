@@ -10,7 +10,17 @@ exports.create = async function (ctx) {
 exports.list = async function (ctx) {
     let _ = ctx.request.query
     let parkingSite = await models.parkingSite.search(_, models)
-    response.send(ctx, parkingSite)
+	let parkingSiteList = JSON.parse(JSON.stringify(parkingSite))
+	let parkingSiteArray = []
+	if(_.radius){
+		for(let i=0; i<parkingSiteList.length; i++){
+			console.log(parkingSiteList[i].distance)
+			if(parkingSiteList[i].distance <= _.radius){
+				parkingSiteArray.push(parkingSiteList[i])
+			}
+		}
+	}
+    response.send(ctx, parkingSiteArray)
 }
 
 exports.read = async function (ctx) {

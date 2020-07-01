@@ -42,7 +42,8 @@ exports.update = async function (ctx) {
 	let event = await models.event.getByUid(ctx, uid, models)
 	let _ = ctx.request.body
 	if(ctx.request.files.bannerImage){
-		_.bannerImage = imageUpload.imageUpload(ctx, ctx.request.files.bannerImage, dir, folder, 'evt_banner_')
+		_.bannerImage = imageUpload.imageUpload(ctx, ctx.request.files.bannerImage,
+			dir, folder, 'evt_banner_')
 	}
 	if(ctx.request.files.mainImage){
 		_.mainImage = imageUpload.imageUpload(ctx, ctx.request.files.mainImage, dir, folder, 'evt_main_')

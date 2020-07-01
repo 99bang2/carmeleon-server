@@ -60,6 +60,9 @@ module.exports = (sequelize, DataTypes) => {
 		price: {
 			type: DataTypes.INTEGER
 		},
+		rate: {
+			type: DataTypes.DOUBLE
+		},
 		address: {
 			type: DataTypes.STRING
 		},
@@ -78,7 +81,7 @@ module.exports = (sequelize, DataTypes) => {
 		underscored: true,
 	})
 	parkingSite.associate = function (models) {
-		parkingSite.hasMany(models.rating, {foreignKey:'site_uid'})
+		parkingSite.hasMany(models.rating, {foreignKey: 'site_uid'})
 	}
 	parkingSite.getByUid = async function (ctx, uid) {
 		let data = await parkingSite.findByPk(uid)
@@ -91,10 +94,19 @@ module.exports = (sequelize, DataTypes) => {
 	parkingSite.search = async (params, models) => {
 		let where = {}
 		let order = [['createdAt', 'DESC']]
-		if(params.siteType) {
+		let longitude = parseFloat(params.lon)
+		let latitude = parseFloat(params.lat)
+
+		if (params.siteType) {
 			where.siteType = params.siteType
 		}
 		let result = await parkingSite.findAll({
+			attributes: {
+				include: [[sequelize.fn('ST_Distance',
+					sequelize.fn('POINT', sequelize.col('lat'),
+						sequelize.col('lon')), sequelize.fn('POINT', longitude, latitude)),
+					'distance']]
+			},
 			order: order,
 			where: where
 		})

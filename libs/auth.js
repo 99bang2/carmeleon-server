@@ -22,6 +22,21 @@ exports.getAccount = async (ctx) => {
 	}
 }
 
+exports.getUser = async (ctx) => {
+	if (ctx.request.headers.authorization && ctx.request.headers.authorization.split(' ')[0] === 'Bearer') {
+		try{
+			let accessToken = ctx.request.headers.authorization.split(' ')[1]
+			let userData = await jwt.verify(accessToken, secret)
+			return userData
+		}catch (e) {
+			consola.error(e)
+			response.unauthorized(ctx)
+		}
+	} else {
+		return null
+	}
+}
+
 exports.isAdminLoggedIn = async (ctx, next) => {
 	if(!ctx.account){
 		response.unauthorized(ctx)

@@ -90,5 +90,6 @@ api.post('/searchLocal', commonController.searchLocal)
 //address : '주소'
 api.post('/searchList', commonController.searchList)
 //keyword : '주차장'
+api.post('/avgRate', commonController.avgRate)
 
 module.exports = api

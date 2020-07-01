@@ -34,3 +34,60 @@ exports.delete = async function (ctx) {
     await user.destroy()
     response.send(ctx, user)
 }
+
+exports.login = async function (ctx) {
+	let _ = ctx.request.body
+	let snsType = 'naver'
+	if (!_.user) {
+		ctx.throw({
+			code: 400,
+			message: '잘못된 로그인 요청입니다.'
+		})
+	}
+	let id = [snsType, _.user.id].join('-')
+	let user = await models.user.getById(ctx, id)
+	if(!user) {
+		user = await models.user.create({
+			id: id,
+			grade: 1,
+			snsType: snsType,
+			name: _.user.name,
+		})
+	}
+	const accessToken = jwt.sign(
+		user.dataValues,
+		secret
+	)
+	response.send(ctx, {
+		token: accessToken
+	})
+}
+
+exports.check = async function (ctx) {
+	response.send(ctx, {
+		user: ctx.user
+	})
+}
+
+exports.logout = async function (ctx) {
+	response.send(ctx, {})
+}
+
+exports.checkUniqueId = async function (ctx) {
+	let {id} = ctx.params
+	let user = await models.user.findOne({
+		attributes: ['uid', 'id'],
+		where: {
+			id: id
+		},
+		paranoid: false
+	})
+	if (user) {
+		ctx.throw({
+			code: 400,
+			message: '이미 존재 하는 아이디 입니다.'
+		})
+	}
+	let result = !user
+	response.send(ctx, result)
+}

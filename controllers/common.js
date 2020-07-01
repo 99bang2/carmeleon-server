@@ -39,3 +39,19 @@ exports.searchLocal = async function (ctx){
 	})
 	response.send(ctx, res.data)
 }
+
+exports.avgRate = async function (ctx){
+	let _ = ctx.request.body
+	let res = await models.rating.avgRate(_.siteUid)
+	let ratingAvg = JSON.parse(JSON.stringify(res))[0].ratingAvg
+	if(!ratingAvg){
+		ratingAvg = 0
+	}
+	let data = {
+		rate: ratingAvg,
+	}
+	let parkingSite = await models.parkingSite.getByUid(ctx, _.siteUid)
+	Object.assign(parkingSite, data)
+	await parkingSite.save()
+	response.send(ctx)
+}

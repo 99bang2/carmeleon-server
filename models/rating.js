@@ -1,5 +1,10 @@
 'use strict'
 const response = require('../libs/response')
+const axios = require('axios')
+const ip = require('ip')
+const env = process.env.NODE_ENV || 'development'
+const config = require('../configs/config.json')[env]
+
 module.exports = (sequelize, DataTypes) => {
 	const rating = sequelize.define('rating', {
 		uid: {
@@ -30,7 +35,13 @@ module.exports = (sequelize, DataTypes) => {
 	}, {
 		timestamps: true,
 		underscored: true,
-		paranoid: true
+		paranoid: true,
+		hooks: {
+			afterCreate: async function (rating, options) {
+				let address = 'http://'+ip.address()+':'+config.listenPort+'/api/avgRate'
+				await axios.post(address, {siteUid: rating.siteUid})
+			},
+		}
 	})
 	rating.associate = function (models) {
 		rating.belongsTo(models.user),
@@ -68,6 +79,15 @@ module.exports = (sequelize, DataTypes) => {
 			order: order
 		})
 		return result
+	}
+	rating.avgRate = async (siteUid) => {
+		let data = await rating.findAll({
+			attributes: [[sequelize.fn('AVG', sequelize.col('rate')), 'ratingAvg']],
+			where: {
+				siteUid: siteUid
+			},
+		})
+		return data
 	}
 	return rating
 }

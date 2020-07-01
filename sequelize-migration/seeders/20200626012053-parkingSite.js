@@ -4,7 +4,10 @@ faker.locale = 'ko'
 const parkingSite = [...Array(100)].map((parkingSite) => (
 	{
 		name: faker.company.companyName()+' 주차장',
-		site_type: 0,
+		site_type: faker.random.number({
+			'min': 0,
+			'max': 2
+		}),
 		lat: faker.address.latitude(),
 		lon: faker.address.longitude(),
 		parking_lot: faker.random.number(),
@@ -22,6 +25,10 @@ const parkingSite = [...Array(100)].map((parkingSite) => (
 		address: faker.address.state(),
 		info: faker.random.words(),
 		price_info: faker.random.number(),
+		rate: faker.random.number({
+			'min': 1,
+			'max': 5
+		})*2,
 		picture: '\["'+faker.image.avatar()+'","'+faker.image.avatar()+'"\]',
 		created_at: new Date().toISOString().replace(/T/, ' ').replace(/\..+/, ''),
 		updated_at: new Date().toISOString().replace(/T/, ' ').replace(/\..+/, '')
