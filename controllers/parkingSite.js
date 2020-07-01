@@ -18,8 +18,10 @@ exports.list = async function (ctx) {
 				parkingSiteArray.push(parkingSiteList[i])
 			}
 		}
+		response.send(ctx, parkingSiteArray)
+		return false
 	}
-    response.send(ctx, parkingSiteArray)
+	response.send(ctx, parkingSiteList)
 }
 
 exports.read = async function (ctx) {

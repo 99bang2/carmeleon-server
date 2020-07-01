@@ -94,8 +94,8 @@ module.exports = (sequelize, DataTypes) => {
 	parkingSite.search = async (params, models) => {
 		let where = {}
 		let order = [['createdAt', 'DESC']]
-		let longitude = parseFloat(params.lon)
-		let latitude = parseFloat(params.lat)
+		let longitude = params.lon?parseFloat(params.lon):null
+		let latitude = params.lat?parseFloat(params.lat):null
 
 		if (params.siteType) {
 			where.siteType = params.siteType
