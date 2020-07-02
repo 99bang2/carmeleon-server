@@ -94,8 +94,8 @@ module.exports = (sequelize, DataTypes) => {
 	parkingSite.search = async (params, models) => {
 		let where = {}
 		let order = [['createdAt', 'DESC']]
-		let longitude = params.lon?parseFloat(params.lon):null
-		let latitude = params.lat?parseFloat(params.lat):null
+		let longitude = params.lon ? parseFloat(params.lon) : null
+		let latitude = params.lat ? parseFloat(params.lat) : null
 
 		if (params.siteType) {
 			where.siteType = params.siteType
@@ -103,7 +103,9 @@ module.exports = (sequelize, DataTypes) => {
 
 		let result = await parkingSite.findAll({
 			attributes: {
-				include: [[`(6371 * acos(cos(radians(${latitude})) * cos(radians(lat)) * cos(radians(lon) - radians(${longitude})) + sin(radians(${latitude})) * sin(radians(lat))))`, 'distance']]
+				include: [
+					[`(6371 * acos(cos(radians(${latitude})) * cos(radians(lat)) * cos(radians(lon) - radians(${longitude})) + sin(radians(${latitude})) * sin(radians(lat))))`, 'distance'],
+					[`(SELECT count(*) FROM ratings WHERE site_uid = parkingSite.uid)`, 'rate_count']]
 			},
 			order: order,
 			where: where
