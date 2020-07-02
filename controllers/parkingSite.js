@@ -18,6 +18,20 @@ exports.list = async function (ctx) {
 				parkingSiteArray.push(parkingSiteList[i])
 			}
 		}
+		let sortingField = "distance"
+		switch (_.distanceSort) {
+			case 'ASC':
+				parkingSiteArray.sort(function(a, b){
+					return a[sortingField] - b[sortingField]
+				})
+				break
+			case 'DESC':
+				parkingSiteArray.sort(function(a, b){
+					return b[sortingField] - a[sortingField]
+				})
+				break
+		}
+
 		response.send(ctx, parkingSiteArray)
 		return false
 	}
