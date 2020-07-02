@@ -100,12 +100,10 @@ module.exports = (sequelize, DataTypes) => {
 		if (params.siteType) {
 			where.siteType = params.siteType
 		}
+
 		let result = await parkingSite.findAll({
 			attributes: {
-				include: [[sequelize.fn('ST_Distance',
-					sequelize.fn('POINT', sequelize.col('lat'),sequelize.col('lon')),
-					sequelize.fn('POINT', latitude, longitude)),
-					'distance']]
+				include: [[`(6371 * acos(cos(radians(${latitude})) * cos(radians(lat)) * cos(radians(lon) - radians(${longitude})) + sin(radians(${latitude})) * sin(radians(lat))))`, 'distance']]
 			},
 			order: order,
 			where: where
