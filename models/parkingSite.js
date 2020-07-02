@@ -103,8 +103,8 @@ module.exports = (sequelize, DataTypes) => {
 		let result = await parkingSite.findAll({
 			attributes: {
 				include: [[sequelize.fn('ST_Distance',
-					sequelize.fn('POINT', sequelize.col('lat'),
-						sequelize.col('lon')), sequelize.fn('POINT', longitude, latitude)),
+					sequelize.fn('POINT', sequelize.col('lat'),sequelize.col('lon')),
+					sequelize.fn('POINT', latitude, longitude)),
 					'distance']]
 			},
 			order: order,
