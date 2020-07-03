@@ -25,7 +25,7 @@ exports.imageUpload = function imageUpload(ctx, file, dir, folder, name){
 	let address = 'http://'+ip.address()+':'+config.listenPort+'/'
 	let fileExt = path.extname(imagePath)
 	if(!name){
-		name = common.randomString(5)+'_'
+		name = ''
 	}
 	let fileName = name + common.randomString(5)+'_' +time + fileExt
 	let newPath = dir + fileName

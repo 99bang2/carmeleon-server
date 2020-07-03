@@ -7,6 +7,7 @@ const config = require('../configs/config.json')[env]
 const secret = config.secretKey
 const imageUpload = require('../libs/imageUpload')
 const axios = require('axios')
+const codes = require('../configs/codes.json')
 
 exports.fileUpload = async function (ctx){
 	let _ = ctx.request.body
@@ -54,4 +55,7 @@ exports.avgRate = async function (ctx){
 	Object.assign(parkingSite, data)
 	await parkingSite.save()
 	response.send(ctx)
+}
+exports.codes = function (ctx){
+	response.send(ctx, codes)
 }
