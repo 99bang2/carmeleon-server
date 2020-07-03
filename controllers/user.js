@@ -49,7 +49,6 @@ exports.login = async function (ctx) {
 	if(!user) {
 		user = await models.user.create({
 			id: id,
-			grade: 1,
 			snsType: snsType,
 			name: _.user.name,
 		})
