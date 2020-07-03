@@ -17,17 +17,17 @@
 		{
 			"id": "11",
 			"name": "카드결제",
-			"valuee": "card"
+			"value": "card"
 		},
 		{
 			"id": "12",
 			"name": "현금결제",
-			"valuee": "cash"
+			"value": "cash"
 		},
 		{
 			"id": "13",
 			"name": "인앱결제",
-			"valuee": "inApp"
+			"value": "inApp"
 		}
 	],
 	"brandTag": [
