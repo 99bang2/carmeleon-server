@@ -54,5 +54,18 @@ module.exports = (sequelize, DataTypes) => {
 		})
 		return result
 	}
+	notice.userSearch = async (params, models) => {
+		let where = {}
+		where.isOpen = 1
+		let order = [ ['noticeType', 'ASC'], ['createdAt', 'DESC']]
+		let result = await notice.findAll({
+			include: [{
+				model: models.account
+			}],
+			where: where,
+			order: order
+		})
+		return result
+	}
 	return notice
 }

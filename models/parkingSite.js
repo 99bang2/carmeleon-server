@@ -206,13 +206,15 @@ module.exports = (sequelize, DataTypes) => {
 		let order = [['createdAt', 'DESC']]
 		let longitude = params.lon ? parseFloat(params.lon) : null
 		let latitude = params.lat ? parseFloat(params.lat) : null
-		let radius = params.radius ? params.radius : 0
-
+		let radius = params.radius
+		let distaceQuery = sequelize.where(sequelize.literal(`(6371 * acos(cos(radians(${latitude})) * cos(radians(lat)) * cos(radians(lon) - radians(${longitude})) + sin(radians(${latitude})) * sin(radians(lat))))`),'<=',radius)
+		if(!radius){
+			distaceQuery = null
+		}
 		if (params.siteType) {
 			where.site_type = params.siteType
 		}
-		where.is_active = false
-
+		where.is_active = 1
 		let result = await parkingSite.findAll({
 			attributes: {
 				include: [
@@ -221,7 +223,7 @@ module.exports = (sequelize, DataTypes) => {
 			},
 			order: order,
 			where: [
-				sequelize.where(sequelize.literal(`(6371 * acos(cos(radians(${latitude})) * cos(radians(lat)) * cos(radians(lon) - radians(${longitude})) + sin(radians(${latitude})) * sin(radians(lat))))`),'<=',radius)
+				distaceQuery
 				,where
 			]
 		})
