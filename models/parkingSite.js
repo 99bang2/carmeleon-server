@@ -100,9 +100,9 @@ module.exports = (sequelize, DataTypes) => {
 					let dataArray = []
 					for(let i = 0; i < dataLength; i++){
 						switch (this.getDataValue('productTag')[i]) {
-							case 'timePass' : dataArray.push(codes.paymentTag[0].name); break;
-							case 'dayPass' : dataArray.push(codes.paymentTag[1].name); break;
-							case 'monthPass' : dataArray.push(codes.paymentTag[2].name); break;
+							case 'timePass' : dataArray.push(codes.productTag[0].name); break;
+							case 'dayPass' : dataArray.push(codes.productTag[1].name); break;
+							case 'monthPass' : dataArray.push(codes.productTag[2].name); break;
 						}
 					}
 					return dataArray
@@ -120,13 +120,13 @@ module.exports = (sequelize, DataTypes) => {
 					let dataArray = []
 					for(let i = 0; i < dataLength; i++){
 						switch (this.getDataValue('optionTag')[i]) {
-							case 'cityCar' : dataArray.push(codes.paymentTag[0].name); break;
-							case 'cityOfSeoul' : dataArray.push(codes.paymentTag[1].name); break;
-							case 'disabled' : dataArray.push(codes.paymentTag[2].name); break;
-							case 'pregnant' : dataArray.push(codes.paymentTag[3].name); break;
-							case 'female' : dataArray.push(codes.paymentTag[4].name); break;
-							case 'elecCharge' : dataArray.push(codes.paymentTag[5].name); break;
-							case 'mechanical' : dataArray.push(codes.paymentTag[5].name); break;
+							case 'cityCar' : dataArray.push(codes.optionTag[0].name); break;
+							case 'cityOfSeoul' : dataArray.push(codes.optionTag[1].name); break;
+							case 'disabled' : dataArray.push(codes.optionTag[2].name); break;
+							case 'pregnant' : dataArray.push(codes.optionTag[3].name); break;
+							case 'female' : dataArray.push(codes.optionTag[4].name); break;
+							case 'elecCharge' : dataArray.push(codes.optionTag[5].name); break;
+							case 'mechanical' : dataArray.push(codes.optionTag[6].name); break;
 						}
 					}
 					return dataArray
@@ -144,8 +144,8 @@ module.exports = (sequelize, DataTypes) => {
 					let dataArray = []
 					for(let i = 0; i < dataLength; i++){
 						switch (this.getDataValue('carTag')[i]) {
-							case 'bus' : dataArray.push(codes.paymentTag[0].name); break;
-							case 'freight' : dataArray.push(codes.paymentTag[1].name); break;
+							case 'bus' : dataArray.push(codes.carTag[0].name); break;
+							case 'freight' : dataArray.push(codes.carTag[1].name); break;
 						}
 					}
 					return dataArray
