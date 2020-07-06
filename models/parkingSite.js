@@ -1,6 +1,6 @@
 'use strict'
-const Promise = require('bluebird')
 const response = require('../libs/response')
+const codes = require('../configs/codes.json')
 
 module.exports = (sequelize, DataTypes) => {
 	const parkingSite = sequelize.define('parkingSite', {
@@ -16,6 +16,14 @@ module.exports = (sequelize, DataTypes) => {
 		},
 		siteType: {
 			type: DataTypes.INTEGER
+		},
+		siteTypeName: {
+			type: DataTypes.VIRTUAL,
+			get: function () {
+				if (this.getDataValue('siteType') !== null) {
+					return codes.site[this.getDataValue('siteType')].text
+				}
+			}
 		},
 		lat: {
 			type: DataTypes.DOUBLE
@@ -45,17 +53,104 @@ module.exports = (sequelize, DataTypes) => {
 		paymentTag: {
 			type: DataTypes.JSON
 		},
+		paymentTagName: {
+			type: DataTypes.VIRTUAL,
+			get: function () {
+				if (this.getDataValue('paymentTag') !== null) {
+					let dataLength = this.getDataValue('paymentTag').length
+					let dataArray = []
+					for(let i = 0; i < dataLength; i++){
+						switch (this.getDataValue('paymentTag')[i]) {
+							case 'card' : dataArray.push(codes.paymentTag[0].name); break;
+							case 'cash' : dataArray.push(codes.paymentTag[1].name); break;
+							case 'inApp' : dataArray.push(codes.paymentTag[2].name); break;
+						}
+					}
+					return dataArray
+				}
+			}
+		},
 		brandTag: {
 			type: DataTypes.JSON
+		},
+		brandTagName: {
+			type: DataTypes.VIRTUAL,
+			get: function () {
+				if (this.getDataValue('brandTag') !== null) {
+					let dataLength = this.getDataValue('brandTag').length
+					let dataArray = []
+					for(let i = 0; i < dataLength; i++){
+						switch (this.getDataValue('brandTag')[i]) {
+							case 'hiParking' : dataArray.push(codes.brandTag[0].name); break;
+							case 'cityOfSeoul' : dataArray.push(codes.brandTag[1].name); break;
+						}
+					}
+					return dataArray
+				}
+			}
 		},
 		productTag: {
 			type: DataTypes.JSON
 		},
+		productTagName: {
+			type: DataTypes.VIRTUAL,
+			get: function () {
+				if (this.getDataValue('productTag') !== null) {
+					let dataLength = this.getDataValue('productTag').length
+					let dataArray = []
+					for(let i = 0; i < dataLength; i++){
+						switch (this.getDataValue('productTag')[i]) {
+							case 'timePass' : dataArray.push(codes.paymentTag[0].name); break;
+							case 'dayPass' : dataArray.push(codes.paymentTag[1].name); break;
+							case 'monthPass' : dataArray.push(codes.paymentTag[2].name); break;
+						}
+					}
+					return dataArray
+				}
+			}
+		},
 		optionTag: {
 			type: DataTypes.JSON
 		},
+		optionTagName: {
+			type: DataTypes.VIRTUAL,
+			get: function () {
+				if (this.getDataValue('optionTag') !== null) {
+					let dataLength = this.getDataValue('optionTag').length
+					let dataArray = []
+					for(let i = 0; i < dataLength; i++){
+						switch (this.getDataValue('optionTag')[i]) {
+							case 'cityCar' : dataArray.push(codes.paymentTag[0].name); break;
+							case 'cityOfSeoul' : dataArray.push(codes.paymentTag[1].name); break;
+							case 'disabled' : dataArray.push(codes.paymentTag[2].name); break;
+							case 'pregnant' : dataArray.push(codes.paymentTag[3].name); break;
+							case 'female' : dataArray.push(codes.paymentTag[4].name); break;
+							case 'elecCharge' : dataArray.push(codes.paymentTag[5].name); break;
+							case 'mechanical' : dataArray.push(codes.paymentTag[5].name); break;
+						}
+					}
+					return dataArray
+				}
+			}
+		},
 		carTag: {
 			type: DataTypes.JSON
+		},
+		carTagName: {
+			type: DataTypes.VIRTUAL,
+			get: function () {
+				if (this.getDataValue('carTag') !== null) {
+					let dataLength = this.getDataValue('carTag').length
+					let dataArray = []
+					for(let i = 0; i < dataLength; i++){
+						switch (this.getDataValue('carTag')[i]) {
+							case 'bus' : dataArray.push(codes.paymentTag[0].name); break;
+							case 'freight' : dataArray.push(codes.paymentTag[1].name); break;
+						}
+					}
+					return dataArray
+				}
+			}
 		},
 		price: {
 			type: DataTypes.INTEGER
@@ -81,7 +176,7 @@ module.exports = (sequelize, DataTypes) => {
 		underscored: true,
 	})
 	parkingSite.associate = function (models) {
-		parkingSite.hasMany(models.rating, {as: 'rate', foreignKey: 'site_uid'})
+		parkingSite.hasMany(models.rating, {foreignKey: 'site_uid'})
 	}
 	parkingSite.getByUid = async function (ctx, uid) {
 		let data = await parkingSite.findByPk(uid)
