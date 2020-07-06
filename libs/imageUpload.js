@@ -4,11 +4,11 @@ const fs = require('fs')
 const path = require('path')
 const moment = require('moment')
 const ip = require('ip')
-const time = moment().format("YYYYMMDDHHmmss");
 const env = process.env.NODE_ENV || 'development'
 const config = require('../configs/config.json')[env]
 
 exports.imageUpload = function imageUpload(ctx, file, dir, folder, name){
+	let time = moment().format("YYYYMMDDHHmmss");
 	if (!fs.existsSync(dir)) {
 		fs.mkdirSync(dir)
 	}

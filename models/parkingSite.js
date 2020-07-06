@@ -81,7 +81,7 @@ module.exports = (sequelize, DataTypes) => {
 		underscored: true,
 	})
 	parkingSite.associate = function (models) {
-		parkingSite.hasMany(models.rating, {foreignKey: 'site_uid'})
+		parkingSite.hasMany(models.rating, {as: 'rate', foreignKey: 'site_uid'})
 	}
 	parkingSite.getByUid = async function (ctx, uid) {
 		let data = await parkingSite.findByPk(uid)
@@ -94,12 +94,29 @@ module.exports = (sequelize, DataTypes) => {
 	parkingSite.search = async (params, models) => {
 		let where = {}
 		let order = [['createdAt', 'DESC']]
-		let longitude = params.lon ? parseFloat(params.lon) : null
-		let latitude = params.lat ? parseFloat(params.lat) : null
 
 		if (params.siteType) {
 			where.siteType = params.siteType
 		}
+
+		let result = await parkingSite.findAll({
+			order: order,
+			where: where
+		})
+		return result
+	}
+
+	parkingSite.userSearch = async (params, models) => {
+		let where = {}
+		let order = [['createdAt', 'DESC']]
+		let longitude = params.lon ? parseFloat(params.lon) : null
+		let latitude = params.lat ? parseFloat(params.lat) : null
+		let radius = params.radius ? params.radius : 0
+
+		if (params.siteType) {
+			where.site_type = params.siteType
+		}
+		where.is_active = false
 
 		let result = await parkingSite.findAll({
 			attributes: {
@@ -108,7 +125,10 @@ module.exports = (sequelize, DataTypes) => {
 					[`(SELECT count(*) FROM ratings WHERE site_uid = parkingSite.uid)`, 'rate_count']]
 			},
 			order: order,
-			where: where
+			where: [
+				sequelize.where(sequelize.literal(`(6371 * acos(cos(radians(${latitude})) * cos(radians(lat)) * cos(radians(lon) - radians(${longitude})) + sin(radians(${latitude})) * sin(radians(lat))))`),'<=',radius)
+				,where
+			]
 		})
 		return result
 	}

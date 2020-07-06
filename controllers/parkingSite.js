@@ -10,32 +10,7 @@ exports.create = async function (ctx) {
 exports.list = async function (ctx) {
     let _ = ctx.request.query
     let parkingSite = await models.parkingSite.search(_, models)
-	let parkingSiteList = JSON.parse(JSON.stringify(parkingSite))
-	let parkingSiteArray = []
-	if(_.radius){
-		for(let i=0; i<parkingSiteList.length; i++){
-			if(parkingSiteList[i].distance <= _.radius){
-				parkingSiteArray.push(parkingSiteList[i])
-			}
-		}
-		let sortingField = "distance"
-		switch (_.distanceSort) {
-			case 'ASC':
-				parkingSiteArray.sort(function(a, b){
-					return a[sortingField] - b[sortingField]
-				})
-				break
-			case 'DESC':
-				parkingSiteArray.sort(function(a, b){
-					return b[sortingField] - a[sortingField]
-				})
-				break
-		}
-
-		response.send(ctx, parkingSiteArray)
-		return false
-	}
-	response.send(ctx, parkingSiteList)
+	response.send(ctx, parkingSite)
 }
 
 exports.read = async function (ctx) {
@@ -68,4 +43,10 @@ exports.bulkDelete = async function (ctx) {
         }
     })
     response.send(ctx, deleteResult)
+}
+
+exports.userList = async function (ctx) {
+	let _ = ctx.request.query
+	let parkingSite = await models.parkingSite.userSearch(_, models)
+	response.send(ctx, parkingSite)
 }

@@ -37,13 +37,13 @@ exports.delete = async function (ctx) {
 
 exports.login = async function (ctx) {
 	let _ = ctx.request.body
-	let snsType = 'naver'
 	if (!_.user) {
 		ctx.throw({
 			code: 400,
 			message: '잘못된 로그인 요청입니다.'
 		})
 	}
+	let snsType = _.user.snsType
 	let id = [snsType, _.user.id].join('-')
 	let user = await models.user.getById(ctx, id)
 	if(!user) {
@@ -51,6 +51,7 @@ exports.login = async function (ctx) {
 			id: id,
 			snsType: snsType,
 			name: _.user.name,
+			token: _.user.token
 		})
 	}
 	const accessToken = jwt.sign(

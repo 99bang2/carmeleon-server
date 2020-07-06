@@ -41,20 +41,20 @@ models.sequelize.sync().then(async function () {
 			grade: 0
 		})
 	}
-	let testUser = await models.user.findOne({
-		where : {
-			id: 'user'
-		}
-	})
-	if(!testUser) {
-		models.user.create({
-			id: 'user',
-			password: 'user',
-			name: '유저',
-			email: 'test@test.com',
-			mobile: '01000000000'
-		})
-	}
+	// let testUser = await models.user.findOne({
+	// 	where : {
+	// 		id: 'user'
+	// 	}
+	// })
+	// if(!testUser) {
+	// 	models.user.create({
+	// 		id: 'user',
+	// 		password: 'user',
+	// 		name: '유저',
+	// 		email: 'test@test.com',
+	// 		mobile: '01000000000'
+	// 	})
+	// }
 	app.listen(config.listenPort, async () => {
 		consola.ready({
 			message: `Server listening on ${config.listenPort}`,

@@ -1,5 +1,4 @@
 'use strict'
-const models = require('../models')
 const response = require('../libs/response')
 const consola = require('consola')
 const jwt = require('jsonwebtoken')

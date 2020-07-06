@@ -15,30 +15,31 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.STRING,
             allowNull: false,
             unique: true,
-            validate: {
-                is: {
-                    args: /^[a-z0-9]{3,20}$/i,
-                    msg: 'ID는 3~20자의 영문소문자, 숫자만 사용 가능합니다.'
-                }
-            }
         },
-        password: {
-            type: DataTypes.STRING,
-            allowNull: false,
-        },
+		snsType: {
+			type: DataTypes.STRING,
+		},
         name: {
             type: DataTypes.STRING,
-            allowNull: false
         },
+		nickname: {
+			type: DataTypes.STRING,
+		},
         email: {
             type: DataTypes.STRING
         },
-        mobile: {
+        phone: {
             type: DataTypes.STRING
         },
+		profileImage: {
+			type: DataTypes.STRING
+		},
         point: {
             type: DataTypes.INTEGER
         },
+		token: {
+			type: DataTypes.STRING
+		},
 		push: {
         	type: DataTypes.BOOLEAN
 		},
@@ -58,30 +59,6 @@ module.exports = (sequelize, DataTypes) => {
         timestamps: true,
         paranoid: true,
         underscored: true,
-        hooks: {
-            beforeCreate: function (user, options) {
-                return bcrypt.genSaltAsync(5).then(function (salt) {
-                    return bcrypt.hashAsync(user.password, salt, null)
-                }).then(function (hash) {
-                    user.password = hash
-                }).catch(function (err) {
-                    return sequelize.Promise.reject(err)
-                })
-            },
-            beforeUpdate: function (user, options) {
-                if (user.password) {
-                    return bcrypt.genSaltAsync(5).then(function (salt) {
-                        return bcrypt.hashAsync(user.password, salt, null)
-                    }).then(function (hash) {
-                        user.password = hash
-                    }).catch(function (err) {
-                        return sequelize.Promise.reject(err)
-                    })
-                } else {
-                    return true
-                }
-            }
-        }
     })
 
 	user.applyScope = function (models) {
