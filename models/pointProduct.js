@@ -16,6 +16,9 @@ module.exports = (sequelize, DataTypes) => {
         },
         addPoint: {
             type:DataTypes.INTEGER
+        },
+        addPointPercent: {
+            type:DataTypes.INTEGER
         }
     }, {
         timestamps: true,
