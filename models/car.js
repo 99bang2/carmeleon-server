@@ -41,6 +41,15 @@ module.exports = (sequelize, DataTypes) => {
 		}
 		return data
 	}
+	car.getByUserUid = async function (ctx, uid) {
+		let data = await car.findAll({
+			where: {userUid:uid}
+		})
+		if (!data) {
+			response.badRequest(ctx)
+		}
+		return data
+	}
 	car.search = async (params) => {
 		let where = {}
 		let result = await car.findAll({

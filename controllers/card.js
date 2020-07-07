@@ -34,3 +34,9 @@ exports.delete = async function (ctx) {
 	await card.destroy()
 	response.send(ctx, card)
 }
+
+exports.userList = async function (ctx) {
+	let {userUid} = ctx.params
+	let card = await models.card.getByUserUid(ctx, userUid)
+	response.send(ctx, card)
+}

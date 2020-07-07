@@ -35,6 +35,15 @@ module.exports = (sequelize, DataTypes) => {
 		}
 		return data
 	}
+	card.getByUserUid = async function (ctx, uid) {
+		let data = await card.findAll({
+			where: {userUid:uid}
+		})
+		if (!data) {
+			response.badRequest(ctx)
+		}
+		return data
+	}
 	card.search = async (params) => {
 		let where = {}
 		let result = await card.findAll({

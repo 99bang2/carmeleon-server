@@ -34,3 +34,9 @@ exports.delete = async function (ctx) {
 	await car.destroy()
 	response.send(ctx, car)
 }
+
+exports.userList = async function (ctx) {
+	let {userUid} = ctx.params
+	let car = await models.car.getByUserUid(ctx, userUid)
+	response.send(ctx, car)
+}

@@ -1,6 +1,5 @@
 'use strict'
 const Promise = require('bluebird')
-const bcrypt = Promise.promisifyAll(require('bcrypt-nodejs'))
 const response = require('../libs/response')
 
 module.exports = (sequelize, DataTypes) => {
@@ -42,7 +41,15 @@ module.exports = (sequelize, DataTypes) => {
         }
         return data
     }
-
+	pointLog.getByUserUid = async function (ctx, uid) {
+		let data = await pointLog.findAll({
+			where: {userUid:uid}
+		})
+		if (!data) {
+			response.badRequest(ctx)
+		}
+		return data
+	}
 	pointLog.search = async (params) => {
         let where = {}
         let result = await pointLog.findAll({

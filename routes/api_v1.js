@@ -11,6 +11,12 @@ const parkingController = require('../controllers/parkingSite')
 const rateController = require('../controllers/rate')
 const reviewTemplateController = require('../controllers/reviewTemplate')
 const pointProductController = require('../controllers/pointProduct')
+const carController = require('../controllers/car')
+const cardController = require('../controllers/card')
+const favoriteController = require('../controllers/favorite')
+const pointLogController = require('../controllers/point')
+const payLogController = require('../controllers/payLog')
+
 /*
 * Carmelon Sever
 * */
@@ -42,7 +48,7 @@ api.get('/account/unique/:id', auth.isAdminLoggedIn, accountController.checkUniq
  * 공지사항 관리
  */
 api.post('/notices', auth.isAdminLoggedIn, noticeController.create)
-api.get('/notices',  noticeController.list)
+api.get('/notices', noticeController.list)
 api.get('/notices/:uid', noticeController.read)
 api.put('/notices/:uid', auth.isAdminLoggedIn, noticeController.update)
 api.delete('/notices/:uid', auth.isAdminLoggedIn, noticeController.delete)
@@ -65,7 +71,7 @@ api.post('/parkings', parkingController.create)
 api.get('/parkings', parkingController.list)
 api.get('/parkings/:uid', parkingController.read)
 api.put('/parkings/:uid', parkingController.update)
-api.delete('/parkings/:uid',parkingController.delete)
+api.delete('/parkings/:uid', parkingController.delete)
 api.post('/parkings/bulkDelete', parkingController.bulkDelete)//복수삭제
 api.get('/userParkings', parkingController.userList)
 /**
@@ -82,23 +88,69 @@ api.post('/rates/bulkDelete', rateController.bulkDelete)//복수삭제
 /**
  * 리뷰 템플릿 관리
  */
-api.post('/reviewTemplates', auth.isAdminLoggedIn,reviewTemplateController.create)
+api.post('/reviewTemplates', auth.isAdminLoggedIn, reviewTemplateController.create)
 api.get('/reviewTemplates', reviewTemplateController.list)
 api.get('/reviewTemplates/:uid', reviewTemplateController.read)
-api.put('/reviewTemplates/:uid', auth.isAdminLoggedIn,reviewTemplateController.update)
-api.delete('/reviewTemplates/:uid',auth.isAdminLoggedIn, reviewTemplateController.delete)
-api.post('/reviewTemplates/bulkDelete', auth.isAdminLoggedIn,reviewTemplateController.bulkDelete)
+api.put('/reviewTemplates/:uid', auth.isAdminLoggedIn, reviewTemplateController.update)
+api.delete('/reviewTemplates/:uid', auth.isAdminLoggedIn, reviewTemplateController.delete)
+api.post('/reviewTemplates/bulkDelete', auth.isAdminLoggedIn, reviewTemplateController.bulkDelete)
 
 /**
  * 포인트 상품 관리
  */
-api.post('/pointProducts', auth.isAdminLoggedIn,pointProductController.create)
+api.post('/pointProducts', auth.isAdminLoggedIn, pointProductController.create)
 api.get('/pointProducts', pointProductController.list)
 api.get('/pointProducts/:uid', pointProductController.read)
-api.put('/pointProducts/:uid', auth.isAdminLoggedIn,pointProductController.update)
-api.post('/pointProducts/addPoint', auth.isAdminLoggedIn,pointProductController.addPoint)
-api.delete('/pointProducts/:uid',auth.isAdminLoggedIn, pointProductController.delete)
-api.post('/pointProducts/bulkDelete', auth.isAdminLoggedIn,pointProductController.bulkDelete)
+api.put('/pointProducts/:uid', auth.isAdminLoggedIn, pointProductController.update)
+api.post('/pointProducts/addPoint', auth.isAdminLoggedIn, pointProductController.addPoint)
+api.delete('/pointProducts/:uid', auth.isAdminLoggedIn, pointProductController.delete)
+api.post('/pointProducts/bulkDelete', auth.isAdminLoggedIn, pointProductController.bulkDelete)
+
+/**
+ * 유저 관련 컨트롤러
+ */
+api.post('/users', userController.create)
+api.get('/users', userController.list)
+api.get('/users/:uid', userController.read)
+api.put('/users/:uid', userController.update)
+api.delete('/users/:uid', userController.delete)
+api.post('/users/bulkDelete', userController.bulkDelete)
+//유저 정보 조회
+api.get('/userCars/:userUid', carController.read)
+api.get('/userCards/:userUid', cardController.read)
+api.get('/userFavorites/:userUid', favoriteController.read)
+api.get('/userPointLogs/:userUid', pointLogController.read)
+api.get('/userPayLogs/:userUid', payLogController.read)
+
+// api.post('/cars', carController.create)
+// api.get('/cars', carController.list)
+//api.get('/cars/:uid', carController.read)
+// api.put('/cars/:uid', carController.update)
+// api.delete('/cars/:uid', carController.delete)
+
+// api.post('/cards', cardController.create)
+// api.get('/cards', cardController.list)
+//api.get('/cards/:uid', cardController.read)
+// api.put('/cards/:uid', cardController.update)
+// api.delete('/cards/:uid', cardController.delete)
+
+// api.post('/favorites', favoriteController.create)
+// api.get('/favorites', favoriteController.list)
+//api.get('/favorites/:uid', favoriteController.read)
+// api.put('/favorites/:uid', favoriteController.update)
+// api.delete('/favorites/:uid', favoriteController.delete)
+
+// api.post('/points', pointController.create)
+// api.get('/points', pointController.list)
+//api.get('/points/:uid', pointController.read)
+// api.put('/points/:uid', pointController.update)
+// api.delete('/points/:uid', pointController.delete)
+
+// api.post('/payLogs', payLogController.create)
+// api.get('/payLogs', payLogController.list)
+//api.get('/payLogs/:uid', payLogController.read)
+// api.put('/payLogs/:uid', payLogController.update)
+// api.delete('/payLogs/:uid', payLogController.delete)
 
 /**
  * 공통 컨트롤러

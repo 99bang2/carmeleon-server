@@ -91,3 +91,13 @@ exports.checkUniqueId = async function (ctx) {
 	let result = !user
 	response.send(ctx, result)
 }
+
+exports.bulkDelete = async function (ctx) {
+	let _ = ctx.request.body
+	let deleteResult = await models.user.destroy({
+		where: {
+			uid: _.uids
+		}
+	})
+	response.send(ctx, deleteResult)
+}

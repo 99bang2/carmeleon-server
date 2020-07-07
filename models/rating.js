@@ -71,6 +71,15 @@ module.exports = (sequelize, DataTypes) => {
 		}
 		return data
 	}
+	rating.getByUserUid = async function (ctx, uid) {
+		let data = await rating.findAll({
+			where: {userUid:uid}
+		})
+		if (!data) {
+			response.badRequest(ctx)
+		}
+		return data
+	}
 	rating.search = async (params, models) => {
 		let where = {}
 		let order = [['createdAt', 'DESC']]

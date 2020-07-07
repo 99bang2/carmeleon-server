@@ -51,3 +51,9 @@ exports.siteList = async function (ctx) {
 	let rate = await models.rating.getBySiteUid(ctx, siteUid)
 	response.send(ctx, rate)
 }
+
+exports.userList = async function (ctx) {
+	let {userUid} = ctx.params
+	let rating = await models.rating.getByUserUid(ctx, userUid)
+	response.send(ctx, rating)
+}
