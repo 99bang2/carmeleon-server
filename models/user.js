@@ -63,10 +63,10 @@ module.exports = (sequelize, DataTypes) => {
 
 	user.applyScope = function (models) {
 		user.addScope('defaultScope', {
-			attributes: { exclude: ['password'] },
+			attributes: { exclude: [] },
 		})
 		user.addScope('login', {
-			attributes: ['uid', 'id', 'password', 'name', 'grade', 'freePassTicketCount', 'passTicketCount'],
+			attributes: ['uid', 'id'],
 		})
 	}
 
