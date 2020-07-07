@@ -36,12 +36,7 @@ module.exports = (sequelize, DataTypes) => {
 		timestamps: true,
 		underscored: true,
 		paranoid: true,
-		hooks: {
-			afterCreate: async function (rating, options) {
-				let address = 'http://'+ip.address()+':'+config.listenPort+'/api/avgRate'
-				await axios.post(address, {siteUid: rating.siteUid})
-			},
-		}
+		hooks: {}
 	})
 	rating.associate = function (models) {
 		rating.belongsTo(models.user),

@@ -1,9 +1,11 @@
 const models = require('../models')
 const response = require('../libs/response')
+const commonController = require('../controllers/common')
 
 exports.create = async function (ctx) {
 	let _ = ctx.request.body
 	let rate = await models.rating.create(_)
+	await commonController.avgRate(ctx, _.siteUid)
 	response.send(ctx, rate)
 }
 
@@ -25,6 +27,7 @@ exports.update = async function (ctx) {
 	let _ = ctx.request.body
 	Object.assign(rate, _)
 	await rate.save()
+	await commonController.avgRate(ctx, _.siteUid)
 	response.send(ctx, rate)
 }
 

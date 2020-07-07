@@ -70,10 +70,6 @@ module.exports = (sequelize, DataTypes) => {
 		})
 	}
 
-	user.prototype.verifyPassword = function (password) {
-		return bcrypt.compareAsync(password, this.password)
-	}
-
 	user.getByUid = async function (ctx, uid) {
 		let data = await user.findByPk(uid)
 		if (!data) {

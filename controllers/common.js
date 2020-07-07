@@ -41,9 +41,8 @@ exports.searchLocal = async function (ctx){
 	response.send(ctx, res.data)
 }
 
-exports.avgRate = async function (ctx){
-	let _ = ctx.request.body
-	let res = await models.rating.avgRate(_.siteUid)
+exports.avgRate = async function (ctx, siteUid){
+	let res = await models.rating.avgRate(siteUid)
 	let ratingAvg = JSON.parse(JSON.stringify(res))[0].ratingAvg
 	if(!ratingAvg){
 		ratingAvg = 0
@@ -51,11 +50,8 @@ exports.avgRate = async function (ctx){
 	let data = {
 		rate: ratingAvg,
 	}
-	let parkingSite = await models.parkingSite.getByUid(ctx, _.siteUid)
+	let parkingSite = await models.parkingSite.getByUid(ctx, siteUid)
 	Object.assign(parkingSite, data)
 	await parkingSite.save()
-	response.send(ctx)
-}
-exports.codes = function (ctx){
-	response.send(ctx, codes)
+	return true
 }
