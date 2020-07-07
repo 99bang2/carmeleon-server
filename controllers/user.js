@@ -1,5 +1,9 @@
 const models = require('../models')
 const response = require('../libs/response')
+const jwt = require('jsonwebtoken')
+const env = process.env.NODE_ENV || 'development'
+const config = require('../configs/config.json')[env]
+const secret = config.secretKey
 
 exports.create = async function (ctx) {
     let _ = ctx.request.body
