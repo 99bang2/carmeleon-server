@@ -51,7 +51,10 @@ exports.login = async function (ctx) {
 			id: id,
 			snsType: snsType,
 			name: _.user.name,
-			token: _.user.token
+			nickname: _.user.nickname,
+			email: _.user.email,
+			phone: _.user.phone,
+			profileImage: _.user.profileImage,
 		})
 	}
 	const accessToken = jwt.sign(
