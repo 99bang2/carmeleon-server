@@ -18,7 +18,10 @@ const parkingSite = [...Array(100)].map((parkingSite) => (
 			max: 127.122220,
 			precision: 0.000001
 		}),
-		parking_lot: faker.random.number(),
+		parking_lot: faker.random.number({
+			min:20,
+			max:50
+		}),
 		tel: faker.phone.phoneNumber(),
 		phone: faker.phone.phoneNumber(),
 		email: faker.internet.email(),
@@ -29,14 +32,17 @@ const parkingSite = [...Array(100)].map((parkingSite) => (
 		product_tag: '\["timePass", "dayPass"\]',
 		option_tag: '\["cityOfSeoul", "pregnant"\]',
 		car_tag: '\["bus"\]',
-		price: faker.random.number(),
+		price: faker.random.number({
+			min:1,
+			max:9
+		})*1000,
 		address: faker.address.state(),
 		info: faker.random.words(),
 		price_info: faker.random.number(),
 		rate: faker.random.number({
 			'min': 1,
-			'max': 5
-		})*2,
+			'max': 10
+		}),
 		picture: '\["'+faker.image.avatar()+'","'+faker.image.avatar()+'"\]',
 		created_at: new Date().toISOString().replace(/T/, ' ').replace(/\..+/, ''),
 		updated_at: new Date().toISOString().replace(/T/, ' ').replace(/\..+/, '')
@@ -55,5 +61,6 @@ module.exports = {
       Example:
       return queryInterface.bulkDelete('People', null, {});
     */
+	  return queryInterface.bulkDelete('parking_sites', null, {});
   }
 };
