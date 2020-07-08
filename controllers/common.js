@@ -55,3 +55,8 @@ exports.avgRate = async function (ctx, siteUid){
 	await parkingSite.save()
 	return true
 }
+
+exports.codes = function (ctx){
+	response.send(ctx, codes)
+}
+
