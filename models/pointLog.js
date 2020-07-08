@@ -45,10 +45,16 @@ module.exports = (sequelize, DataTypes) => {
 		let data = await pointLog.findAll({
 			where: {userUid:uid}
 		})
-		if (!data) {
+		let sum = await pointLog.sum('point', {
+			where: {userUid:uid}
+		})
+		if (!data && !sum) {
 			response.badRequest(ctx)
 		}
-		return data
+		return {
+			row: data,
+			sum: sum
+		}
 	}
 	pointLog.search = async (params) => {
         let where = {}

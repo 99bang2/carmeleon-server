@@ -37,6 +37,6 @@ exports.delete = async function (ctx) {
 
 exports.userList = async function (ctx) {
 	let {userUid} = ctx.params
-	let payLog = await models.payLog.getByUserUid(ctx, userUid)
+	let payLog = await models.payLog.getByUserUid(ctx, userUid, models)
 	response.send(ctx, payLog)
 }
