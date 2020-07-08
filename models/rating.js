@@ -66,8 +66,11 @@ module.exports = (sequelize, DataTypes) => {
 		}
 		return data
 	}
-	rating.getByUserUid = async function (ctx, uid) {
+	rating.getByUserUid = async function (ctx, uid, models) {
 		let data = await rating.findAll({
+			include: [{
+				model: models.parkingSite
+			}],
 			where: {userUid:uid}
 		})
 		if (!data) {
