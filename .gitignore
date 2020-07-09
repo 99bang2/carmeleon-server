@@ -88,3 +88,4 @@ package-lock.json
 
 # uploadsFolder
 uploads/
+configs/tutorial.json
