@@ -21,12 +21,7 @@ exports.getTutorial = async (ctx) => {
 exports.setTutorial = async function(ctx) {
 	let _ = ctx.request.body
 	//튜토리얼 JSON 파일 생성
-	let tutorialImageFile = ctx.request.files.stepImage
-	let tutorialArray = []
-	for(let i=0; i<tutorialImageFile.length; i++){
-		tutorialArray.push(imageUpload.imageUpload(ctx, tutorialImageFile[i], dir, folder, 'tutorial_'))
-	}
-	let tutorial = await jsonfile.writeFileSync(tutorialFiles, tutorialArray, {
+	let tutorial = await jsonfile.writeFileSync(tutorialFiles, _.stepImage, {
 		spaces: 2,
 		EOL: '\r\n'
 	})
