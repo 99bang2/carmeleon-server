@@ -16,6 +16,7 @@ const cardController = require('../controllers/card')
 const favoriteController = require('../controllers/favorite')
 const pointLogController = require('../controllers/point')
 const payLogController = require('../controllers/payLog')
+const tutorialController = require('../controllers/tutorial')
 
 /*
 * Carmelon Sever
@@ -122,6 +123,14 @@ api.get('/userFavorites/:userUid', favoriteController.userList)
 api.get('/userPointLogs/:userUid', pointLogController.userList)
 api.get('/userPayLogs/:userUid', payLogController.userList)
 api.get('/userRatings/:userUid', rateController.userList)
+
+/**
+ * 튜토리얼
+ */
+api.post('/tutorials', tutorialController.setTutorial)
+api.get('/tutorials', tutorialController.getTutorial)
+//api.put('/tutorials/:uid', tutorialController.setTutorial)
+
 
 // api.post('/cars', carController.create)
 // api.get('/cars', carController.list)
