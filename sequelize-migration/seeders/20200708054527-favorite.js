@@ -9,7 +9,7 @@ const favorite = [...Array(50)].map((favorite) => (
 		}),
 		user_uid: faker.random.number({
 			min:1,
-			max:100
+			max:20
 		}),
 		nickname: faker.name.title(),
 		created_at: new Date().toISOString().replace(/T/, ' ').replace(/\..+/, ''),
@@ -40,6 +40,6 @@ module.exports = {
       Example:
       return queryInterface.bulkDelete('People', null, {});
     */
-	  return queryInterface.bulkDelete('favorites', null, {});
+	  return queryInterface.bulkDelete('favorites', null, { truncate: { cascade: true }});
   }
 };

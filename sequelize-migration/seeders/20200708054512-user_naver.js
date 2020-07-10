@@ -1,7 +1,7 @@
 'use strict';
 const faker = require('faker')
 faker.locale = 'ko'
-const users_naver = [...Array(50)].map((users_naver) => (
+const users_naver = [...Array(10)].map((users_naver) => (
 	{
 		id: 'naver-'+faker.random.number(),
 		name: faker.name.lastName()+faker.name.firstName(),
@@ -42,6 +42,6 @@ module.exports = {
       Example:
       return queryInterface.bulkDelete('People', null, {});
     */
-	  return queryInterface.bulkDelete('users', null, {});
+	  //return queryInterface.bulkDelete('users', null, { truncate: { cascade: true }});
   }
 };

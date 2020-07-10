@@ -61,6 +61,7 @@ module.exports = {
       Example:
       return queryInterface.bulkDelete('People', null, {});
     */
-	  return queryInterface.bulkDelete('parking_sites', null, {});
+	  //return queryInterface.bulkDelete('parking_sites', null, { where:uid<100});
   }
 };
+

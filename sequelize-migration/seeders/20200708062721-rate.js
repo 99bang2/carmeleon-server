@@ -1,7 +1,7 @@
 'use strict';
 const faker = require('faker');
 faker.locale = 'ko'
-const rate = [...Array(100)].map((rate) => (
+const rate = [...Array(1000)].map((rate) => (
 	{
 		site_uid : faker.random.number({
 			'min': 1,
@@ -9,7 +9,7 @@ const rate = [...Array(100)].map((rate) => (
 		}),
 		user_uid: faker.random.number({
 			'min': 1,
-			'max': 100
+			'max': 20
 		}),
 		rate: faker.random.number({
 			'min': 1,
@@ -33,6 +33,6 @@ module.exports = {
 		  Example:
 		  return queryInterface.bulkDelete('People', null, {});
 		*/
-		return queryInterface.bulkDelete('ratings', null, {});
+		return queryInterface.bulkDelete('ratings', null, { truncate: { cascade: true }});
 	}
 };

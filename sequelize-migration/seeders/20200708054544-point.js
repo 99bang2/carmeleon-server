@@ -1,11 +1,11 @@
 'use strict';
 const faker = require('faker')
 faker.locale = 'ko'
-const point = [...Array(100)].map((point) => (
+const point = [...Array(1000)].map((point) => (
 	{
 		user_uid: faker.random.number({
 			min:1,
-			max:100
+			max:20
 		}),
 		point: faker.random.number({
 			min:-9,
@@ -39,6 +39,6 @@ module.exports = {
       Example:
       return queryInterface.bulkDelete('People', null, {});
     */
-	  return queryInterface.bulkDelete('point_logs', null, {});
+	  return queryInterface.bulkDelete('point_logs', null, { truncate: { cascade: true }});
   }
 };
