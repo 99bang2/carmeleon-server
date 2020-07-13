@@ -21,7 +21,7 @@ exports.getTutorial = async (ctx) => {
 exports.setTutorial = async function(ctx) {
 	let _ = ctx.request.body
 	//튜토리얼 JSON 파일 생성
-	let tutorial = await jsonfile.writeFileSync(tutorialFiles, _.stepImage, {
+	let tutorial = await jsonfile.writeFileSync(tutorialFiles, _.stepImages, {
 		spaces: 2,
 		EOL: '\r\n'
 	})

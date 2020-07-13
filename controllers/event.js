@@ -69,3 +69,10 @@ exports.bulkDelete = async function (ctx) {
 	})
 	response.send(ctx, deleteResult)
 }
+
+exports.userList = async function (ctx) {
+	let _ = ctx.request.query
+	let notice = await models.event.userSearch(_, models)
+	response.send(ctx, notice)
+}
+

@@ -65,6 +65,7 @@ api.get('/events/:uid', eventController.read)
 api.put('/events/:uid', auth.isAdminLoggedIn, eventController.update)
 api.delete('/events/:uid', auth.isAdminLoggedIn, eventController.delete)
 api.post('/events/bulkDelete', auth.isAdminLoggedIn, eventController.bulkDelete) //복수삭제
+api.get('/userEvents', eventController.userList)
 /**
  * 주차장 관리
  */
