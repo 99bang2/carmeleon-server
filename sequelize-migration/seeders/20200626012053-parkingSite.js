@@ -28,9 +28,9 @@ const parkingSite = [...Array(100)].map((parkingSite) => (
 		manager: faker.name.lastName()+faker.name.firstName(),
 		is_active: 1,
 		payment_tag: '\["card", "cash"\]',
-		brand_tag: '\["hiParking,cityOfSeoul"\]',
+		brand_tag: '\["hiParking", "cityOfSeoul"\]',
 		product_tag: '\["timePass", "dayPass"\]',
-		option_tag: '\["cityOfSeoul", "pregnant"\]',
+		option_tag: '\["elderly", "pregnant"\]',
 		car_tag: '\["bus"\]',
 		price: faker.random.number({
 			min:1,

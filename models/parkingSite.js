@@ -21,7 +21,7 @@ module.exports = (sequelize, DataTypes) => {
 			type: DataTypes.VIRTUAL,
 			get: function () {
 				if (this.getDataValue('siteType') !== null) {
-					return codes.site[this.getDataValue('siteType')].text
+					return codes.site[this.getDataValue('siteType')]
 				}
 			}
 		},
@@ -57,16 +57,9 @@ module.exports = (sequelize, DataTypes) => {
 			type: DataTypes.VIRTUAL,
 			get: function () {
 				if (this.getDataValue('paymentTag') !== null) {
-					let dataLength = this.getDataValue('paymentTag').length
-					let dataArray = []
-					for(let i = 0; i < dataLength; i++){
-						switch (this.getDataValue('paymentTag')[i]) {
-							case 'card' : dataArray.push(codes.paymentTag[0].name); break;
-							case 'cash' : dataArray.push(codes.paymentTag[1].name); break;
-							case 'inApp' : dataArray.push(codes.paymentTag[2].name); break;
-						}
-					}
-					return dataArray
+					return this.getDataValue('paymentTag').map(function (obj) {
+						return codes.paymentTag[obj]
+					})
 				}
 			}
 		},
@@ -77,15 +70,9 @@ module.exports = (sequelize, DataTypes) => {
 			type: DataTypes.VIRTUAL,
 			get: function () {
 				if (this.getDataValue('brandTag') !== null) {
-					let dataLength = this.getDataValue('brandTag').length
-					let dataArray = []
-					for(let i = 0; i < dataLength; i++){
-						switch (this.getDataValue('brandTag')[i]) {
-							case 'hiParking' : dataArray.push(codes.brandTag[0].name); break;
-							case 'cityOfSeoul' : dataArray.push(codes.brandTag[1].name); break;
-						}
-					}
-					return dataArray
+					return this.getDataValue('brandTag').map(function (obj) {
+						return codes.brandTag[obj]
+					})
 				}
 			}
 		},
@@ -96,16 +83,9 @@ module.exports = (sequelize, DataTypes) => {
 			type: DataTypes.VIRTUAL,
 			get: function () {
 				if (this.getDataValue('productTag') !== null) {
-					let dataLength = this.getDataValue('productTag').length
-					let dataArray = []
-					for(let i = 0; i < dataLength; i++){
-						switch (this.getDataValue('productTag')[i]) {
-							case 'timePass' : dataArray.push(codes.productTag[0].name); break;
-							case 'dayPass' : dataArray.push(codes.productTag[1].name); break;
-							case 'monthPass' : dataArray.push(codes.productTag[2].name); break;
-						}
-					}
-					return dataArray
+					return this.getDataValue('productTag').map(function (obj) {
+						return codes.productTag[obj]
+					})
 				}
 			}
 		},
@@ -116,20 +96,9 @@ module.exports = (sequelize, DataTypes) => {
 			type: DataTypes.VIRTUAL,
 			get: function () {
 				if (this.getDataValue('optionTag') !== null) {
-					let dataLength = this.getDataValue('optionTag').length
-					let dataArray = []
-					for(let i = 0; i < dataLength; i++){
-						switch (this.getDataValue('optionTag')[i]) {
-							case 'cityCar' : dataArray.push(codes.optionTag[0].name); break;
-							case 'cityOfSeoul' : dataArray.push(codes.optionTag[1].name); break;
-							case 'disabled' : dataArray.push(codes.optionTag[2].name); break;
-							case 'pregnant' : dataArray.push(codes.optionTag[3].name); break;
-							case 'female' : dataArray.push(codes.optionTag[4].name); break;
-							case 'elecCharge' : dataArray.push(codes.optionTag[5].name); break;
-							case 'mechanical' : dataArray.push(codes.optionTag[6].name); break;
-						}
-					}
-					return dataArray
+					return this.getDataValue('optionTag').map(function (obj) {
+						return codes.optionTag[obj]
+					})
 				}
 			}
 		},
@@ -140,15 +109,9 @@ module.exports = (sequelize, DataTypes) => {
 			type: DataTypes.VIRTUAL,
 			get: function () {
 				if (this.getDataValue('carTag') !== null) {
-					let dataLength = this.getDataValue('carTag').length
-					let dataArray = []
-					for(let i = 0; i < dataLength; i++){
-						switch (this.getDataValue('carTag')[i]) {
-							case 'bus' : dataArray.push(codes.carTag[0].name); break;
-							case 'freight' : dataArray.push(codes.carTag[1].name); break;
-						}
-					}
-					return dataArray
+					return this.getDataValue('carTag').map(function (obj) {
+						return codes.carTag[obj]
+					})
 				}
 			}
 		},

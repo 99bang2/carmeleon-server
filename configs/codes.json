@@ -1,111 +1,46 @@
 {
-	"site": [
-		{
-			"id": 0,
-			"text": "하이파킹"
-		},
-		{
-			"id": 1,
-			"text": "제휴"
-		},
-		{
-			"id": 2,
-			"text": "일반"
-		}
-	],
-	"paymentTag": [
-		{
-			"id": "11",
-			"name": "카드결제",
-			"value": "card"
-		},
-		{
-			"id": "12",
-			"name": "현금결제",
-			"value": "cash"
-		},
-		{
-			"id": "13",
-			"name": "인앱결제",
-			"value": "inApp"
-		}
-	],
-	"brandTag": [
-		{
-			"id": "21",
-			"name": "하이파킹",
-			"value": "hiParking"
-		},
-		{
-			"id": "22",
-			"name": "서울시",
-			"value": "cityOfSeoul"
-		}
-	],
-	"productTag": [
-		{
-			"id": "31",
-			"name": "시간권",
-			"value": "timePass"
-		},
-		{
-			"id": "32",
-			"name": "당일권",
-			"value": "dayPass"
-		},
-		{
-			"id": "33",
-			"name": "월정기권",
-			"value": "monthPass"
-		}
-	],
-	"optionTag": [
-		{
-			"id": "41",
-			"name": "경차",
-			"value": "cityCar"
-		},
-		{
-			"id": "42",
-			"name": "노약자",
-			"value": "cityOfSeoul"
-		},
-		{
-			"id": "43",
-			"name": "장애인",
-			"value": "disabled"
-		},
-		{
-			"id": "44",
-			"name": "임산부",
-			"value": "pregnant"
-		},
-		{
-			"id": "45",
-			"name": "여성",
-			"value": "female"
-		},
-		{
-			"id": "46",
-			"name": "전기차충전",
-			"value": "elecCharge"
-		},
-		{
-			"id": "47",
-			"name": "기계식",
-			"value": "mechanical"
-		}
-	],
-	"carTag": [
-		{
-			"id": "51",
-			"name": "버스",
-			"value": "bus"
-		},
-		{
-			"id": "52",
-			"name": "화물",
-			"value": "freight"
-		}
-	]
+	"site": {
+		"0": "하이파킹",
+		"1": "제휴",
+		"2": "일반"
+	},
+	"paymentTag": {
+		"card": "카드결제",
+		"cash": "현금결제",
+		"inApp": "인앱결제"
+	},
+	"brandTag": {
+		"hiParking": "하이파킹",
+		"cityOfSeoul": "서울시"
+	},
+	"productTag": {
+		"timePass": "시간권",
+		"dayPass": "당일권",
+		"monthPass": "월정기권"
+	},
+	"optionTag": {
+		"cityCar": "경차",
+		"elderly": "노약자",
+		"disabled": "장애인",
+		"pregnant": "임산부",
+		"female": "여성",
+		"elecCharge": "전기차충전",
+		"mechanical": "기계식"
+	},
+	"carTag": {
+		"bus": "버스",
+		"freight": "화물"
+	},
+	"industryOpts": {
+		"carWash": "세차장",
+		"gasStation": "주유소",
+		"carCenter": "정비업소"
+	},
+	"carWashTypeOpts": {
+		"handWash": "손세차",
+		"selfWash": "셀프세차",
+		"autoWash": "자동세차",
+		"machineWash": "기계식세차",
+		"steamedWash": "스팀세차"
+	}
 }
