@@ -7,7 +7,11 @@ const accountController = require('../controllers/account')
 const userController = require('../controllers/user')
 const noticeController = require('../controllers/notice')
 const eventController = require('../controllers/event')
+
 const parkingController = require('../controllers/parkingSite')
+const carWashController = require('../controllers/carWash')
+const gasStationController = require('../controllers/gasStation')
+
 const rateController = require('../controllers/rate')
 const reviewTemplateController = require('../controllers/reviewTemplate')
 const pointProductController = require('../controllers/pointProduct')
@@ -76,6 +80,32 @@ api.put('/parkings/:uid', parkingController.update)
 api.delete('/parkings/:uid', parkingController.delete)
 api.post('/parkings/bulkDelete', parkingController.bulkDelete)//복수삭제
 api.get('/userParkings', parkingController.userList)
+
+/**
+ * 세차장 관리
+ */
+api.post('/carWashes', carWashController.create)
+api.get('/carWashes', carWashController.list)
+api.get('/carWashes/:uid', carWashController.read)
+api.put('/carWashes/:uid', carWashController.update)
+api.delete('/carWashes/:uid', carWashController.delete)
+api.post('/carWashes/bulkDelete', carWashController.bulkDelete)//복수삭제
+api.get('/userCarWashes', carWashController.userList)
+/**
+ * 주유소 관리
+ */
+api.post('/gasStations', gasStationController.create)
+api.get('/gasStations', gasStationController.list)
+api.get('/gasStations/:uid', gasStationController.read)
+api.put('/gasStations/:uid', gasStationController.update)
+api.delete('/gasStations/:uid', gasStationController.delete)
+api.post('/gasStations/bulkDelete', gasStationController.bulkDelete)//복수삭제
+api.get('/userGasStation', gasStationController.userList)
+
+
+
+
+
 /**
  * 리뷰 관리
  */
