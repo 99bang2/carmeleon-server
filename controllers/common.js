@@ -20,7 +20,7 @@ exports.fileUpload = async function (ctx){
 
 exports.searchList = async function (ctx){
 	let _ = ctx.request.body
-	let res = await axios.get('https://openapi.naver.com/v1/search/local.json?query='+encodeURI(_.keyword), {
+	let res = await axios.get('https://openapi.naver.com/v1/search/local.json?query='+encodeURI(_.keyword)+'&display='+_.count, {
 		headers: {
 			'X-Naver-Client-Id': 'L0ZTwcsuymagjibioLdb',
 			'X-Naver-Client-Secret': 'ThBIVBiils'
