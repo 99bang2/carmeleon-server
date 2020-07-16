@@ -1,5 +1,6 @@
 'use strict'
 const response = require('../libs/response')
+const codes = require('../configs/codes.json')
 
 module.exports = (sequelize, DataTypes) => {
 	const gasStation = sequelize.define('gasStation', {
@@ -19,8 +20,24 @@ module.exports = (sequelize, DataTypes) => {
 		brandCode: {
 			type: DataTypes.STRING
 		},
+		brandCodeName: {
+			type: DataTypes.VIRTUAL,
+			get: function () {
+				if (this.getDataValue('brandCode') !== null) {
+					return codes.brandCodeOpts[this.getDataValue('brandCode')]
+				}
+			}
+		},
 		gasStationType: {
 			type: DataTypes.STRING,
+		},
+		gasStationTypeName: {
+			type: DataTypes.VIRTUAL,
+			get: function () {
+				if (this.getDataValue('gasStationType') !== null) {
+					return codes.gasStationTypeOpts[this.getDataValue('gasStationType')]
+				}
+			}
 		},
 		address: {
 			type: DataTypes.STRING
