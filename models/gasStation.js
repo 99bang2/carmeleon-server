@@ -64,7 +64,21 @@ module.exports = (sequelize, DataTypes) => {
 		underscored: true,
 	})
 	gasStation.associate = function (models) {
-		gasStation.hasMany(models.rating, {foreignKey: 'site_uid'})
+		//gasStation.hasMany(models.rating, {foreignKey: 'site_uid'})
+		gasStation.hasMany(models.rating, {
+			foreignKey: 'targetUid',
+			constraints: false,
+			scope: {
+				targetType: 1
+			}
+		})
+		gasStation.hasMany(models.favorite, {
+			foreignKey: 'targetUid',
+			constraints: false,
+			scope: {
+				targetType: 1
+			}
+		})
 	}
 	gasStation.getByUid = async function (ctx, uid) {
 		let data = await gasStation.findByPk(uid)

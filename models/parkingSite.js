@@ -139,7 +139,21 @@ module.exports = (sequelize, DataTypes) => {
 		underscored: true,
 	})
 	parkingSite.associate = function (models) {
-		parkingSite.hasMany(models.rating, {foreignKey: 'site_uid'})
+		//parkingSite.hasMany(models.rating, {foreignKey: 'site_uid'})
+		parkingSite.hasMany(models.rating, {
+			foreignKey: 'targetUid',
+			constraints: false,
+			scope: {
+				targetType: 0
+			}
+		})
+		parkingSite.hasMany(models.favorite, {
+			foreignKey: 'targetUid',
+			constraints: false,
+			scope: {
+				targetType: 0
+			}
+		})
 	}
 	parkingSite.getByUid = async function (ctx, uid) {
 		let data = await parkingSite.findByPk(uid)

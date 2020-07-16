@@ -64,7 +64,21 @@ module.exports = (sequelize, DataTypes) => {
 		underscored: true,
 	})
 	carWash.associate = function (models) {
-		carWash.hasMany(models.rating, {foreignKey: 'site_uid'})
+		//carWash.hasMany(models.rating, {foreignKey: 'site_uid'})
+		carWash.hasMany(models.rating, {
+			foreignKey: 'targetUid',
+			constraints: false,
+			scope: {
+				targetType: 2
+			}
+		})
+		carWash.hasMany(models.favorite, {
+			foreignKey: 'targetUid',
+			constraints: false,
+			scope: {
+				targetType: 2
+			}
+		})
 	}
 	carWash.getByUid = async function (ctx, uid) {
 		let data = await carWash.findByPk(uid)
@@ -102,6 +116,7 @@ module.exports = (sequelize, DataTypes) => {
 		if (params.carWashType) {
 			where.site_type = params.carWashType
 		}
+		where.is_active = 1
 		let result = await carWash.findAll({
 			attributes: {
 				include: [

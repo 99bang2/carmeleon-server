@@ -13,7 +13,11 @@ module.exports = (sequelize, DataTypes) => {
 			autoIncrement: true,
 			primaryKey: true,
 		},
-		siteUid: {
+		targetType:{
+			type: DataTypes.INTEGER,
+			allowNull: false
+		},
+		targetUid: {
 			type: DataTypes.INTEGER,
 			allowNull: false
 		},
@@ -40,7 +44,22 @@ module.exports = (sequelize, DataTypes) => {
 	})
 	rating.associate = function (models) {
 		rating.belongsTo(models.user),
-		rating.belongsTo(models.parkingSite, {foreignKey: 'site_uid', targetKey: 'uid'})
+		//rating.belongsTo(models.parkingSite, {foreignKey: 'site_uid', targetKey: 'uid'})
+		rating.belongsTo(models.parkingSite, {
+			foreignKey: 'targetUid',
+			constraints: false,
+			as: 'parkingSite'
+		})
+		rating.belongsTo(models.gasStation, {
+			foreignKey: 'targetUid',
+			constraints: false,
+			as: 'gasStation'
+		})
+		rating.belongsTo(models.carWash, {
+			foreignKey: 'targetUid',
+			constraints: false,
+			as: 'carWash'
+		})
 	}
 	rating.getByUid = async function (ctx, uid, models) {
 		let data = await rate.findByPk(uid, {

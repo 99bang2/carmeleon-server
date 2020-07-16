@@ -8,8 +8,13 @@ module.exports = (sequelize, DataTypes) => {
 			autoIncrement: true,
 			primaryKey: true,
 		},
-		siteUid: {
-			type: DataTypes.INTEGER
+		targetType:{
+			type: DataTypes.INTEGER,
+			allowNull: false
+		},
+		targetUid: {
+			type: DataTypes.INTEGER,
+			allowNull: false
 		},
 		userUid: {
 			type: DataTypes.INTEGER
@@ -24,7 +29,22 @@ module.exports = (sequelize, DataTypes) => {
 	})
 	favorite.associate = function (models) {
 		favorite.belongsTo(models.user)
-		favorite.belongsTo(models.parkingSite, {foreignKey: 'site_uid', targetKey: 'uid'})
+		//favorite.belongsTo(models.parkingSite, {foreignKey: 'site_uid', targetKey: 'uid'})
+		favorite.belongsTo(models.parkingSite, {
+			foreignKey: 'targetUid',
+			constraints: false,
+			as: 'parkingSite'
+		})
+		favorite.belongsTo(models.gasStation, {
+			foreignKey: 'targetUid',
+			constraints: false,
+			as: 'gasStation'
+		})
+		favorite.belongsTo(models.carWash, {
+			foreignKey: 'targetUid',
+			constraints: false,
+			as: 'carWash'
+		})
 	}
 	favorite.getByUid = async function (ctx, uid) {
 		let data = await favorite.findByPk(uid)
