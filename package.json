@@ -1,7 +1,7 @@
 {
-	"name": "base-server",
+	"name": "carmeleon-server",
 	"version": "0.1.0",
-	"description": "Base Service API Server",
+	"description": "Carmeleon Service API Server",
 	"author": "Rocketlaunch",
 	"private": true,
 	"scripts": {
@@ -26,6 +26,7 @@
 		"koa-static": "^5.0.0",
 		"koa2-cors": "^2.0.6",
 		"moment": "^2.24.0",
+		"multer": "^1.4.2",
 		"mysql2": "^2.1.0",
 		"numeral": "^2.0.6",
 		"redis": "^3.0.2",

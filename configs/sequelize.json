@@ -13,7 +13,7 @@
     "username": "carmeleon",
     "password": "thwlsWkd123",
     "database": "carmeleon-db",
-    "host": "host-db",
+    "host": "carmeleon-db",
     "port": "3306",
     "dialect": "mysql",
     "timezone": "+09:00",
