@@ -3,7 +3,7 @@ const response = require('../libs/response')
 const codes = require('../configs/codes.json')
 
 module.exports = (sequelize, DataTypes) => {
-	const parkingSite = sequelize.define('parkingSite', {
+	const gasStation = sequelize.define('gasStation', {
 		uid: {
 			type: DataTypes.INTEGER,
 			allowNull: false,
@@ -138,32 +138,32 @@ module.exports = (sequelize, DataTypes) => {
 		paranoid: true,
 		underscored: true,
 	})
-	parkingSite.associate = function (models) {
-		//parkingSite.hasMany(models.rating, {foreignKey: 'site_uid'})
-		parkingSite.hasMany(models.rating, {
+	gasStation.associate = function (models) {
+		//gasStation.hasMany(models.rating, {foreignKey: 'site_uid'})
+		gasStation.hasMany(models.rating, {
 			foreignKey: 'targetUid',
 			constraints: false,
 			scope: {
-				targetType: 0
+				targetType: 1
 			}
 		})
-		parkingSite.hasMany(models.favorite, {
+		gasStation.hasMany(models.favorite, {
 			foreignKey: 'targetUid',
 			constraints: false,
 			scope: {
-				targetType: 0
+				targetType: 1
 			}
 		})
 	}
-	parkingSite.getByUid = async function (ctx, uid) {
-		let data = await parkingSite.findByPk(uid)
+	gasStation.getByUid = async function (ctx, uid) {
+		let data = await gasStation.findByPk(uid)
 		if (!data) {
 			response.badRequest(ctx)
 		}
 		return data
 	}
 
-	parkingSite.search = async (params, models) => {
+	gasStation.search = async (params, models) => {
 		let where = {}
 		let order = [['createdAt', 'DESC']]
 
@@ -171,14 +171,14 @@ module.exports = (sequelize, DataTypes) => {
 			where.siteType = params.siteType
 		}
 
-		let result = await parkingSite.findAll({
+		let result = await gasStation.findAll({
 			order: order,
 			where: where
 		})
 		return result
 	}
 
-	parkingSite.userSearch = async (params, models) => {
+	gasStation.userSearch = async (params, models) => {
 		let where = {}
 		let order = [['createdAt', 'DESC']]
 		let longitude = params.lon ? parseFloat(params.lon) : null
@@ -192,11 +192,11 @@ module.exports = (sequelize, DataTypes) => {
 			where.site_type = params.siteType
 		}
 		where.is_active = 1
-		let result = await parkingSite.findAll({
+		let result = await gasStation.findAll({
 			attributes: {
 				include: [
 					[`(6371 * acos(cos(radians(${latitude})) * cos(radians(lat)) * cos(radians(lon) - radians(${longitude})) + sin(radians(${latitude})) * sin(radians(lat))))`, 'distance'],
-					[`(SELECT count(*) FROM ratings WHERE site_uid = parkingSite.uid)`, 'rate_count']]
+					[`(SELECT count(*) FROM ratings WHERE site_uid = gasStation.uid)`, 'rate_count']]
 			},
 			order: order,
 			where: [
@@ -207,5 +207,5 @@ module.exports = (sequelize, DataTypes) => {
 		return result
 	}
 
-	return parkingSite
+	return gasStation
 }

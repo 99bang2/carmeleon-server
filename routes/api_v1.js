@@ -175,4 +175,6 @@ api.post('/searchList', commonController.searchList)
 api.post('/avgRate', commonController.avgRate)
 api.post('/codes', commonController.codes)
 
+api.post('/admin/codes', commonController.codes)
+
 module.exports = api
