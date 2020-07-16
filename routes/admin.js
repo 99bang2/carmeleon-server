@@ -1,0 +1,173 @@
+'use strict'
+const Router = require('koa-router')
+const api = new Router()
+
+const accountController = require('../controllers/account')
+const userController = require('../controllers/user')
+const noticeController = require('../controllers/notice')
+const eventController = require('../controllers/event')
+
+const parkingController = require('../controllers/parkingSite')
+const carWashController = require('../controllers/carWash')
+const gasStationController = require('../controllers/gasStation')
+
+const rateController = require('../controllers/rate')
+const reviewTemplateController = require('../controllers/reviewTemplate')
+const pointProductController = require('../controllers/pointProduct')
+const carController = require('../controllers/car')
+const cardController = require('../controllers/card')
+const favoriteController = require('../controllers/favorite')
+const pointLogController = require('../controllers/point')
+const payLogController = require('../controllers/payLog')
+
+/**
+ * 관리자 관리
+ */
+api.post('/accounts', accountController.create)
+api.get('/accounts', accountController.list)
+api.get('/accounts/:uid', accountController.read)
+api.put('/accounts/:uid', accountController.update)
+api.delete('/accounts/:uid', accountController.delete)
+api.post('/accounts/bulkDelete', accountController.bulkDelete)//복수삭제
+api.put('/accounts/changePassword/:uid', accountController.changePassword)// 비밀번호 변경
+api.get('/account/unique/:id', accountController.checkUniqueId)
+/**
+ * 공지사항 관리
+ */
+api.post('/notices', noticeController.create)
+api.get('/notices', noticeController.list)
+api.get('/notices/:uid', noticeController.read)
+api.put('/notices/:uid', noticeController.update)
+api.delete('/notices/:uid', noticeController.delete)
+api.post('/notices/bulkDelete', noticeController.bulkDelete) //복수삭제
+api.get('/userNotices', noticeController.userList)
+/**
+ * 이벤트 관리
+ */
+api.post('/events', eventController.create)
+//api.post('/events', auth.isEitherLoggedIn, eventController.create)
+api.get('/events', eventController.list)
+api.get('/events/:uid', eventController.read)
+api.put('/events/:uid', eventController.update)
+api.delete('/events/:uid', eventController.delete)
+api.post('/events/bulkDelete', eventController.bulkDelete) //복수삭제
+api.get('/userEvents', eventController.userList)
+/**
+ * 주차장 관리
+ */
+api.post('/parkings', parkingController.create)
+api.get('/parkings', parkingController.list)
+api.get('/parkings/:uid', parkingController.read)
+api.put('/parkings/:uid', parkingController.update)
+api.delete('/parkings/:uid', parkingController.delete)
+api.post('/parkings/bulkDelete', parkingController.bulkDelete)//복수삭제
+api.get('/userParkings', parkingController.userList)
+
+/**
+ * 세차장 관리
+ */
+api.post('/carWashes', carWashController.create)
+api.get('/carWashes', carWashController.list)
+api.get('/carWashes/:uid', carWashController.read)
+api.put('/carWashes/:uid', carWashController.update)
+api.delete('/carWashes/:uid', carWashController.delete)
+api.post('/carWashes/bulkDelete', carWashController.bulkDelete)//복수삭제
+api.get('/userCarWashes', carWashController.userList)
+/**
+ * 주유소 관리
+ */
+api.post('/gasStations', gasStationController.create)
+api.get('/gasStations', gasStationController.list)
+api.get('/gasStations/:uid', gasStationController.read)
+api.put('/gasStations/:uid', gasStationController.update)
+api.delete('/gasStations/:uid', gasStationController.delete)
+api.post('/gasStations/bulkDelete', gasStationController.bulkDelete)//복수삭제
+api.get('/userGasStation', gasStationController.userList)
+
+/**
+ * 리뷰 관리
+ */
+api.post('/rates', rateController.create)
+api.get('/rates', rateController.list)
+api.get('/rates/:uid', rateController.read)
+api.get('/rates/site/:siteUid', rateController.siteList)
+api.put('/rates/:uid', rateController.update)
+api.delete('/rates/:uid', rateController.delete)
+api.post('/rates/bulkDelete', rateController.bulkDelete)//복수삭제
+
+/**
+ * 리뷰 템플릿 관리
+ */
+api.post('/reviewTemplates', reviewTemplateController.create)
+api.get('/reviewTemplates', reviewTemplateController.list)
+api.get('/reviewTemplates/:uid', reviewTemplateController.read)
+api.put('/reviewTemplates/:uid', reviewTemplateController.update)
+api.delete('/reviewTemplates/:uid', reviewTemplateController.delete)
+api.post('/reviewTemplates/bulkDelete', reviewTemplateController.bulkDelete)
+
+/**
+ * 포인트 상품 관리
+ */
+api.post('/pointProducts', pointProductController.create)
+api.get('/pointProducts', pointProductController.list)
+api.get('/pointProducts/:uid', pointProductController.read)
+api.put('/pointProducts/:uid', pointProductController.update)
+api.post('/pointProducts/addPoint', pointProductController.addPoint)
+api.delete('/pointProducts/:uid', pointProductController.delete)
+api.post('/pointProducts/bulkDelete', pointProductController.bulkDelete)
+
+/**
+ * 유저 관련 컨트롤러
+ */
+api.post('/users', userController.create)
+api.get('/users', userController.list)
+api.get('/users/:uid', userController.read)
+api.put('/users/:uid', userController.update)
+api.delete('/users/:uid', userController.delete)
+api.post('/users/bulkDelete', userController.bulkDelete)
+//유저 정보 조회
+api.get('/userCars/:userUid', carController.userList)
+api.get('/userCards/:userUid', cardController.userList)
+api.get('/userFavorites/:userUid', favoriteController.userList)
+api.get('/userPointLogs/:userUid', pointLogController.userList)
+api.get('/userPayLogs/:userUid', payLogController.userList)
+api.get('/userRatings/:userUid', rateController.userList)
+
+/**
+ * 튜토리얼
+ */
+api.post('/tutorials', tutorialController.setTutorial)
+api.get('/tutorials', tutorialController.getTutorial)
+//api.put('/tutorials/:uid', tutorialController.setTutorial)
+
+
+// api.post('/cars', carController.create)
+// api.get('/cars', carController.list)
+//api.get('/cars/:uid', carController.read)
+// api.put('/cars/:uid', carController.update)
+// api.delete('/cars/:uid', carController.delete)
+
+// api.post('/cards', cardController.create)
+// api.get('/cards', cardController.list)
+//api.get('/cards/:uid', cardController.read)
+// api.put('/cards/:uid', cardController.update)
+// api.delete('/cards/:uid', cardController.delete)
+
+// api.post('/favorites', favoriteController.create)
+// api.get('/favorites', favoriteController.list)
+//api.get('/favorites/:uid', favoriteController.read)
+// api.put('/favorites/:uid', favoriteController.update)
+// api.delete('/favorites/:uid', favoriteController.delete)
+
+// api.post('/points', pointController.create)
+// api.get('/points', pointController.list)
+//api.get('/points/:uid', pointController.read)
+// api.put('/points/:uid', pointController.update)
+// api.delete('/points/:uid', pointController.delete)
+
+// api.post('/payLogs', payLogController.create)
+// api.get('/payLogs', payLogController.list)
+//api.get('/payLogs/:uid', payLogController.read)
+// api.put('/payLogs/:uid', payLogController.update)
+// api.delete('/payLogs/:uid', payLogController.delete)
+
