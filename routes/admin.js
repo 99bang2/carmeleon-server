@@ -23,6 +23,9 @@ const payLogController = require('../controllers/payLog')
 
 const tutorialController = require('../controllers/tutorial')
 
+api.post('/login', accountController.login)
+api.get('/logout', accountController.logout)
+api.get('/check', accountController.check)
 /**
  * 관리자 관리
  */
@@ -91,6 +94,7 @@ api.get('/rates/:targetType/:targetUid', commonController.isAvailableTarget, rat
 api.get('/rates/:uid', rateController.userList)
 api.put('/rates/:uid', rateController.update)
 api.delete('/rates/:uid', rateController.delete)
+api.post('/rates/bulkDelete', rateController.bulkDelete)
 /**
  * 즐겨찾기 관리
  */
@@ -126,13 +130,28 @@ api.get('/users/:uid', userController.read)
 api.put('/users/:uid', userController.update)
 api.delete('/users/:uid', userController.delete)
 api.post('/users/bulkDelete', userController.bulkDelete)
-
+//유저 정보 조회
+api.get('/cars/:userUid', carController.userList)
+api.get('/cards/:userUid', cardController.userList)
+api.get('/favorites/:userUid', favoriteController.userList)
+api.get('/pointLogs/:userUid', pointLogController.userList)
+api.get('/payLogs/:userUid', payLogController.userList)
 /**
  * 튜토리얼
  */
 api.post('/tutorials', tutorialController.setTutorial)
 api.get('/tutorials', tutorialController.getTutorial)
 //api.put('/tutorials/:uid', tutorialController.setTutorial)
+/**
+ * 공통 컨트롤러
+ */
+api.post('/uploads', commonController.fileUpload)
+api.post('/searchLocal', commonController.searchLocal)
+//address : '주소'
+api.post('/searchList', commonController.searchList)
+//keyword : '주차장'
+api.post('/avgRate', commonController.avgRate)
+api.post('/codes', commonController.codes)
 
 
 // api.post('/cars', carController.create)

@@ -17,13 +17,13 @@ const userController = require('../controllers/user')
 /**
  * 인증
  */
-api.post('/account/login', accountController.login)
-api.get('/account/logout', accountController.logout)
-api.get('/account/check', accountController.check)
-
-api.post('/users/login', userController.login)
-api.get('/users/logout', userController.logout)
-api.get('/users/check', userController.check)
+// api.post('/account/login', accountController.login)
+// api.get('/account/logout', accountController.logout)
+// api.get('/account/check', accountController.check)
+//
+// api.post('/users/login', userController.login)
+// api.get('/users/logout', userController.logout)
+// api.get('/users/check', userController.check)
 
 /**
  * admin&user Route
