@@ -8,6 +8,7 @@ const secret = config.secretKey
 const imageUpload = require('../libs/imageUpload')
 const axios = require('axios')
 const codes = require('../configs/codes.json')
+const availableTargetTypes = ["0", "1", "2"]
 
 exports.fileUpload = async function (ctx){
 	let _ = ctx.request.body
@@ -60,3 +61,13 @@ exports.codes = function (ctx){
 	response.send(ctx, codes)
 }
 
+exports.isAvailableTarget = async (ctx, next) => {
+	let { targetType } = ctx.params
+	if(availableTargetTypes.indexOf(targetType) < 0) {
+		ctx.throw({
+			code: 400,
+			message: '잘못된 요청입니다.'
+		})
+	}
+	await next()
+}

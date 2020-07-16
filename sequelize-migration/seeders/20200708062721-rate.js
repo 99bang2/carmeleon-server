@@ -3,7 +3,8 @@ const faker = require('faker');
 faker.locale = 'ko'
 const rate = [...Array(1000)].map((rate) => (
 	{
-		site_uid : faker.random.number({
+		target_type : 0,
+		target_uid : faker.random.number({
 			'min': 1,
 			'max': 100
 		}),

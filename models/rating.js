@@ -62,9 +62,9 @@ module.exports = (sequelize, DataTypes) => {
 		})
 	}
 	rating.getByUid = async function (ctx, uid, models) {
-		let data = await rate.findByPk(uid, {
+		let data = await rating.findByPk(uid, {
 			include: [{
-				model: models.account
+				model: models.user
 			}]
 		})
 		if (!data) {
@@ -72,10 +72,13 @@ module.exports = (sequelize, DataTypes) => {
 		}
 		return data
 	}
-	rating.getBySiteUid = async function (ctx, siteUid) {
+	rating.getByTargetUid = async function (ctx, targetType, targetUid) {
 		let where = {}
-		if(siteUid) {
-			where.siteUid = siteUid
+		if(targetType) {
+			where.targetType = targetType
+		}
+		if(targetUid) {
+			where.targetUid = targetUid
 		}
 		let data = await rating.findAll({
 			where: where
@@ -88,8 +91,15 @@ module.exports = (sequelize, DataTypes) => {
 	rating.getByUserUid = async function (ctx, uid, models) {
 		let data = await rating.findAll({
 			include: [{
+				as: 'parkingSite',
 				model: models.parkingSite
-			}],
+			},{
+				as: 'gasStation',
+				model: models.gasStation
+			},{
+				as: 'carWash',
+				model: models.carWash
+			},],
 			where: {userUid:uid}
 		})
 		if (!data) {

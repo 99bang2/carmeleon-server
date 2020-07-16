@@ -56,8 +56,15 @@ module.exports = (sequelize, DataTypes) => {
 	favorite.getByUserUid = async function (ctx, uid, models) {
 		let data = await favorite.findAll({
 			include: [{
+				as: 'parkingSite',
 				model: models.parkingSite
-			}],
+			},{
+				as: 'gasStation',
+				model: models.gasStation
+			},{
+				as: 'carWash',
+				model: models.carWash
+			},],
 			where: {userUid:uid}
 		})
 		if (!data) {

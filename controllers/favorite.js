@@ -36,7 +36,7 @@ exports.delete = async function (ctx) {
 }
 
 exports.userList = async function (ctx) {
-	let {userUid} = ctx.params
-	let favorite = await models.favorite.getByUserUid(ctx, userUid, models)
+	let {uid} = ctx.params
+	let favorite = await models.favorite.getByUserUid(ctx, uid, models)
 	response.send(ctx, favorite)
 }

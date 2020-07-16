@@ -3,9 +3,10 @@ const faker = require('faker')
 faker.locale = 'ko'
 const favorite = [...Array(50)].map((favorite) => (
 	{
-		site_uid: faker.random.number({
-			min:1,
-			max:100
+		target_type : 0,
+		target_uid : faker.random.number({
+			'min': 1,
+			'max': 100
 		}),
 		user_uid: faker.random.number({
 			min:1,
