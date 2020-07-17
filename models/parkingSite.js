@@ -185,6 +185,7 @@ module.exports = (sequelize, DataTypes) => {
 		let latitude = params.lat ? parseFloat(params.lat) : null
 		let radius = params.radius
 		let distaceQuery = sequelize.where(sequelize.literal(`(6371 * acos(cos(radians(${latitude})) * cos(radians(lat)) * cos(radians(lon) - radians(${longitude})) + sin(radians(${latitude})) * sin(radians(lat))))`),'<=',radius)
+		let rate_where = 'target_type = 0 AND target_uid = parkingSite.uid)'
 		if(!radius){
 			distaceQuery = null
 		}
@@ -196,7 +197,12 @@ module.exports = (sequelize, DataTypes) => {
 			attributes: {
 				include: [
 					[`(6371 * acos(cos(radians(${latitude})) * cos(radians(lat)) * cos(radians(lon) - radians(${longitude})) + sin(radians(${latitude})) * sin(radians(lat))))`, 'distance'],
-					[`(SELECT count(*) FROM ratings WHERE site_uid = parkingSite.uid)`, 'rate_count']]
+					[`(SELECT count(uid) FROM ratings WHERE `+rate_where, 'rate_count'],
+					[`(SELECT COUNT(CASE WHEN rate = 1 OR rate = 2 THEN 0 END) FROM ratings WHERE `+rate_where, 'rate_1'],
+					[`(SELECT COUNT(CASE WHEN rate = 3 OR rate = 4 THEN 0 END) FROM ratings WHERE `+rate_where, 'rate_2'],
+					[`(SELECT COUNT(CASE WHEN rate = 5 OR rate = 6 THEN 0 END) FROM ratings WHERE `+rate_where, 'rate_3'],
+					[`(SELECT COUNT(CASE WHEN rate = 7 OR rate = 8 THEN 0 END) FROM ratings WHERE `+rate_where, 'rate_4'],
+					[`(SELECT COUNT(CASE WHEN rate = 9 OR rate = 10 THEN 0 END) FROM ratings WHERE `+rate_where, 'rate_5']]
 			},
 			order: order,
 			where: [

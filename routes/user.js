@@ -16,6 +16,10 @@ const pointLogController = require('../controllers/point')
 const payLogController = require('../controllers/payLog')
 const commonController = require('../controllers/common')
 
+api.post('/users/login', userController.login)
+api.get('/users/logout', userController.logout)
+api.get('/users/check', userController.check)
+
 /**
  * 공지사항 관리
  */

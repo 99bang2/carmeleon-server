@@ -116,11 +116,12 @@ module.exports = (sequelize, DataTypes) => {
 		})
 		return result
 	}
-	rating.avgRate = async (siteUid) => {
+	rating.avgRate = async (targetType, targetUid) => {
 		let data = await rating.findAll({
 			attributes: [[sequelize.fn('AVG', sequelize.col('rate')), 'ratingAvg']],
 			where: {
-				siteUid: siteUid
+				targetType : targetType,
+				targetUid : targetUid
 			},
 		})
 		return data

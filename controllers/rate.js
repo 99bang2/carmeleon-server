@@ -38,6 +38,7 @@ exports.update = async function (ctx) {
 exports.delete = async function (ctx) {
 	let {uid} = ctx.params
 	let rate = await models.rating.getByUid(ctx, uid, models)
+	await commonController.avgRate(ctx, rate.targetType, rate.targetUid)
 	await rate.destroy()
 	response.send(ctx, rate)
 }

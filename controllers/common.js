@@ -42,24 +42,36 @@ exports.searchLocal = async function (ctx){
 	response.send(ctx, res.data)
 }
 
-exports.avgRate = async function (ctx, siteUid){
-	let res = await models.rating.avgRate(siteUid)
+exports.avgRate = async function (ctx, targetType, targetUid){
+	let res = await models.rating.avgRate(tagetType, targeUid)
 	let ratingAvg = JSON.parse(JSON.stringify(res))[0].ratingAvg
 	if(!ratingAvg){
 		ratingAvg = 0
 	}
-	let data = {
-		rate: ratingAvg,
+	switch (targetType) {
+		case 0 :
+			let parkingSite = await models.parkingSite.getByUid(ctx, targetUid)
+			Object.assign(parkingSite, {rate: ratingAvg})
+			await parkingSite.save()
+		break;
+		case 1 :
+			let gasStation = await models.gasStation.getByUid(ctx, targetUid)
+			Object.assign(gasStation, {rate: ratingAvg})
+			await gasStation.save()
+		break;
+		case 2 :
+			let carWash = await models.carWash.getByUid(ctx, targetUid)
+			Object.assign(carWash, {rate: ratingAvg})
+			await carWash.save()
+		break;
 	}
-	let parkingSite = await models.parkingSite.getByUid(ctx, siteUid)
-	Object.assign(parkingSite, data)
-	await parkingSite.save()
 	return true
 }
 
 exports.codes = function (ctx){
 	response.send(ctx, codes)
 }
+
 
 exports.isAvailableTarget = async (ctx, next) => {
 	let { targetType } = ctx.params

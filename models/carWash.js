@@ -66,6 +66,9 @@ module.exports = (sequelize, DataTypes) => {
 		},
 		picture: {
 			type: DataTypes.JSON
+		},
+		rate: {
+			type: DataTypes.DOUBLE
 		}
 	}, {
 		timestamps: true,
