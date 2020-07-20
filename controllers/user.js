@@ -71,25 +71,11 @@ exports.login = async function (ctx) {
 }
 
 exports.check = async function (ctx) {
+	console.log('ctxDATA', ctx)
+	console.log('ctxDATA_user', ctx.user)
 	response.send(ctx, {
 		user: ctx.user
 	})
-}
-
-exports.getUser = async (ctx) => {
-	if (ctx.request.headers.authorization && ctx.request.headers.authorization.split(' ')[0] === 'Bearer') {
-		try{
-			let accessToken = ctx.request.headers.authorization.split(' ')[1]
-			let userData = await jwt.verify(accessToken, secret)
-			consola.info(userData)
-			return userData
-		}catch (e) {
-			consola.error(e)
-			response.unauthorized(ctx)
-		}
-	} else {
-		return null
-	}
 }
 
 exports.logout = async function (ctx) {
