@@ -1,6 +1,5 @@
 'use strict'
 const response = require('../libs/response')
-const codes = require('../configs/codes.json')
 
 module.exports = (sequelize, DataTypes) => {
 	const evCharge = sequelize.define('evCharge', {
