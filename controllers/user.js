@@ -71,8 +71,6 @@ exports.login = async function (ctx) {
 }
 
 exports.check = async function (ctx) {
-	console.log('ctxDATA', ctx)
-	console.log('ctxDATA_user', ctx.user)
 	response.send(ctx, {
 		user: ctx.user
 	})
