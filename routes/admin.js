@@ -11,6 +11,7 @@ const eventController = require('../controllers/event')
 const parkingController = require('../controllers/parkingSite')
 const carWashController = require('../controllers/carWash')
 const gasStationController = require('../controllers/gasStation')
+const evChargeController = require('../controllers/evCharge')
 
 const rateController = require('../controllers/rate')
 const reviewTemplateController = require('../controllers/reviewTemplate')
@@ -86,6 +87,15 @@ api.get('/gasStations/:uid', gasStationController.read)
 api.put('/gasStations/:uid', gasStationController.update)
 api.delete('/gasStations/:uid', gasStationController.delete)
 api.post('/gasStations/bulkDelete', gasStationController.bulkDelete)//복수삭제
+/**
+ * 전기차 충전소 관리
+ */
+api.post('/evCharges', evChargeController.create)
+api.get('/evCharges', evChargeController.list)
+api.get('/evCharges/:uid', evChargeController.read)
+api.put('/evCharges/:uid', evChargeController.update)
+api.delete('/evCharges/:uid', evChargeController.delete)
+api.post('/evCharges/bulkDelete', evChargeController.bulkDelete)//복수삭제
 /**
  * 리뷰 관리
  */
