@@ -132,6 +132,9 @@ module.exports = (sequelize, DataTypes) => {
 		},
 		picture: {
 			type: DataTypes.JSON
+		},
+		operationTime: {
+			type: DataTypes.STRING
 		}
 	}, {
 		timestamps: true,

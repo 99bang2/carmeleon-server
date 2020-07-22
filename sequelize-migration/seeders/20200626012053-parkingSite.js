@@ -44,6 +44,7 @@ const parkingSite = [...Array(100)].map((parkingSite) => (
 			'max': 10
 		}),
 		picture: '\["'+faker.image.avatar()+'","'+faker.image.avatar()+'"\]',
+		operation_time: "06:00~23:00",
 		created_at: new Date().toISOString().replace(/T/, ' ').replace(/\..+/, ''),
 		updated_at: new Date().toISOString().replace(/T/, ' ').replace(/\..+/, '')
 	}
