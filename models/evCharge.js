@@ -15,6 +15,9 @@ module.exports = (sequelize, DataTypes) => {
 		statId: {
 			type:DataTypes.STRING
 		},
+		stat: {
+			type: DataTypes.INTEGER
+		},
 		chgerId: {
 			type: DataTypes.STRING
 		},
