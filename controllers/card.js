@@ -40,3 +40,11 @@ exports.userList = async function (ctx) {
 	let card = await models.card.getByUserUid(ctx, userUid)
 	response.send(ctx, card)
 }
+
+exports.cardList = async function (ctx) {
+	let {userUid} = ctx.params
+	let _ = ctx.request.query
+	_.userUid = userUid
+	let cards = await models.card.search(_, models)
+	response.send(ctx, cards)
+}
