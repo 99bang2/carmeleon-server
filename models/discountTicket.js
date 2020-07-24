@@ -1,7 +1,7 @@
 'use strict'
 const response = require('../libs/response')
 module.exports = (sequelize, DataTypes) => {
-	const seasonTicket = sequelize.define('seasonTicket', {
+	const discountTicket = sequelize.define('discountTicket', {
 		uid: {
 			type: DataTypes.INTEGER,
 			allowNull: false,
@@ -29,24 +29,24 @@ module.exports = (sequelize, DataTypes) => {
 		underscored: true,
 		paranoid: true
 	})
-	seasonTicket.associate = function (models) {
-		// seasonTicket.hasMany(models.parkingSite, {
+	discountTicket.associate = function (models) {
+		// discountTicket.hasMany(models.parkingSite, {
 		// 	foreignKey: 'siteUid',
 		// })
 	}
-	seasonTicket.getByUid = async function (ctx, uid) {
-		let data = await seasonTicket.findByPk(uid)
+	discountTicket.getByUid = async function (ctx, uid) {
+		let data = await discountTicket.findByPk(uid)
 		if (!data) {
 			response.badRequest(ctx)
 		}
 		return data
 	}
-	seasonTicket.search = async (params) => {
+	discountTicket.search = async (params) => {
 		let where = {}
-		let result = await seasonTicket.findAll({
+		let result = await discountTicket.findAll({
 			where: where
 		})
 		return result
 	}
-	return seasonTicket
+	return discountTicket
 }
