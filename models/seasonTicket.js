@@ -30,9 +30,9 @@ module.exports = (sequelize, DataTypes) => {
 		paranoid: true
 	})
 	seasonTicket.associate = function (models) {
-		seasonTicket.hasMany(models.parkingSite, {
-			foreignKey: 'siteUid',
-		})
+		// seasonTicket.hasMany(models.parkingSite, {
+		// 	foreignKey: 'siteUid',
+		// })
 	}
 	seasonTicket.getByUid = async function (ctx, uid) {
 		let data = await seasonTicket.findByPk(uid)
