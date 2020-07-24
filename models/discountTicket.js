@@ -13,7 +13,17 @@ module.exports = (sequelize, DataTypes) => {
 			type: DataTypes.INTEGER,
 		},
 		ticketTitle: {
-			type: DataTypes.STRING,
+			type: DataTypes.VIRTUAL,
+			get: function () {
+				if (this.getDataValue('ticketType') !== null && this.getDataValue('ticketDayType') !== null) {
+					let ticketTitle = codes.ticketTypeOpts[this.getDataValue('ticketType')] +
+						'(' + codes.ticketDayTypeOpts[this.getDataValue('ticketDayType')] + ')'
+					if(this.getDataValue('ticketType') === 1 && this.getDataValue('ticketTime')){
+						ticketTitle = this.getDataValue('ticketTime') + ticketTitle
+					}
+					return ticketTitle
+				}
+			}
 		},
 		ticketType: {
 			type: DataTypes.INTEGER,
