@@ -12,6 +12,9 @@ module.exports = (sequelize, DataTypes) => {
 		siteUid:{
 			type: DataTypes.INTEGER,
 		},
+		ticketTitle: {
+			type: DataTypes.STRING,
+		},
 		ticketType: {
 			type: DataTypes.INTEGER,
 		},
