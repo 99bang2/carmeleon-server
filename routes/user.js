@@ -14,7 +14,12 @@ const cardController = require('../controllers/card')
 const favoriteController = require('../controllers/favorite')
 const pointLogController = require('../controllers/point')
 const payLogController = require('../controllers/payLog')
+const discountTicketController = require('../controllers/discountTicket')
 const commonController = require('../controllers/common')
+
+/**
+ * POST: Insert, GET: Read, PUT: UPDATE, DELETE: DELETE
+ */
 
 api.post('/users/login', userController.login)
 api.get('/users/logout', userController.logout)
@@ -70,43 +75,27 @@ api.put('/users/:uid', userController.update)
 api.delete('/users/:uid', userController.delete)
 api.post('/users/bulkDelete', userController.bulkDelete)
 
-//유저 정보 조회
-//api.get('/cars/:userUid', carController.userList)
-//api.get('/cards/:userUid', cardController.userList)
-//api.get('/favorites/:userUid', favoriteController.userList)
-//api.get('/pointLogs/:userUid', pointLogController.userList)
-//api.get('/payLogs/:userUid', payLogController.userList)
-
-// api.post('/cars', carController.create)
-// api.get('/cars', carController.list)
-//api.get('/cars/:uid', carController.read)
-// api.put('/cars/:uid', carController.update)
-// api.delete('/cars/:uid', carController.delete)
+api.post('/cars', carController.create)
+api.get('/cars', carController.list)
+api.get('/cars/:uid', carController.read)
+api.put('/cars/:uid', carController.update)
+api.delete('/cars/:uid', carController.delete)
+api.get('/carLists/:userUid', carController.carList)
 
 api.post('/cards', cardController.create)
 api.get('/cards', cardController.list)
 api.get('/cards/:uid', cardController.read)
 api.put('/cards/:uid', cardController.update)
 api.delete('/cards/:uid', cardController.delete)
-
 api.get('/cardLists/:userUid', cardController.cardList)
 
-// api.post('/favorites', favoriteController.create)
-// api.get('/favorites', favoriteController.list)
-//api.get('/favorites/:uid', favoriteController.read)
-// api.put('/favorites/:uid', favoriteController.update)
-// api.delete('/favorites/:uid', favoriteController.delete)
+api.get('/discountTickets', discountTicketController.list)
+api.get('/discountTickets/:uid', discountTicketController.read)
 
-// api.post('/points', pointController.create)
-// api.get('/points', pointController.list)
-//api.get('/points/:uid', pointController.read)
-// api.put('/points/:uid', pointController.update)
-// api.delete('/points/:uid', pointController.delete)
+api.get('/points', pointLogController.list)
+api.get('/points/:uid', pointLogController.read)
 
-api.post('/payLogs', payLogController.create)
 api.get('/payLogs', payLogController.list)
 api.get('/payLogs/:uid', payLogController.read)
-api.put('/payLogs/:uid', payLogController.update)
-api.delete('/payLogs/:uid', payLogController.delete)
 
 module.exports = api

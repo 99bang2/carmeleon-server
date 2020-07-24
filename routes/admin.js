@@ -25,6 +25,10 @@ const payLogController = require('../controllers/payLog')
 
 const tutorialController = require('../controllers/tutorial')
 
+/**
+ * POST: Insert, GET: Read, PUT: UPDATE, DELETE: DELETE
+ */
+
 api.post('/login', accountController.login)
 api.get('/logout', accountController.logout)
 api.get('/check', accountController.check)
