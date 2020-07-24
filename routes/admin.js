@@ -19,6 +19,7 @@ const pointProductController = require('../controllers/pointProduct')
 const carController = require('../controllers/car')
 const cardController = require('../controllers/card')
 const favoriteController = require('../controllers/favorite')
+const discountTicketController = require('../controllers/discountTicket')
 const pointLogController = require('../controllers/point')
 const payLogController = require('../controllers/payLog')
 
@@ -146,6 +147,22 @@ api.get('/cards/:userUid', cardController.userList)
 api.get('/favorites/:userUid', favoriteController.userList)
 api.get('/pointLogs/:userUid', pointLogController.userList)
 api.get('/payLogs/:userUid', payLogController.userList)
+/**
+ * 할인권 관리
+ */
+api.post('/discountTickets', discountTicketController.create)
+api.get('/discountTickets', discountTicketController.list)
+api.get('/discountTickets/:uid', discountTicketController.read)
+api.put('/discountTickets/:uid', discountTicketController.update)
+api.delete('/discountTickets/:uid', discountTicketController.delete)
+/**
+ * 이용내역 관리
+ */
+api.post('/payLogs', payLogController.create)
+api.get('/payLogs', payLogController.list)
+api.get('/payLogs/:uid', payLogController.read)
+api.put('/payLogs/:uid', payLogController.update)
+api.delete('/payLogs/:uid', payLogController.delete)
 /**
  * 튜토리얼
  */

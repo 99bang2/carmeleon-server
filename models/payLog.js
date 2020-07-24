@@ -1,5 +1,6 @@
 'use strict'
 const response = require('../libs/response')
+const codes = require('../configs/codes.json')
 module.exports = (sequelize, DataTypes) => {
 	const payLog = sequelize.define('payLog', {
 		uid: {
@@ -8,16 +9,51 @@ module.exports = (sequelize, DataTypes) => {
 			autoIncrement: true,
 			primaryKey: true,
 		},
+		//// 사용 내역 정보 /////
 		payInfo: {
 			type: DataTypes.JSON
+		},
+		// or carModel uid //
+		carNumber: {
+			type: DataTypes.STRING
+		},
+		reserveTime: {
+			type: DataTypes.STRING
+		},
+		payType: {
+			type: DataTypes.STRING
+		},
+		payTypeName: {
+			type: DataTypes.VIRTUAL,
+			get: function () {
+				if (this.getDataValue('payType') !== null) {
+					return codes.paymentTag[this.getDataValue('payType')]
+				}
+			}
 		},
 		status: {
 			type: DataTypes.INTEGER
 		},
+		price: {
+			type: DataTypes.INTEGER
+		},
+		discountPrice: {
+			type: DataTypes.INTEGER
+		},
+		totalPrice: {
+			type: DataTypes.INTEGER
+		},
+		fee: {
+			type: DataTypes.INTEGER
+		},
+		///////////////////////
 		userUid: {
 			type: DataTypes.INTEGER
 		},
 		siteUid: {
+			type: DataTypes.INTEGER
+		},
+		discountTicketUid: {
 			type: DataTypes.INTEGER
 		}
 	}, {
@@ -27,6 +63,7 @@ module.exports = (sequelize, DataTypes) => {
 	})
 	payLog.associate = function (models) {
 		payLog.belongsTo(models.user)
+		payLog.belongsTo(models.discountTicket)
 		payLog.belongsTo(models.parkingSite, {foreignKey: 'site_uid', targetKey: 'uid'})
 	}
 	payLog.getByUid = async function (ctx, uid) {

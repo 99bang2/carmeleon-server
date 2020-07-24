@@ -50,9 +50,7 @@ module.exports = (sequelize, DataTypes) => {
 		paranoid: true
 	})
 	discountTicket.associate = function (models) {
-		// discountTicket.hasMany(models.parkingSite, {
-		// 	foreignKey: 'siteUid',
-		// })
+		discountTicket.belongsTo(models.parkingSite, {foreignKey: 'site_uid', targetKey: 'uid'})
 	}
 	discountTicket.getByUid = async function (ctx, uid) {
 		let data = await discountTicket.findByPk(uid)
