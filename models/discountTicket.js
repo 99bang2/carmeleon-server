@@ -19,7 +19,7 @@ module.exports = (sequelize, DataTypes) => {
 			type: DataTypes.VIRTUAL,
 			get: function () {
 				if (this.getDataValue('ticketType') !== null) {
-					return codes.site[this.getDataValue('ticketType')]
+					return codes.ticketTypeOpts[this.getDataValue('ticketType')]
 				}
 			}
 		},
@@ -33,7 +33,7 @@ module.exports = (sequelize, DataTypes) => {
 			type: DataTypes.VIRTUAL,
 			get: function () {
 				if (this.getDataValue('ticketDayType') !== null) {
-					return codes.site[this.getDataValue('ticketDayType')]
+					return codes.ticketDayTypeOpts[this.getDataValue('ticketDayType')]
 				}
 			}
 		},
