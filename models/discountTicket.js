@@ -1,5 +1,6 @@
 'use strict'
 const response = require('../libs/response')
+const codes = require('../configs/codes.json')
 module.exports = (sequelize, DataTypes) => {
 	const discountTicket = sequelize.define('discountTicket', {
 		uid: {
@@ -14,8 +15,27 @@ module.exports = (sequelize, DataTypes) => {
 		ticketType: {
 			type: DataTypes.INTEGER,
 		},
+		ticketTypeName: {
+			type: DataTypes.VIRTUAL,
+			get: function () {
+				if (this.getDataValue('ticketType') !== null) {
+					return codes.site[this.getDataValue('ticketType')]
+				}
+			}
+		},
 		ticketTime: {
 			type: DataTypes.INTEGER,
+		},
+		ticketDayType: {
+			type: DataTypes.INTEGER,
+		},
+		ticketDayTypeName: {
+			type: DataTypes.VIRTUAL,
+			get: function () {
+				if (this.getDataValue('ticketDayType') !== null) {
+					return codes.site[this.getDataValue('ticketDayType')]
+				}
+			}
 		},
 		ticketPrice: {
 			type: DataTypes.INTEGER,

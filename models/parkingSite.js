@@ -135,6 +135,9 @@ module.exports = (sequelize, DataTypes) => {
 		},
 		operationTime: {
 			type: DataTypes.STRING
+		},
+		accountUid: {
+			type: DataTypes.INTEGER
 		}
 	}, {
 		timestamps: true,
