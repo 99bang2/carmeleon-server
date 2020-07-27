@@ -74,6 +74,9 @@ module.exports = (sequelize, DataTypes) => {
 	}
 	discountTicket.search = async (params) => {
 		let where = {}
+		if(params.siteUid){
+			where.siteUid = params.siteUid
+		}
 		let result = await discountTicket.findAll({
 			where: where
 		})
