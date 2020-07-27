@@ -98,4 +98,15 @@ api.get('/points/:uid', pointLogController.read)
 api.get('/payLogs', payLogController.list)
 api.get('/payLogs/:uid', payLogController.read)
 
+/**
+ * 공통 컨트롤러
+ */
+api.post('/uploads', commonController.fileUpload)
+api.post('/searchLocal', commonController.searchLocal)
+//address : '주소'
+api.post('/searchList', commonController.searchList)
+//keyword : '주차장'
+api.post('/avgRate', commonController.avgRate)
+api.post('/codes', commonController.codes)
+
 module.exports = api

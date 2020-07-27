@@ -17,6 +17,9 @@ module.exports = (sequelize, DataTypes) => {
 		carNumber: {
 			type: DataTypes.STRING
 		},
+		phoneNumber: {
+			type: DataTypes.STRING
+		},
 		reserveTime: {
 			type: DataTypes.STRING
 		},

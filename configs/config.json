@@ -5,7 +5,11 @@
 		"redis": {
 			"host": "localhost",
 			"port": 6379
-		}
+		},
+		"naverClientID": "L0ZTwcsuymagjibioLdb",
+		"naverClientKey": "ThBIVBiils",
+		"naverApiID": "747rpqhmlc",
+		"naverApiKey": "NzinJwV0bbybo5msvo4kLLjeZYbpz7XLOFa67k3r"
 	},
 	"production": {
 		"listenPort": 3000,
@@ -13,6 +17,10 @@
 		"redis": {
 			"host": "redis",
 			"port": 6379
-		}
+		},
+		"naverClientID": "L0ZTwcsuymagjibioLdb",
+		"naverClientKey": "ThBIVBiils",
+		"naverApiID": "747rpqhmlc",
+		"naverApiKey": "NzinJwV0bbybo5msvo4kLLjeZYbpz7XLOFa67k3r"
 	}
 }
