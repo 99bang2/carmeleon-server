@@ -35,7 +35,7 @@ const payLog = [...Array(1000)].map((payLog) => (
 		})*1000 * 0.2,
 		user_uid : faker.random.number({
 			'min': 1,
-			'max': 50
+			'max': 20
 		}),
 		site_uid : faker.random.number({
 			'min': 1,
