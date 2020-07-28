@@ -146,11 +146,11 @@ api.put('/users/:uid', userController.update)
 api.delete('/users/:uid', userController.delete)
 api.post('/users/bulkDelete', userController.bulkDelete)
 //유저 정보 조회
-api.get('/cars/:userUid', carController.userList)
-api.get('/cards/:userUid', cardController.userList)
-api.get('/favorites/:userUid', favoriteController.userList)
-api.get('/pointLogs/:userUid', pointLogController.userList)
-api.get('/payLogs/:userUid', payLogController.userList)
+api.get('/userCars/:userUid', carController.userList)
+api.get('/userCards/:userUid', cardController.userList)
+api.get('/userFavorites/:userUid', favoriteController.userList)
+api.get('/userPointLogs/:userUid', pointLogController.userList)
+api.get('/userPayLogs/:userUid', payLogController.userList)
 /**
  * 할인권 관리
  */

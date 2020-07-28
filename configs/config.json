@@ -8,8 +8,9 @@
 		},
 		"naverClientID": "L0ZTwcsuymagjibioLdb",
 		"naverClientKey": "ThBIVBiils",
-		"naverApiID": "747rpqhmlc",
-		"naverApiKey": "NzinJwV0bbybo5msvo4kLLjeZYbpz7XLOFa67k3r"
+		"naverApiID": "7yrt63cf83",
+		"naverApiKey": "262Z4zFfVXU6BNgUCDzwqyZXpnto5qXF10cFcsGk",
+		"imagePathUrl": "http://localhost:3030/"
 	},
 	"production": {
 		"listenPort": 3000,
@@ -21,6 +22,7 @@
 		"naverClientID": "L0ZTwcsuymagjibioLdb",
 		"naverClientKey": "ThBIVBiils",
 		"naverApiID": "747rpqhmlc",
-		"naverApiKey": "NzinJwV0bbybo5msvo4kLLjeZYbpz7XLOFa67k3r"
+		"naverApiKey": "NzinJwV0bbybo5msvo4kLLjeZYbpz7XLOFa67k3r",
+		"imagePathUrl": "http://localhost:3030/"
 	}
 }
