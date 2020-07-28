@@ -84,8 +84,8 @@ module.exports = (sequelize, DataTypes) => {
 		let whereParking = {}
 		let whereTicket = {}
 		let whereUser = {}
-		let searchData = JSON.parse(params.searchData)
-		if (searchData) {
+		if (params.searchData) {
+			let searchData = JSON.parse(params.searchData)
 			if (searchData.searchKeyword) {
 				where = {
 					[Op.or]: [
@@ -161,10 +161,17 @@ module.exports = (sequelize, DataTypes) => {
 					model: models.discountTicket,
 				}, {
 					model: models.user,
-				}],
+				},
+			],
 			where: where
 		})
-		return result
+		let count = await payLog.count({
+			where: where
+		})
+		return {
+			rows: result,
+			count: count
+		}
 	}
 	return payLog
 }

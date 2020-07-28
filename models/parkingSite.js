@@ -176,6 +176,9 @@ module.exports = (sequelize, DataTypes) => {
 		if (params.siteType) {
 			where.siteType = params.siteType
 		}
+		if (params.accountUid) {
+			where.accountUid = params.accountUid
+		}
 
 		let result = await parkingSite.findAll({
 			order: order,
