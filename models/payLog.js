@@ -173,5 +173,14 @@ module.exports = (sequelize, DataTypes) => {
 			count: count
 		}
 	}
+	payLog.getByUserUid = async function (ctx, uid) {
+		let data = await payLog.findAll({
+			where: {userUid:uid}
+		})
+		if (!data) {
+			response.badRequest(ctx)
+		}
+		return data
+	}
 	return payLog
 }
