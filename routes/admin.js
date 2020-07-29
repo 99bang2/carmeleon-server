@@ -160,7 +160,7 @@ api.get('/discountTickets/:uid', discountTicketController.read)
 api.put('/discountTickets/:uid', discountTicketController.update)
 api.delete('/discountTickets/:uid', discountTicketController.delete)
 //상품 할인
-api.post('/pointProducts/addDiscount', discountTicketController.addDiscount)
+api.post('/discountTickets/addDiscount', discountTicketController.addDiscount)
 /**
  * 이용내역 관리
  */
