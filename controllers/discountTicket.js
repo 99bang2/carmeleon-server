@@ -44,3 +44,14 @@ exports.bulkDelete = async function (ctx) {
     })
     response.send(ctx, deleteResult)
 }
+
+exports.addDiscount = async function (ctx) {
+	let _ = await ctx.request.body
+	for (let i = 0; i<_.uids.length; i++){
+		let discountPrice = await models.discountTicket.getByUid(ctx, _.uids[i], models)
+		discountPrice.ticketPriceDiscountPercent = _.discountPercent
+		discountPrice.ticketPriceDiscount = discountPrice.ticketPrice * (_.discountPercent * 1/100)
+		discountPrice.save()
+	}
+	response.send(ctx)
+}
