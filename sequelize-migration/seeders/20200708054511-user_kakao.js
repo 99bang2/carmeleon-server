@@ -34,9 +34,12 @@ module.exports = {
 	  return queryInterface.bulkInsert('users', users_kakao, {});
   },
 
+	
   down: (queryInterface, Sequelize) => {
     /*
       Add reverting commands here.
+
+
       Return a promise to correctly handle asynchronicity.
 
       Example:

@@ -27,6 +27,12 @@ module.exports = (sequelize, DataTypes) => {
 		endDate: {
 			type: DataTypes.DATE
 		},
+		operator: {
+			type: DataTypes.STRING
+		},
+		caution: {
+			type: DataTypes.STRING
+		},
 		eventType: {
 			type: DataTypes.INTEGER,
 			allowNull: false
