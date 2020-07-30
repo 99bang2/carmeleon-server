@@ -74,6 +74,9 @@ module.exports = (sequelize, DataTypes) => {
 	}
 	favorite.search = async (params) => {
 		let where = {}
+		if(params.userUid){
+			where.userUid = params.userUid
+		}
 		let result = await favorite.findAll({
 			where: where
 		})

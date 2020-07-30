@@ -53,6 +53,12 @@ module.exports = (sequelize, DataTypes) => {
 		ticketPrice: {
 			type: DataTypes.INTEGER,
 		},
+		ticketPriceDiscount: {
+			type: DataTypes.INTEGER,
+		},
+		ticketPriceDiscountPercent: {
+			type: DataTypes.INTEGER,
+		},
 		isActive: {
 			type: DataTypes.BOOLEAN,
 			defaultValue: true

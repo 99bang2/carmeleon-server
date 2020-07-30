@@ -52,6 +52,9 @@ module.exports = (sequelize, DataTypes) => {
 	}
 	car.search = async (params) => {
 		let where = {}
+		if(params.userUid){
+			where.userUid = params.userUid
+		}
 		let result = await car.findAll({
 			where: where
 		})
