@@ -81,6 +81,15 @@ module.exports = (sequelize, DataTypes) => {
 			where.targetUid = targetUid
 		}
 		let data = await rating.findAll({
+			attributes: {
+				include: [
+					[`(SELECT COUNT(CASE WHEN rate = 1 OR rate = 2 THEN 0 END) FROM ratings WHERE ` + rate_where, 'rate_1'],
+					[`(SELECT COUNT(CASE WHEN rate = 3 OR rate = 4 THEN 0 END) FROM ratings WHERE ` + rate_where, 'rate_2'],
+					[`(SELECT COUNT(CASE WHEN rate = 5 OR rate = 6 THEN 0 END) FROM ratings WHERE ` + rate_where, 'rate_3'],
+					[`(SELECT COUNT(CASE WHEN rate = 7 OR rate = 8 THEN 0 END) FROM ratings WHERE ` + rate_where, 'rate_4'],
+					[`(SELECT COUNT(CASE WHEN rate = 9 OR rate = 10 THEN 0 END) FROM ratings WHERE ` + rate_where, 'rate_5']
+				]
+			},
 			where: where
 		})
 		if (!data) {

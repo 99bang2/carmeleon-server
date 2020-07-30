@@ -81,9 +81,6 @@ module.exports = (sequelize, DataTypes) => {
 	}
 	payLog.search = async (params, models) => {
 		let where = {}
-		let whereParking = {}
-		let whereTicket = {}
-		let whereUser = {}
 		if (params.searchData) {
 			let searchData = JSON.parse(params.searchData)
 			if (searchData.searchKeyword) {
@@ -152,8 +149,12 @@ module.exports = (sequelize, DataTypes) => {
 				}
 			}
 		}
+		if (params.userUid){
+			where.userUid = params.userUid
+		}
 
 		let result = await payLog.findAll({
+			//TODO:추후 필요한 사항만 attribute 넣어 놓을 것
 			include: [
 				{
 					model: models.parkingSite,
