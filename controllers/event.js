@@ -33,7 +33,7 @@ exports.list = async function (ctx) {
 
 exports.read = async function (ctx) {
 	let {uid} = ctx.params
-	let event = await models.getByUid(ctx, uid, models)
+	let event = await models.event.getByUid(ctx, uid, models)
 	response.send(ctx, event)
 }
 
