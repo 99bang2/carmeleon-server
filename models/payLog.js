@@ -179,8 +179,15 @@ module.exports = (sequelize, DataTypes) => {
 			count: count
 		}
 	}
-	payLog.getByUserUid = async function (ctx, uid) {
+	payLog.getByUserUid = async function (ctx, uid, models) {
 		let data = await payLog.findAll({
+            include: [
+                {
+                    model: models.parkingSite,
+                }, {
+                    model: models.discountTicket,
+                }
+            ],
 			where: {userUid:uid}
 		})
 		if (!data) {
