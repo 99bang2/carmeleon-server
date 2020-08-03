@@ -20,14 +20,6 @@ module.exports = {
 	  } catch (e) {
 		  return Promise.reject(e);
 	  }
-	  // return [
-		//   queryInterface.addColumn('discount_tickets', 'ticket_price_discount', {
-		// 	  type: Sequelize.INTEGER
-		//   }),
-		//   queryInterface.addColumn('discount_tickets', 'ticket_price_discount_percent', {
-		// 	  type: Sequelize.INTEGER,
-		//   })
-	  // ];
   },
 
   down: async (queryInterface, Sequelize) => {
@@ -38,10 +30,6 @@ module.exports = {
       Example:
       return queryInterface.dropTable('users');
     */
-	  // return [
-		//   queryInterface.removeColumn('discount_tickets', 'ticket_price_discount'),
-		//   queryInterface.removeColumn('discount_tickets', 'ticket_price_discount_percent')
-	  // ];
 	  try {
 		  await queryInterface.removeColumn('discount_tickets', 'ticket_price_discount');
 		  await queryInterface.removeColumn('discount_tickets', 'ticket_price_discount_percent');

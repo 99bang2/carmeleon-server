@@ -52,6 +52,10 @@ module.exports = (sequelize, DataTypes) => {
 		fee: {
 			type: DataTypes.INTEGER
 		},
+		visible: {
+			type: DataTypes.BOOLEAN,
+			defaultValue: true
+		},
 		///////////////////////
 		userUid: {
 			type: DataTypes.INTEGER
@@ -188,7 +192,10 @@ module.exports = (sequelize, DataTypes) => {
                     model: models.discountTicket,
                 }
             ],
-			where: {userUid:uid}
+			where: {
+            	userUid:uid,
+				visible:true
+            }
 		})
 		if (!data) {
 			response.badRequest(ctx)
