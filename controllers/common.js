@@ -41,7 +41,7 @@ exports.searchLocal = async function (ctx){
 }
 
 exports.avgRate = async function (ctx, targetType, targetUid){
-	let res = await models.rating.avgRate(tagetType, targeUid)
+	let res = await models.rating.avgRate(targetType, targetUid)
 	let ratingAvg = JSON.parse(JSON.stringify(res))[0].ratingAvg
 	if(!ratingAvg){
 		ratingAvg = 0
