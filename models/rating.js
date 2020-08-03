@@ -104,7 +104,7 @@ module.exports = (sequelize, DataTypes) => {
 		}
 		return data
 	}
-	rating.getByUserUid = async function (ctx, uid, models) {
+	rating.getByUserUid = async function (ctx, uid, params, models) {
 		let data = await rating.findAll({
 			include: [{
 				as: 'parkingSite',
@@ -116,6 +116,8 @@ module.exports = (sequelize, DataTypes) => {
 				as: 'carWash',
 				model: models.carWash
 			},],
+			offset: params.offset ? Number(params.offset) : null,
+			limit: params.limit ? Number(params.limit) : null,
 			where: {userUid: uid}
 		})
 		if (!data) {
@@ -127,6 +129,8 @@ module.exports = (sequelize, DataTypes) => {
 		let where = {}
 		let order = [['createdAt', 'DESC']]
 		let result = await rating.findAll({
+			offset: params.offset ? Number(params.offset) : null,
+			limit: params.limit ? Number(params.limit) : null,
 			where: where,
 			order: order
 		})

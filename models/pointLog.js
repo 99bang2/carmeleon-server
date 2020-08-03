@@ -41,8 +41,10 @@ module.exports = (sequelize, DataTypes) => {
         }
         return data
     }
-	pointLog.getByUserUid = async function (ctx, uid) {
+	pointLog.getByUserUid = async function (ctx, uid, params) {
 		let data = await pointLog.findAll({
+			offset: params.offset ? Number(params.offset) : null,
+			limit: params.limit ? Number(params.limit) : null,
 			where: {userUid:uid}
 		})
 		let sum = await pointLog.sum('point', {
@@ -59,6 +61,8 @@ module.exports = (sequelize, DataTypes) => {
 	pointLog.search = async (params) => {
         let where = {}
         let result = await pointLog.findAll({
+			offset: params.offset ? Number(params.offset) : null,
+			limit: params.limit ? Number(params.limit) : null,
             where: where
         })
         return result

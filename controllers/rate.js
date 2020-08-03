@@ -62,6 +62,7 @@ exports.targetList = async function (ctx) {
 
 exports.userList = async function (ctx) {
 	let {uid} = ctx.params
-	let rating = await models.rating.getByUserUid(ctx, uid, models)
+	let _ = ctx.request.query
+	let rating = await models.rating.getByUserUid(ctx, uid, _, models)
 	response.send(ctx, rating)
 }
