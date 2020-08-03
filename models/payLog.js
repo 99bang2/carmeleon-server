@@ -156,6 +156,9 @@ module.exports = (sequelize, DataTypes) => {
 		if (params.userUid){
 			where.userUid = params.userUid
 		}
+		if (params.visible){
+			where.visible = params.visible
+		}
 		let rateWhere = 'target_type = 0 AND target_uid = payLog.site_uid AND user_uid = payLog.user_uid)'
 		let result = await payLog.findAll({
 			//TODO:추후 필요한 사항만 attribute 넣어 놓을 것
