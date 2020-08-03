@@ -78,10 +78,13 @@ module.exports = (sequelize, DataTypes) => {
 		}
 		return data
 	}
-	discountTicket.search = async (params) => {
+	discountTicket.search = async (params, models) => {
 		let where = {}
 		if(params.siteUid){
 			where.siteUid = params.siteUid
+		}
+		if(params.productTag){
+			where.ticketType = params.productTag
 		}
 		let result = await discountTicket.findAll({
 			where: where

@@ -13,7 +13,7 @@ module.exports = (sequelize, DataTypes) => {
 			autoIncrement: true,
 			primaryKey: true,
 		},
-		targetType:{
+		targetType: {
 			type: DataTypes.INTEGER,
 			allowNull: false
 		},
@@ -25,10 +25,16 @@ module.exports = (sequelize, DataTypes) => {
 			type: DataTypes.INTEGER,
 			allowNull: false
 		},
+		reviewTemplateUid: {
+			type: DataTypes.INTEGER,
+		},
 		rate: {
 			type: DataTypes.DOUBLE
 		},
-		review: {
+		reviewTitle: {
+			type: DataTypes.STRING
+		},
+		reviewContent: {
 			type: DataTypes.STRING
 		},
 		rateType: {
@@ -44,6 +50,7 @@ module.exports = (sequelize, DataTypes) => {
 	})
 	rating.associate = function (models) {
 		rating.belongsTo(models.user),
+		rating.belongsTo(models.reviewTemplate),
 		//rating.belongsTo(models.parkingSite, {foreignKey: 'site_uid', targetKey: 'uid'})
 		rating.belongsTo(models.parkingSite, {
 			foreignKey: 'targetUid',
@@ -74,10 +81,10 @@ module.exports = (sequelize, DataTypes) => {
 	}
 	rating.getByTargetUid = async function (ctx, targetType, targetUid) {
 		let where = {}
-		if(targetType) {
+		if (targetType) {
 			where.targetType = targetType
 		}
-		if(targetUid) {
+		if (targetUid) {
 			where.targetUid = targetUid
 		}
 		let data = await rating.findAll({
@@ -102,14 +109,14 @@ module.exports = (sequelize, DataTypes) => {
 			include: [{
 				as: 'parkingSite',
 				model: models.parkingSite
-			},{
+			}, {
 				as: 'gasStation',
 				model: models.gasStation
-			},{
+			}, {
 				as: 'carWash',
 				model: models.carWash
 			},],
-			where: {userUid:uid}
+			where: {userUid: uid}
 		})
 		if (!data) {
 			response.badRequest(ctx)
@@ -129,8 +136,8 @@ module.exports = (sequelize, DataTypes) => {
 		let data = await rating.findAll({
 			attributes: [[sequelize.fn('AVG', sequelize.col('rate')), 'ratingAvg']],
 			where: {
-				targetType : targetType,
-				targetUid : targetUid
+				targetType: targetType,
+				targetUid: targetUid
 			},
 		})
 		return data

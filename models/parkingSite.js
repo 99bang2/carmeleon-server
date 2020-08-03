@@ -219,7 +219,6 @@ module.exports = (sequelize, DataTypes) => {
 				}
 			}
 		}
-
 		if(params.brandTag){
 			//where.brandTag = params.brandTag
 			if(params.brandTag.indexOf(',') !== -1){
@@ -238,7 +237,20 @@ module.exports = (sequelize, DataTypes) => {
 			}
 		}
 		if(params.productTag){
-			where.product_tag = params.productTag
+			if(params.productTag.indexOf(',') !== -1){
+				let tagArr = params.productTag.split(',')
+				let tagWhereArr = []
+				for(let i in tagArr){
+					tagWhereArr.push(sequelize.where(sequelize.literal(`product_tag`), 'like', '%'+tagArr[i]+'%'))
+				}
+				where.product_tag = {
+					[Op.and] : tagWhereArr
+				}
+			}else{
+				where.product_tag = {
+					[Op.substring]: params.productTag
+				}
+			}
 		}
 		if(params.optionTag){
 			if(params.optionTag.indexOf(',') !== -1){
