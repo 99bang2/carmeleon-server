@@ -98,6 +98,7 @@ api.get('/discountTickets/:uid', discountTicketController.read)
 
 api.get('/points', pointLogController.list)
 api.get('/points/:uid', pointLogController.read)
+api.get('/pointLogs/:userUid', pointLogController.userList)
 
 api.post('/payLogs', payLogController.create)
 api.get('/payLogs', payLogController.list)
