@@ -1,6 +1,8 @@
 'use strict'
 const response = require('../libs/response')
 const codes = require('../configs/codes.json')
+const Sequelize = require('sequelize')
+const Op = Sequelize.Op
 
 module.exports = (sequelize, DataTypes) => {
 	const parkingSite = sequelize.define('parkingSite', {
@@ -193,30 +195,95 @@ module.exports = (sequelize, DataTypes) => {
 		let longitude = params.lon ? parseFloat(params.lon) : null
 		let latitude = params.lat ? parseFloat(params.lat) : null
 		let radius = params.radius
-		let distaceQuery = sequelize.where(sequelize.literal(`(6371 * acos(cos(radians(${latitude})) * cos(radians(lat)) * cos(radians(lon) - radians(${longitude})) + sin(radians(${latitude})) * sin(radians(lat))))`),'<=',radius)
-		let rate_where = 'target_type = 0 AND target_uid = parkingSite.uid)'
-		if(!radius){
-			distaceQuery = null
+		let distanceQuery = sequelize.where(sequelize.literal(`(6371 * acos(cos(radians(${latitude})) * cos(radians(lat)) * cos(radians(lon) - radians(${longitude})) + sin(radians(${latitude})) * sin(radians(lat))))`), '<=', radius)
+		let rateWhere = 'target_type = 0 AND target_uid = parkingSite.uid)'
+		if (!radius) {
+			distanceQuery = null
 		}
 		if (params.siteType) {
 			where.site_type = params.siteType
+		}
+		if(params.paymentTag){
+			if(params.paymentTag.indexOf(',') !== -1){
+				let tagArr = params.paymentTag.split(',')
+				let tagWhereArr = []
+				for(let i in tagArr){
+					tagWhereArr.push(sequelize.where(sequelize.literal(`payment_tag`), 'like', '%'+tagArr[i]+'%'))
+				}
+				where.payment_tag = {
+					[Op.and] : tagWhereArr
+				}
+			}else{
+				where.payment_tag = {
+					[Op.substring]: params.paymentTag
+				}
+			}
+		}
+
+		if(params.brandTag){
+			//where.brandTag = params.brandTag
+			if(params.brandTag.indexOf(',') !== -1){
+				let tagArr = params.brandTag.split(',')
+				let tagWhereArr = []
+				for(let i in tagArr){
+					tagWhereArr.push(sequelize.where(sequelize.literal(`brand_tag`), 'like', '%'+tagArr[i]+'%'))
+				}
+				where.brand_tag = {
+					[Op.and] : tagWhereArr
+				}
+			}else{
+				where.brand_tag = {
+					[Op.substring]: params.brandTag
+				}
+			}
+		}
+		if(params.productTag){
+			where.product_tag = params.productTag
+		}
+		if(params.optionTag){
+			if(params.optionTag.indexOf(',') !== -1){
+				let tagArr = params.optionTag.split(',')
+				let tagWhereArr = []
+				for(let i in tagArr){
+					tagWhereArr.push(sequelize.where(sequelize.literal(`option_tag`), 'like', '%'+tagArr[i]+'%'))
+				}
+				where.option_tag = {
+					[Op.and] : tagWhereArr
+				}
+			}else{
+				where.option_tag = {
+					[Op.substring]: params.optionTag
+				}
+			}
+		}
+		if(params.carTag){
+			if(params.carTag.indexOf(',') !== -1){
+				let tagArr = params.carTag.split(',')
+				let tagWhereArr = []
+				for(let i in tagArr){
+					tagWhereArr.push(sequelize.where(sequelize.literal(`car_tag`), 'like', '%'+tagArr[i]+'%'))
+				}
+				where.car_tag = {
+					[Op.and] : tagWhereArr
+				}
+			}else{
+				where.car_tag = {
+					[Op.substring]: params.carTag
+				}
+			}
 		}
 		where.is_active = 1
 		let result = await parkingSite.findAll({
 			attributes: {
 				include: [
 					[`(6371 * acos(cos(radians(${latitude})) * cos(radians(lat)) * cos(radians(lon) - radians(${longitude})) + sin(radians(${latitude})) * sin(radians(lat))))`, 'distance'],
-					[`(SELECT count(uid) FROM ratings WHERE `+rate_where, 'rate_count'],
-					[`(SELECT COUNT(CASE WHEN rate = 1 OR rate = 2 THEN 0 END) FROM ratings WHERE `+rate_where, 'rate_1'],
-					[`(SELECT COUNT(CASE WHEN rate = 3 OR rate = 4 THEN 0 END) FROM ratings WHERE `+rate_where, 'rate_2'],
-					[`(SELECT COUNT(CASE WHEN rate = 5 OR rate = 6 THEN 0 END) FROM ratings WHERE `+rate_where, 'rate_3'],
-					[`(SELECT COUNT(CASE WHEN rate = 7 OR rate = 8 THEN 0 END) FROM ratings WHERE `+rate_where, 'rate_4'],
-					[`(SELECT COUNT(CASE WHEN rate = 9 OR rate = 10 THEN 0 END) FROM ratings WHERE `+rate_where, 'rate_5']]
+					[`(SELECT count(uid) FROM ratings WHERE ` + rateWhere, 'rate_count']
+				]
 			},
 			order: order,
 			where: [
-				distaceQuery
-				,where
+				distanceQuery
+				, where
 			]
 		})
 		return result
