@@ -22,6 +22,8 @@ const favoriteController = require('../controllers/favorite')
 const discountTicketController = require('../controllers/discountTicket')
 const pointLogController = require('../controllers/point')
 const payLogController = require('../controllers/payLog')
+const couponController = require('../controllers/coupon')
+const couponLogController = require('../controllers/couponLog')
 
 const tutorialController = require('../controllers/tutorial')
 
@@ -170,6 +172,22 @@ api.get('/payLogs/:uid', payLogController.read)
 api.put('/payLogs/:uid', payLogController.update)
 api.delete('/payLogs/:uid', payLogController.delete)
 /**
+ * 쿠폰 관리
+ */
+api.post('/coupons', couponController.create)
+api.get('/coupons', couponController.list)
+api.get('/coupons/:uid', couponController.read)
+api.put('/coupons/:uid', couponController.update)
+api.delete('/coupons/:uid', couponController.delete)
+/**
+ * 쿠폰 내역 관리
+ */
+api.post('/couponLogs', couponLogController.create)
+api.get('/couponLogs', couponLogController.list)
+api.get('/couponLogs/:uid', couponLogController.read)
+api.put('/couponLogs/:uid', couponLogController.update)
+api.delete('/couponLogs/:uid', couponLogController.delete)
+/**
  * 튜토리얼
  */
 api.post('/tutorials', tutorialController.setTutorial)
@@ -186,28 +204,4 @@ api.post('/searchList', commonController.searchList)
 api.post('/avgRate', commonController.avgRate)
 api.post('/codes', commonController.codes)
 
-
-// api.post('/cars', carController.create)
-// api.get('/cars', carController.list)
-//api.get('/cars/:uid', carController.read)
-// api.put('/cars/:uid', carController.update)
-// api.delete('/cars/:uid', carController.delete)
-
-// api.post('/cards', cardController.create)
-// api.get('/cards', cardController.list)
-//api.get('/cards/:uid', cardController.read)
-// api.put('/cards/:uid', cardController.update)
-// api.delete('/cards/:uid', cardController.delete)
-
-// api.post('/points', pointController.create)
-// api.get('/points', pointController.list)
-//api.get('/points/:uid', pointController.read)
-// api.put('/points/:uid', pointController.update)
-// api.delete('/points/:uid', pointController.delete)
-
-// api.post('/payLogs', payLogController.create)
-// api.get('/payLogs', payLogController.list)
-//api.get('/payLogs/:uid', payLogController.read)
-// api.put('/payLogs/:uid', payLogController.update)
-// api.delete('/payLogs/:uid', payLogController.delete)
 module.exports = api

@@ -15,6 +15,8 @@ const favoriteController = require('../controllers/favorite')
 const pointLogController = require('../controllers/point')
 const payLogController = require('../controllers/payLog')
 const discountTicketController = require('../controllers/discountTicket')
+const couponController = require('../controllers/coupon')
+const couponLogController = require('../controllers/couponLog')
 const commonController = require('../controllers/common')
 
 /**
@@ -97,6 +99,13 @@ api.get('/points/:uid', pointLogController.read)
 
 api.get('/payLogs', payLogController.list)
 api.get('/payLogs/:uid', payLogController.read)
+
+api.get('/coupons', couponController.list)
+api.get('/coupons/:uid', couponController.read)
+
+api.get('/couponLogs', couponLogController.list)
+api.get('/couponLogs/:uid', couponLogController.read)
+
 
 /**
  * 공통 컨트롤러
