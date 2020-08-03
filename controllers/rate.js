@@ -9,7 +9,7 @@ exports.create = async function (ctx) {
 	_.targetType = targetType
 	_.targetUid = targetUid
 	let rate = await models.rating.create(_)
-	await commonController.avgRate(ctx, type, targetUid)
+	await commonController.avgRate(ctx, targetType, targetUid)
 	response.send(ctx, rate)
 }
 
