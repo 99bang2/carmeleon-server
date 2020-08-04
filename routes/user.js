@@ -59,6 +59,7 @@ api.get('/gasStations/:uid', gasStationController.read)
  */
 api.post('/rates/:targetType/:targetUid', commonController.isAvailableTarget, rateController.create)
 api.get('/rates/:targetType/:targetUid', commonController.isAvailableTarget, rateController.targetList)
+api.get('/rates', rateController.list)
 api.get('/rates/:uid', rateController.userList)
 api.put('/rates/:uid', rateController.update)
 api.delete('/rates/:uid', rateController.delete)

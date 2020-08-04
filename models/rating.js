@@ -128,14 +128,46 @@ module.exports = (sequelize, DataTypes) => {
 	}
 	rating.search = async (params, models) => {
 		let where = {}
+		let offset = null
+		let limit = null
+		if (params.targetType) {
+			where.targetType = params.targetType
+		}
+		if (params.targetUid) {
+			where.targetUid = params.targetUid
+		}
+		if (params.page) {
+			//offset, limit 처리//
+			offset = (Number(params.page) - 1) * limit
+			limit = 10
+		}
+		// if (params.order){
+		//
+		// }
 		let order = [['createdAt', 'DESC']]
 		let result = await rating.findAll({
-			offset: params.offset ? Number(params.offset) : null,
-			limit: params.limit ? Number(params.limit) : null,
+			offset: offset,
+			limit: limit,
 			where: where,
 			order: order
 		})
-		return result
+		// 필요 정보 //
+		let count = await rating.findAll({
+			attributes: [
+				[sequelize.literal(`COUNT(CASE WHEN rate = 1 OR rate = 2 THEN 0 END)`), 'rate_1'],
+				[sequelize.literal(`COUNT(CASE WHEN rate = 3 OR rate = 4 THEN 0 END)`), 'rate_2'],
+				[sequelize.literal(`COUNT(CASE WHEN rate = 5 OR rate = 6 THEN 0 END)`), 'rate_3'],
+				[sequelize.literal(`COUNT(CASE WHEN rate = 7 OR rate = 8 THEN 0 END)`), 'rate_4'],
+				[sequelize.literal(`COUNT(CASE WHEN rate = 9 OR rate = 10 THEN 0 END)`), 'rate_5'],
+				[sequelize.literal(`COUNT(*)`), 'count']
+			],
+			where: where
+		})
+		/////////////
+		return {
+			rows: result,
+			count: count
+		}
 	}
 	rating.avgRate = async (targetType, targetUid) => {
 		let data = await rating.findAll({
