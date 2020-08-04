@@ -7,7 +7,7 @@ const config = require('../configs/config.json')[env]
 const imageUpload = require('../libs/imageUpload')
 const axios = require('axios')
 const codes = require('../configs/codes.json')
-const availableTargetTypes = ["0", "1", "2"]
+const availableTargetTypes = ["0", "1", "2", "3"]
 
 exports.fileUpload = async function (ctx){
 	let _ = ctx.request.body
