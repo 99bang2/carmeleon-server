@@ -85,6 +85,8 @@ module.exports = (sequelize, DataTypes) => {
 	}
 	payLog.search = async (params, models) => {
 		let where = {}
+		let offset = null
+		let limit = null
 		if (params.searchData) {
 			let searchData = JSON.parse(params.searchData)
 			if (searchData.searchKeyword) {
@@ -138,6 +140,11 @@ module.exports = (sequelize, DataTypes) => {
 		if (params.visible){
 			where.visible = params.visible
 		}
+		if (params.page) {
+			//offset, limit 처리//
+			limit = 10
+			offset = (Number(params.page) - 1) * limit
+		}
 
 		let rateWhere = 'target_type = 0 AND target_uid = payLog.site_uid AND user_uid = payLog.user_uid)'
 		let result = await payLog.findAll({
@@ -156,8 +163,8 @@ module.exports = (sequelize, DataTypes) => {
 					model: models.user,
 				},
 			],
-			offset: params.offset ? Number(params.offset) : null,
-			limit: params.limit ? Number(params.limit) : null,
+			offset: offset,
+			limit: limit,
 			where: where
 		})
 		let count = await payLog.count({
