@@ -48,3 +48,16 @@ exports.cardList = async function (ctx) {
 	let cards = await models.card.search(_, models)
 	response.send(ctx, cards)
 }
+
+exports.isMain = async function (ctx) {
+	let _ = ctx.request.query
+	await models.card.update(
+		{ isMain: false },
+		{ where: { userUid: _.userUid }}
+	);
+	let card = await models.card.update(
+		{ isMain: true },
+		{ where: { uid: _.uid }}
+	);
+	response.send(ctx, card)
+}

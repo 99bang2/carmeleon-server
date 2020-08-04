@@ -52,11 +52,13 @@ module.exports = (sequelize, DataTypes) => {
 	}
 	car.search = async (params) => {
 		let where = {}
+		let order = ['isMain', 'DESC']
 		if(params.userUid){
 			where.userUid = params.userUid
 		}
 		let result = await car.findAll({
-			where: where
+			where: where,
+			order: order
 		})
 		return result
 	}

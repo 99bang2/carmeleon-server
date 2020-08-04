@@ -38,7 +38,7 @@ module.exports = (sequelize, DataTypes) => {
 	}
 	card.getByUserUid = async function (ctx, uid) {
 		let data = await card.findAll({
-			where: {userUid:uid}
+			where: {userUid: uid}
 		})
 		if (!data) {
 			response.badRequest(ctx)
@@ -47,11 +47,13 @@ module.exports = (sequelize, DataTypes) => {
 	}
 	card.search = async (params) => {
 		let where = {}
-		if(params.userUid){
+		let order = ['isMain', 'DESC']
+		if (params.userUid) {
 			where.userUid = params.userUid
 		}
 		let result = await card.findAll({
-			where: where
+			where: where,
+			order: order
 		})
 		return result
 	}

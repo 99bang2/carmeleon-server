@@ -112,27 +112,6 @@ module.exports = (sequelize, DataTypes) => {
 						}
 					]
 				}
-				// whereParking = {
-				// 	[Op.or]: [{
-				// 		name: {
-				// 			[Op.like]: '%' + searchData.searchKeyword + '%'
-				// 		}
-				// 	}]
-				// }
-				// whereTicket = {
-				// 	[Op.or]: [{
-				// 		ticketTitle: {
-				// 			[Op.like]: '%' + searchData.searchKeyword + '%'
-				// 		}
-				// 	}]
-				// }
-				// whereUser = {
-				// 	[Op.or]: [{
-				// 		name: {
-				// 			[Op.like]: '%' + searchData.searchKeyword + '%'
-				// 		}
-				// 	}]
-				// }
 			}
 
 			if (searchData.searchDate) {

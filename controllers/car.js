@@ -48,3 +48,16 @@ exports.carList = async function (ctx) {
 	let cards = await models.car.search(_, models)
 	response.send(ctx, cards)
 }
+
+exports.isMain = async function (ctx) {
+	let _ = ctx.request.query
+	await models.car.update(
+		{ isMain: false },
+		{ where: { userUid: _.userUid }}
+	);
+	let car = await models.car.update(
+		{ isMain: true },
+		{ where: { uid: _.uid }}
+	);
+	response.send(ctx, car)
+}
