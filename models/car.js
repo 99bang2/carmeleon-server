@@ -52,7 +52,7 @@ module.exports = (sequelize, DataTypes) => {
 	}
 	car.search = async (params) => {
 		let where = {}
-		let order = ['isMain', 'DESC']
+		let order = [['isMain', 'DESC']]
 		if(params.userUid){
 			where.userUid = params.userUid
 		}
