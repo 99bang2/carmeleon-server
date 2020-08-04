@@ -1,6 +1,8 @@
 'use strict'
 const response = require('../libs/response')
 const codes = require('../configs/codes.json')
+const Sequelize = require('sequelize')
+const Op = Sequelize.Op
 
 module.exports = (sequelize, DataTypes) => {
 	const gasStation = sequelize.define('gasStation', {
@@ -121,6 +123,7 @@ module.exports = (sequelize, DataTypes) => {
 		if (params.isKpetro) {
 			where.isKpetro = params.isKpetro
 		}
+		where.oilPrice = { [Op.ne]: null }
 
 		let result = await gasStation.findAll({
 			order: order,

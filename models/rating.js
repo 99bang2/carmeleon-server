@@ -80,7 +80,7 @@ module.exports = (sequelize, DataTypes) => {
 		return data
 	}
 	rating.getByTargetUid = async function (ctx, targetType, targetUid) {
-		let rateWhere = 'target_type = 0 AND target_uid = parkingSite.uid)'
+		let rateWhere = 'target_type = 0 AND target_uid = '+targetUid+')'
 		let where = {}
 		if (targetType) {
 			where.targetType = targetType
