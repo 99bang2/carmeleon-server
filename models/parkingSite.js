@@ -288,6 +288,11 @@ module.exports = (sequelize, DataTypes) => {
 		let result = await parkingSite.findAll({
 			attributes: {
 				include: [
+					[`(SELECT COUNT(CASE WHEN rate = 1 OR rate = 2 THEN 0 END) FROM ratings WHERE ` + rateWhere, 'rate_1'],
+					[`(SELECT COUNT(CASE WHEN rate = 3 OR rate = 4 THEN 0 END) FROM ratings WHERE ` + rateWhere, 'rate_2'],
+					[`(SELECT COUNT(CASE WHEN rate = 5 OR rate = 6 THEN 0 END) FROM ratings WHERE ` + rateWhere, 'rate_3'],
+					[`(SELECT COUNT(CASE WHEN rate = 7 OR rate = 8 THEN 0 END) FROM ratings WHERE ` + rateWhere, 'rate_4'],
+					[`(SELECT COUNT(CASE WHEN rate = 9 OR rate = 10 THEN 0 END) FROM ratings WHERE ` + rateWhere, 'rate_5'],
 					[`(6371 * acos(cos(radians(${latitude})) * cos(radians(lat)) * cos(radians(lon) - radians(${longitude})) + sin(radians(${latitude})) * sin(radians(lat))))`, 'distance'],
 					[`(SELECT count(uid) FROM ratings WHERE ` + rateWhere, 'rate_count']
 				]
