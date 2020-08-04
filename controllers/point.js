@@ -37,6 +37,7 @@ exports.delete = async function (ctx) {
 
 exports.userList = async function (ctx) {
 	let {userUid} = ctx.params
-	let point = await models.pointLog.getByUserUid(ctx, userUid)
+	let _ = ctx.request.query
+	let point = await models.pointLog.getByUserUid(ctx, _, userUid)
 	response.send(ctx, point)
 }

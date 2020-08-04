@@ -18,7 +18,7 @@ module.exports = {
 			  type: Sequelize.STRING
 		  });
 		  await queryInterface.addColumn('ratings', 'review_content', {
-			  type: Sequelize.STRING
+			  type: Sequelize.TEXT
 		  });
 		  return Promise.resolve();
 	  } catch (e) {
