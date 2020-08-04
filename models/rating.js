@@ -128,8 +128,8 @@ module.exports = (sequelize, DataTypes) => {
 		}
 		if (params.page) {
 			//offset, limit 처리//
-			offset = (Number(params.page) - 1) * limit
 			limit = 10
+			offset = (Number(params.page) - 1) * limit
 		}
 		let order = [['createdAt', 'DESC']]
 		if (params.order){
