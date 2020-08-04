@@ -136,6 +136,11 @@ module.exports = (sequelize, DataTypes) => {
 			order = sequelize.literal(`CHARACTER_LENGTH(review_content) DESC, \`rating\`.\`rate\` DESC, \`rating\`.\`created_at\` DESC`)
 		}
 		let result = await rating.findAll({
+			include: [
+				{
+					model: models.user,
+				}
+			],
 			offset: offset,
 			limit: limit,
 			where: where,
