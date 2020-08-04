@@ -50,7 +50,7 @@ exports.cardList = async function (ctx) {
 }
 
 exports.isMain = async function (ctx) {
-	let _ = ctx.request.query
+	let _ = ctx.request.body
 	await models.card.update(
 		{ isMain: false },
 		{ where: { userUid: _.userUid }}
