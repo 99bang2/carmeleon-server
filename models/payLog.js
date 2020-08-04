@@ -76,8 +76,18 @@ module.exports = (sequelize, DataTypes) => {
 		payLog.belongsTo(models.discountTicket)
 		payLog.belongsTo(models.parkingSite, {foreignKey: 'site_uid', targetKey: 'uid'})
 	}
-	payLog.getByUid = async function (ctx, uid) {
-		let data = await payLog.findByPk(uid)
+	payLog.getByUid = async function (ctx, uid, models) {
+		let data = await payLog.findByPk(uid, {
+			include: [
+				{
+					model: models.parkingSite,
+				}, {
+					model: models.discountTicket,
+				}, {
+					model: models.user,
+				},
+			]
+		})
 		if (!data) {
 			response.badRequest(ctx)
 		}

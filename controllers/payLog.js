@@ -15,7 +15,7 @@ exports.list = async function (ctx) {
 
 exports.read = async function (ctx) {
 	let {uid} = ctx.params
-	let payLog = await models.payLog.getByUid(ctx, uid)
+	let payLog = await models.payLog.getByUid(ctx, uid, models)
 	response.send(ctx, payLog)
 }
 
