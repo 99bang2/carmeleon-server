@@ -97,6 +97,7 @@ module.exports = (sequelize, DataTypes) => {
 		let where = {}
 		let offset = null
 		let limit = null
+		let order = [['createdAt', 'DESC']]
 		if (params.searchData) {
 			let searchData = JSON.parse(params.searchData)
 			if (searchData.searchKeyword) {
@@ -175,7 +176,8 @@ module.exports = (sequelize, DataTypes) => {
 			],
 			offset: offset,
 			limit: limit,
-			where: where
+			where: where,
+			order: order
 		})
 		let count = await payLog.count({
 			where: where
