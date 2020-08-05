@@ -66,7 +66,7 @@ module.exports = (sequelize, DataTypes) => {
 			attributes: { exclude: [] }
 		})
 		user.addScope('login', {
-			attributes: ['uid', 'id', 'sns_type', 'name', 'nickname', 'email', 'phone', 'profile_image']
+			attributes: ['uid', 'id', 'snsType', 'name', 'nickname', 'email', 'phone', 'profileImage']
 		})
 	}
 
