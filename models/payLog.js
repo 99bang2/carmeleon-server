@@ -199,7 +199,8 @@ module.exports = (sequelize, DataTypes) => {
 			where: {
             	userUid:uid,
 				visible:true
-            }
+            },
+			order : [['createdAt', 'DESC']]
 		})
 		if (!data) {
 			response.badRequest(ctx)
