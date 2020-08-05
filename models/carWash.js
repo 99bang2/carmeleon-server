@@ -1,6 +1,7 @@
 'use strict'
 const response = require('../libs/response')
 const codes = require('../configs/codes.json')
+const Sequelize = require('sequelize')
 
 module.exports = (sequelize, DataTypes) => {
 	const carWash = sequelize.define('carWash', {
@@ -15,16 +16,16 @@ module.exports = (sequelize, DataTypes) => {
 			allowNull: false
 		},
 		carWashIndustry: {
-			type:DataTypes.STRING
+			type: DataTypes.STRING
 		},
 		carWashType: {
-			type:DataTypes.STRING
+			type: DataTypes.STRING
 		},
 		carWashTypeName: {
 			type: DataTypes.VIRTUAL,
 			get: function () {
 				if (this.getDataValue('carWashType') !== null) {
-						return codes.carWashTypeOpts[this.getDataValue('carWashType')]
+					return codes.carWashTypeOpts[this.getDataValue('carWashType')]
 				}
 			}
 		},
@@ -34,7 +35,7 @@ module.exports = (sequelize, DataTypes) => {
 		sido: {
 			type: DataTypes.STRING
 		},
-		sigungu:{
+		sigungu: {
 			type: DataTypes.STRING
 		},
 		closedDay: {
@@ -52,17 +53,17 @@ module.exports = (sequelize, DataTypes) => {
 		holidayOperCloseHhmm: {
 			type: DataTypes.STRING
 		},
-		carWashChargeInfo:{
+		carWashChargeInfo: {
 			type: DataTypes.STRING
 		},
 		phoneNumber: {
 			type: DataTypes.STRING
 		},
 		lat: {
-			type:DataTypes.DOUBLE
+			type: DataTypes.DOUBLE
 		},
 		lon: {
-			type:DataTypes.DOUBLE
+			type: DataTypes.DOUBLE
 		},
 		picture: {
 			type: DataTypes.JSON
@@ -104,15 +105,57 @@ module.exports = (sequelize, DataTypes) => {
 		let where = {}
 		let order = [['createdAt', 'DESC']]
 
-		if (params.carWashType) {
-			where.carWashType = params.carWashType
+		if (params.searchKeyword) {
+			where = {
+				[Sequelize.Op.or]: [
+					{
+						carWashName: {
+							[Sequelize.Op.like]: '%' + params.searchKeyword + '%'
+						}
+					},
+					// {
+					// 	carWashIndustry: {
+					// 		[Sequelize.Op.like]: '%' + params.searchKeyword + '%'
+					// 	}
+					// },
+					// {
+					// 	address: {
+					// 		[Sequelize.Op.like]: '%' + params.searchKeyword + '%'
+					// 	}
+					// },
+					// {
+					// 	carWashChargeInfo: {
+					// 		[Sequelize.Op.like]: '%' + params.searchKeyword + '%'
+					// 	}
+					// },
+					// {
+					// 	phoneNumber: {
+					// 		[Sequelize.Op.like]: '%' + params.searchKeyword + '%'
+					// 	}
+					// }
+				]
+			}
+		}
+
+		if (params.searchType) {
+			where.carWashIndustry = {
+				[Sequelize.Op.like]: '%' + params.searchType + '%'
+			}
 		}
 
 		let result = await carWash.findAll({
+			offset: params.offset ? Number(params.offset) : null,
+			limit: params.limit ? Number(params.limit) : null,
 			order: order,
 			where: where
 		})
-		return result
+		let count = await carWash.scope(null).count({
+			where: where
+		})
+		return {
+			rows: result,
+			count: count
+		}
 	}
 
 	carWash.userSearch = async (params, models) => {
@@ -121,12 +164,12 @@ module.exports = (sequelize, DataTypes) => {
 		let longitude = params.lon ? parseFloat(params.lon) : null
 		let latitude = params.lat ? parseFloat(params.lat) : null
 		let radius = params.radius
-		let distaceQuery = sequelize.where(sequelize.literal(`(6371 * acos(cos(radians(${latitude})) * cos(radians(lat)) * cos(radians(lon) - radians(${longitude})) + sin(radians(${latitude})) * sin(radians(lat))))`),'<=',radius)
-		if(!radius){
+		let distaceQuery = sequelize.where(sequelize.literal(`(6371 * acos(cos(radians(${latitude})) * cos(radians(lat)) * cos(radians(lon) - radians(${longitude})) + sin(radians(${latitude})) * sin(radians(lat))))`), '<=', radius)
+		if (!radius) {
 			distaceQuery = null
 		}
 		if (params.carWashType) {
-			where.site_type = params.carWashType
+			where.carWashType = params.carWashType
 		}
 		where.is_active = 1
 		let result = await carWash.findAll({
@@ -138,7 +181,7 @@ module.exports = (sequelize, DataTypes) => {
 			order: order,
 			where: [
 				distaceQuery
-				,where
+				, where
 			]
 		})
 		return result

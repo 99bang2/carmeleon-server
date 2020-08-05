@@ -114,22 +114,62 @@ module.exports = (sequelize, DataTypes) => {
 		let where = {}
 		let order = [['createdAt', 'DESC']]
 
-		if (params.brandCode) {
-			where.brandCode = params.brandCode
+		if (params.searchKeyword) {
+			where = {
+				[Sequelize.Op.or]: [
+					{
+						gasStationName: {
+							[Sequelize.Op.like]: '%' + params.searchKeyword + '%'
+						}
+					},
+					// {
+					// 	carWashIndustry: {
+					// 		[Sequelize.Op.like]: '%' + params.searchKeyword + '%'
+					// 	}
+					// },
+					// {
+					// 	address: {
+					// 		[Sequelize.Op.like]: '%' + params.searchKeyword + '%'
+					// 	}
+					// },
+					// {
+					// 	carWashChargeInfo: {
+					// 		[Sequelize.Op.like]: '%' + params.searchKeyword + '%'
+					// 	}
+					// },
+					// {
+					// 	phoneNumber: {
+					// 		[Sequelize.Op.like]: '%' + params.searchKeyword + '%'
+					// 	}
+					// }
+				]
+			}
 		}
-		if (params.gasStationType) {
-			where.gasStationType = params.gasStationType
+
+		if (params.searchBrandCode) {
+			where.brandCode = params.searchBrandCode
 		}
-		if (params.isKpetro) {
-			where.isKpetro = params.isKpetro
+		if (params.searchType) {
+			where.gasStationType = params.searchType
+		}
+		if (params.searchKpetro) {
+			where.isKpetro = params.searchKpetro
 		}
 		where.oilPrice = { [Op.ne]: null }
 
 		let result = await gasStation.findAll({
+			offset: params.offset ? Number(params.offset) : null,
+			limit: params.limit ? Number(params.limit) : null,
 			order: order,
 			where: where
 		})
-		return result
+		let count = await gasStation.scope(null).count({
+			where: where
+		})
+		return {
+			rows: result,
+			count: count
+		}
 	}
 
 	gasStation.userSearch = async (params, models) => {

@@ -1,5 +1,6 @@
 'use strict'
 const response = require('../libs/response')
+const Sequelize = require('sequelize')
 
 module.exports = (sequelize, DataTypes) => {
 	const evCharge = sequelize.define('evCharge', {
@@ -94,11 +95,58 @@ module.exports = (sequelize, DataTypes) => {
 		let where = {}
 		let order = [['createdAt', 'DESC']]
 
+		if (params.searchKeyword) {
+			where = {
+				[Sequelize.Op.or]: [
+					{
+						statNm: {
+							[Sequelize.Op.like]: '%' + params.searchKeyword + '%'
+						}
+					},
+					// {
+					// 	carWashIndustry: {
+					// 		[Sequelize.Op.like]: '%' + params.searchKeyword + '%'
+					// 	}
+					// },
+					// {
+					// 	address: {
+					// 		[Sequelize.Op.like]: '%' + params.searchKeyword + '%'
+					// 	}
+					// },
+					// {
+					// 	carWashChargeInfo: {
+					// 		[Sequelize.Op.like]: '%' + params.searchKeyword + '%'
+					// 	}
+					// },
+					// {
+					// 	phoneNumber: {
+					// 		[Sequelize.Op.like]: '%' + params.searchKeyword + '%'
+					// 	}
+					// }
+				]
+			}
+		}
+
+		if (params.searchChargeType) {
+			where.chgerType = params.searchChargeType
+		}
+		if (params.searchStat) {
+			where.stat = params.searchStat
+		}
+
 		let result = await evCharge.findAll({
+			offset: params.offset ? Number(params.offset) : null,
+			limit: params.limit ? Number(params.limit) : null,
 			order: order,
 			where: where
 		})
-		return result
+		let count = await evCharge.scope(null).count({
+			where: where
+		})
+		return {
+			rows: result,
+			count: count
+		}
 	}
 
 	evCharge.userSearch = async (params, models) => {

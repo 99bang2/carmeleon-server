@@ -1,7 +1,5 @@
 'use strict'
 const response = require('../libs/response')
-const axios = require('axios')
-const ip = require('ip')
 const env = process.env.NODE_ENV || 'development'
 const config = require('../configs/config.json')[env]
 
@@ -120,8 +118,21 @@ module.exports = (sequelize, DataTypes) => {
 		let where = {}
 		let offset = null
 		let limit = null
+		let targetTable = ''
 		if (params.targetType) {
 			where.targetType = params.targetType
+			switch (params.targetType) {
+				case '0' : targetTable = 'parking_sites';
+					break;
+				case '1' : targetTable = 'gas_stations';
+					break;
+				case '2' : targetTable = 'car_washes';
+					break;
+				case '3' : targetTable = 'ev_charges';
+					break;
+				default : targetTable = 'parking_sites';
+					break;
+			}
 		}
 		if (params.targetUid) {
 			where.targetUid = params.targetUid
@@ -154,7 +165,8 @@ module.exports = (sequelize, DataTypes) => {
 				[sequelize.literal(`COUNT(CASE WHEN rate = 5 OR rate = 6 THEN 0 END)`), 'rate_3'],
 				[sequelize.literal(`COUNT(CASE WHEN rate = 7 OR rate = 8 THEN 0 END)`), 'rate_4'],
 				[sequelize.literal(`COUNT(CASE WHEN rate = 9 OR rate = 10 THEN 0 END)`), 'rate_5'],
-				[sequelize.literal(`COUNT(*)`), 'count']
+				[sequelize.literal(`COUNT(*)`), 'count'],
+				[`(SELECT rate FROM `+targetTable+` WHERE uid=`+params.targetUid+')', 'avg_rate']
 			],
 			where: where
 		})
