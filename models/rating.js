@@ -94,6 +94,14 @@ module.exports = (sequelize, DataTypes) => {
 		return data
 	}
 	rating.getByUserUid = async function (ctx, uid, params, models) {
+		let offset = null
+		let limit = null
+		let order = [['createdAt', 'DESC']]
+		if (params.page) {
+			//offset, limit 처리//
+			limit = 10
+			offset = (Number(params.page) - 1) * limit
+		}
 		let data = await rating.findAll({
 			include: [{
 				as: 'parkingSite',
@@ -105,8 +113,9 @@ module.exports = (sequelize, DataTypes) => {
 				as: 'carWash',
 				model: models.carWash
 			},],
-			offset: params.offset ? Number(params.offset) : null,
-			limit: params.limit ? Number(params.limit) : null,
+			offset: offset,
+			limit: limit,
+			order: order,
 			where: {userUid: uid}
 		})
 		if (!data) {
