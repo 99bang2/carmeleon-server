@@ -8,6 +8,13 @@ exports.create = async function (ctx) {
 	let _ = ctx.request.body
 	_.targetType = targetType
 	_.targetUid = targetUid
+	let checkRate = await  models.rating.checkRate(_)
+	if(checkRate > 0){
+		ctx.throw({
+			code: 400,
+			message: '이미 평가를 완료 했습니다.'
+		})
+	}
 	let rate = await models.rating.create(_)
 	await commonController.avgRate(ctx, targetType, targetUid)
 	response.send(ctx, rate)

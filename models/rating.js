@@ -185,6 +185,18 @@ module.exports = (sequelize, DataTypes) => {
 			count: count
 		}
 	}
+	rating.checkRate = async (params) => {
+		let count = await rating.count(
+			{
+				where: {
+					targetType: params.targetType,
+					targetUid: params.targetUid,
+					userUid: params.userUid
+				}
+			}
+		)
+		return count
+	}
 	rating.avgRate = async (targetType, targetUid) => {
 		let data = await rating.findAll({
 			attributes: [[sequelize.fn('AVG', sequelize.col('rate')), 'ratingAvg']],
