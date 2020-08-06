@@ -1,5 +1,7 @@
 'use strict'
 const response = require('../libs/response')
+const Sequelize = require('sequelize')
+const Op = Sequelize.Op
 module.exports = (sequelize, DataTypes) => {
 	const card = sequelize.define('card', {
 		uid: {
@@ -56,6 +58,17 @@ module.exports = (sequelize, DataTypes) => {
 			order: order
 		})
 		return result
+	}
+	card.checkCard = async (params) => {
+		let count = await card.count(
+			{
+				where: {
+					userUid: params.userUid,
+					cardInfo: {[Op.substring]: params.cardInfo.cardNumber}
+				}
+			}
+		)
+		return count
 	}
 	return card
 }

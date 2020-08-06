@@ -3,6 +3,13 @@ const response = require('../libs/response')
 
 exports.create = async function (ctx) {
 	let _ = ctx.request.body
+	let checkCard = await  models.card.checkCard(_)
+	if(checkCard > 0){
+		ctx.throw({
+			code: 400,
+			message: '이미 등록 된 카드 입니다.'
+		})
+	}
 	let card = await models.card.create(_)
 	response.send(ctx, card)
 }
