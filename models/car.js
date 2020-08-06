@@ -62,5 +62,16 @@ module.exports = (sequelize, DataTypes) => {
 		})
 		return result
 	}
+	car.checkCar = async (params) => {
+		let count = await car.count(
+			{
+				where: {
+					userUid: params.userUid,
+					carPlate: params.carPlate
+				}
+			}
+		)
+		return count
+	}
 	return car
 }
