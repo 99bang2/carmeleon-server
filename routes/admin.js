@@ -115,7 +115,7 @@ api.post('/rates/bulkDelete', rateController.bulkDelete)
 /**
  * 즐겨찾기 관리
  */
-api.get('/favorites/:uid', favoriteController.userList)
+api.get('/favorites/:userUid', favoriteController.userList)
 api.delete('/favorites/:uid', favoriteController.delete)
 /**
  * 리뷰 템플릿 관리

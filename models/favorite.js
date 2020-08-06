@@ -53,7 +53,8 @@ module.exports = (sequelize, DataTypes) => {
 		}
 		return data
 	}
-	favorite.getByUserUid = async function (ctx, uid, models) {
+	favorite.getByUserUid = async function (ctx, userUid, models) {
+		console.log(userUid)
 		let data = await favorite.findAll({
 			include: [{
 				as: 'parkingSite',
@@ -65,7 +66,7 @@ module.exports = (sequelize, DataTypes) => {
 				as: 'carWash',
 				model: models.carWash
 			},],
-			where: {userUid:uid}
+			where: {userUid:userUid}
 		})
 		if (!data) {
 			response.badRequest(ctx)
