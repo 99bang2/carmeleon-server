@@ -3,6 +3,12 @@ const response = require('../libs/response')
 
 exports.create = async function (ctx) {
 	let _ = ctx.request.body
+	if(_.totalPrice <= 0){
+		ctx.throw({
+			code: 400,
+			message: '주문 금액이 0원 이하는 구매가 불가능 합니다.'
+		})
+	}
 	let payLog = await models.payLog.create(_)
 	response.send(ctx, payLog)
 }

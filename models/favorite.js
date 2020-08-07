@@ -54,7 +54,6 @@ module.exports = (sequelize, DataTypes) => {
 		return data
 	}
 	favorite.getByUserUid = async function (ctx, userUid, models) {
-		console.log(userUid)
 		let data = await favorite.findAll({
 			include: [{
 				as: 'parkingSite',
@@ -75,6 +74,27 @@ module.exports = (sequelize, DataTypes) => {
 	}
 	favorite.search = async (params) => {
 		let where = {}
+		let offset = null
+		let limit = null
+		let targetTable = ''
+		if (params.targetType) {
+			where.targetType = params.targetType
+			switch (params.targetType) {
+				case '0' : targetTable = 'parking_sites';
+					break;
+				case '1' : targetTable = 'gas_stations';
+					break;
+				case '2' : targetTable = 'car_washes';
+					break;
+				case '3' : targetTable = 'ev_charges';
+					break;
+				default : targetTable = 'parking_sites';
+					break;
+			}
+		}
+		if (params.targetUid) {
+			where.targetUid = params.targetUid
+		}
 		if(params.userUid){
 			where.userUid = params.userUid
 		}
@@ -82,6 +102,18 @@ module.exports = (sequelize, DataTypes) => {
 			where: where
 		})
 		return result
+	}
+	favorite.checkFavorite = async (params) => {
+		let count = await favorite.count(
+			{
+				where: {
+					targetType: params.targetType,
+					targetUid: params.targetUid,
+					userUid: params.userUid
+				}
+			}
+		)
+		return count
 	}
 	return favorite
 }

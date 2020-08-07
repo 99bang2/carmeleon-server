@@ -2,7 +2,17 @@ const models = require('../models')
 const response = require('../libs/response')
 
 exports.create = async function (ctx) {
+	let { targetUid, targetType } = ctx.params
 	let _ = ctx.request.body
+	_.targetType = targetType
+	_.targetUid = targetUid
+	let checkFavorite = await  models.favorite.checkRate(_)
+	if(checkFavorite > 0){
+		ctx.throw({
+			code: 400,
+			message: '이미 등록 된 장소입니다.'
+		})
+	}
 	let favorite = await models.favorite.create(_)
 	response.send(ctx, favorite)
 }
