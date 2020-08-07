@@ -61,6 +61,9 @@ module.exports = (sequelize, DataTypes) => {
 		sigungu:{
 			type: DataTypes.STRING
 		},
+		picture:{
+			type: DataTypes.STRING
+		},
 	}, {
 		timestamps: true,
 		paranoid: true,
