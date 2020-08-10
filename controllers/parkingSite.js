@@ -15,7 +15,7 @@ exports.list = async function (ctx) {
 
 exports.read = async function (ctx) {
     let {uid} = ctx.params
-    let parkingSite = await models.parkingSite.getByUid(ctx, uid)
+    let parkingSite = await models.parkingSite.getByUid(ctx, uid, models)
     response.send(ctx, parkingSite)
 }
 

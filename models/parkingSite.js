@@ -162,9 +162,17 @@ module.exports = (sequelize, DataTypes) => {
 				targetType: 0
 			}
 		})
+		parkingSite.hasMany(models.discountTicket, {
+			foreignKey: 'siteUid'
+		})
 	}
-	parkingSite.getByUid = async function (ctx, uid) {
-		let data = await parkingSite.findByPk(uid)
+	parkingSite.getByUid = async function (ctx, uid, models) {
+		let data = await parkingSite.findByPk(uid, {
+			//TODO: Attribute 필요 항목만//
+			include: [{
+				model: models.discountTicket
+			}]
+		})
 		if (!data) {
 			response.badRequest(ctx)
 		}
@@ -203,88 +211,87 @@ module.exports = (sequelize, DataTypes) => {
 		if (params.siteType) {
 			where.site_type = params.siteType
 		}
-		if(params.paymentTag){
-			if(params.paymentTag.indexOf(',') !== -1){
-				let tagArr = params.paymentTag.split(',')
-				let tagWhereArr = []
-				for(let i in tagArr){
-					tagWhereArr.push(sequelize.where(sequelize.literal(`payment_tag`), 'like', '%'+tagArr[i]+'%'))
-				}
-				where.payment_tag = {
-					[Op.and] : tagWhereArr
-				}
-			}else{
-				where.payment_tag = {
-					[Op.substring]: params.paymentTag
-				}
-			}
-		}
-		if(params.brandTag){
-			//where.brandTag = params.brandTag
-			if(params.brandTag.indexOf(',') !== -1){
-				let tagArr = params.brandTag.split(',')
-				let tagWhereArr = []
-				for(let i in tagArr){
-					tagWhereArr.push(sequelize.where(sequelize.literal(`brand_tag`), 'like', '%'+tagArr[i]+'%'))
-				}
-				where.brand_tag = {
-					[Op.and] : tagWhereArr
-				}
-			}else{
-				where.brand_tag = {
-					[Op.substring]: params.brandTag
-				}
-			}
-		}
-		if(params.productTag){
-			if(params.productTag.indexOf(',') !== -1){
-				let tagArr = params.productTag.split(',')
-				let tagWhereArr = []
-				for(let i in tagArr){
-					tagWhereArr.push(sequelize.where(sequelize.literal(`product_tag`), 'like', '%'+tagArr[i]+'%'))
-				}
-				where.product_tag = {
-					[Op.and] : tagWhereArr
-				}
-			}else{
-				where.product_tag = {
-					[Op.substring]: params.productTag
-				}
-			}
-		}
-		if(params.optionTag){
-			if(params.optionTag.indexOf(',') !== -1){
-				let tagArr = params.optionTag.split(',')
-				let tagWhereArr = []
-				for(let i in tagArr){
-					tagWhereArr.push(sequelize.where(sequelize.literal(`option_tag`), 'like', '%'+tagArr[i]+'%'))
-				}
-				where.option_tag = {
-					[Op.and] : tagWhereArr
-				}
-			}else{
-				where.option_tag = {
-					[Op.substring]: params.optionTag
-				}
-			}
-		}
-		if(params.carTag){
-			if(params.carTag.indexOf(',') !== -1){
-				let tagArr = params.carTag.split(',')
-				let tagWhereArr = []
-				for(let i in tagArr){
-					tagWhereArr.push(sequelize.where(sequelize.literal(`car_tag`), 'like', '%'+tagArr[i]+'%'))
-				}
-				where.car_tag = {
-					[Op.and] : tagWhereArr
-				}
-			}else{
-				where.car_tag = {
-					[Op.substring]: params.carTag
-				}
-			}
-		}
-		where.is_active = 1
+		// if(params.paymentTag){
+		// 	if(params.paymentTag.indexOf(',') !== -1){
+		// 		let tagArr = params.paymentTag.split(',')
+		// 		let tagWhereArr = []
+		// 		for(let i in tagArr){
+		// 			tagWhereArr.push(sequelize.where(sequelize.literal(`payment_tag`), 'like', '%'+tagArr[i]+'%'))
+		// 		}
+		// 		where.payment_tag = {
+		// 			[Op.and] : tagWhereArr
+		// 		}
+		// 	}else{
+		// 		where.payment_tag = {
+		// 			[Op.substring]: params.paymentTag
+		// 		}
+		// 	}
+		// }
+		// if(params.brandTag){
+		// 	//where.brandTag = params.brandTag
+		// 	if(params.brandTag.indexOf(',') !== -1){
+		// 		let tagArr = params.brandTag.split(',')
+		// 		let tagWhereArr = []
+		// 		for(let i in tagArr){
+		// 			tagWhereArr.push(sequelize.where(sequelize.literal(`brand_tag`), 'like', '%'+tagArr[i]+'%'))
+		// 		}
+		// 		where.brand_tag = {
+		// 			[Op.and] : tagWhereArr
+		// 		}
+		// 	}else{
+		// 		where.brand_tag = {
+		// 			[Op.substring]: params.brandTag
+		// 		}
+		// 	}
+		// }
+		// if(params.productTag){
+		// 	if(params.productTag.indexOf(',') !== -1){
+		// 		let tagArr = params.productTag.split(',')
+		// 		let tagWhereArr = []
+		// 		for(let i in tagArr){
+		// 			tagWhereArr.push(sequelize.where(sequelize.literal(`product_tag`), 'like', '%'+tagArr[i]+'%'))
+		// 		}
+		// 		where.product_tag = {
+		// 			[Op.and] : tagWhereArr
+		// 		}
+		// 	}else{
+		// 		where.product_tag = {
+		// 			[Op.substring]: params.productTag
+		// 		}
+		// 	}
+		// }
+		// if(params.optionTag){
+		// 	if(params.optionTag.indexOf(',') !== -1){
+		// 		let tagArr = params.optionTag.split(',')
+		// 		let tagWhereArr = []
+		// 		for(let i in tagArr){
+		// 			tagWhereArr.push(sequelize.where(sequelize.literal(`option_tag`), 'like', '%'+tagArr[i]+'%'))
+		// 		}
+		// 		where.option_tag = {
+		// 			[Op.and] : tagWhereArr
+		// 		}
+		// 	}else{
+		// 		where.option_tag = {
+		// 			[Op.substring]: params.optionTag
+		// 		}
+		// 	}
+		// }
+		// if(params.carTag){
+		// 	if(params.carTag.indexOf(',') !== -1){
+		// 		let tagArr = params.carTag.split(',')
+		// 		let tagWhereArr = []
+		// 		for(let i in tagArr){
+		// 			tagWhereArr.push(sequelize.where(sequelize.literal(`car_tag`), 'like', '%'+tagArr[i]+'%'))
+		// 		}
+		// 		where.car_tag = {
+		// 			[Op.and] : tagWhereArr
+		// 		}
+		// 	}else{
+		// 		where.car_tag = {
+		// 			[Op.substring]: params.carTag
+		// 		}
+		// 	}
+		// }
 		let result = await parkingSite.findAll({
 			attributes: {
 				include: [
