@@ -65,6 +65,9 @@ module.exports = (sequelize, DataTypes) => {
 		},
 		discountTicketUid: {
 			type: DataTypes.INTEGER
+		},
+		cardUid: {
+			type: DataTypes.INTEGER
 		}
 	}, {
 		timestamps: true,
@@ -73,8 +76,9 @@ module.exports = (sequelize, DataTypes) => {
 	})
 	payLog.associate = function (models) {
 		payLog.belongsTo(models.user)
-		payLog.belongsTo(models.discountTicket)
 		payLog.belongsTo(models.parkingSite, {foreignKey: 'site_uid', targetKey: 'uid'})
+		payLog.belongsTo(models.discountTicket)
+		payLog.belongsTo(models.card)
 	}
 	payLog.getByUid = async function (ctx, uid, models) {
 		let data = await payLog.findByPk(uid, {
@@ -83,6 +87,8 @@ module.exports = (sequelize, DataTypes) => {
 					model: models.parkingSite,
 				}, {
 					model: models.discountTicket,
+				}, {
+					model: models.card,
 				}, {
 					model: models.user,
 				},
@@ -145,10 +151,10 @@ module.exports = (sequelize, DataTypes) => {
 				}
 			}
 		}
-		if (params.userUid){
+		if (params.userUid) {
 			where.userUid = params.userUid
 		}
-		if (params.visible){
+		if (params.visible) {
 			where.visible = params.visible
 		}
 		if (params.page) {
@@ -189,18 +195,18 @@ module.exports = (sequelize, DataTypes) => {
 	}
 	payLog.getByUserUid = async function (ctx, uid, models) {
 		let data = await payLog.findAll({
-            include: [
-                {
-                    model: models.parkingSite,
-                }, {
-                    model: models.discountTicket,
-                }
-            ],
+			include: [
+				{
+					model: models.parkingSite,
+				}, {
+					model: models.discountTicket,
+				}
+			],
 			where: {
-            	userUid:uid,
-				visible:true
-            },
-			order : [['createdAt', 'DESC']]
+				userUid: uid,
+				visible: true
+			},
+			order: [['createdAt', 'DESC']]
 		})
 		if (!data) {
 			response.badRequest(ctx)

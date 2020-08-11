@@ -132,6 +132,9 @@ module.exports = (sequelize, DataTypes) => {
 		priceInfo: {
 			type: DataTypes.TEXT
 		},
+		timeInfo: {
+			type: DataTypes.TEXT
+		},
 		picture: {
 			type: DataTypes.JSON
 		},
