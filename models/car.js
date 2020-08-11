@@ -24,7 +24,8 @@ module.exports = (sequelize, DataTypes) => {
 			type: DataTypes.INTEGER
 		},
 		isMain: {
-			type: DataTypes.BOOLEAN
+			type: DataTypes.BOOLEAN,
+			defaultValue: false
 		}
 	}, {
 		timestamps: true,

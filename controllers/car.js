@@ -3,12 +3,18 @@ const response = require('../libs/response')
 
 exports.create = async function (ctx) {
 	let _ = ctx.request.body
-	let checkCar = await  models.car.checkCar(_)
+	let checkCar = await models.car.checkCar(_)
 	if(checkCar > 0){
 		ctx.throw({
 			code: 400,
 			message: '이미 등록 된 차량 입니다.'
 		})
+	}
+	let checkCount = await models.car.count({
+		where : {userUid:_.userUid}
+	})
+	if(checkCount === 0){
+		_.isMain = true
 	}
 	let car = await models.car.create(_)
 	response.send(ctx, car)

@@ -10,6 +10,12 @@ exports.create = async function (ctx) {
 			message: '이미 등록 된 카드 입니다.'
 		})
 	}
+	let checkCount = await models.card.count({
+		where : {userUid:_.userUid}
+	})
+	if(checkCount === 0){
+		_.isMain = true
+	}
 	let card = await models.card.create(_)
 	response.send(ctx, card)
 }
