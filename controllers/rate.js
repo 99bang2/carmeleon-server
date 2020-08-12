@@ -8,8 +8,21 @@ exports.create = async function (ctx) {
 	let _ = ctx.request.body
 	_.targetType = targetType
 	_.targetUid = targetUid
-	let checkRate = await  models.rating.checkRate(_)
-	if(checkRate > 0){
+	let checkCount = await models.rating.checkPay(_, models)
+	console.log('checkCount', checkCount)
+	_.rateType = false
+	if(checkCount === 0){
+		_.rateType = true
+	}
+	let checkRate = await models.rating.checkRate(_)
+	if(_.rateType === true && checkRate > 0){
+		ctx.throw({
+			code: 400,
+			message: '이미 평가를 완료 했습니다.'
+		})
+	}
+	console.log('checkRate', checkRate)
+	if(_.rateType === false && (checkRate >= checkCount)){
 		ctx.throw({
 			code: 400,
 			message: '이미 평가를 완료 했습니다.'

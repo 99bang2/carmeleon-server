@@ -38,7 +38,7 @@ module.exports = (sequelize, DataTypes) => {
 		rateType: {
 			type: DataTypes.BOOLEAN,
 			allowNull: false,
-			defaultValue: '0'
+			defaultValue: false
 		},
 	}, {
 		timestamps: true,
@@ -191,6 +191,18 @@ module.exports = (sequelize, DataTypes) => {
 				where: {
 					targetType: params.targetType,
 					targetUid: params.targetUid,
+					userUid: params.userUid,
+					rateType: params.rateType
+				}
+			}
+		)
+		return count
+	}
+	rating.checkPay = async (params, models) => {
+		let count = await models.payLog.count(
+			{
+				where: {
+					siteUid: params.targetUid,
 					userUid: params.userUid
 				}
 			}
