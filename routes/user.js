@@ -63,6 +63,8 @@ api.get('/rates', rateController.list)
 api.get('/rates/:uid', rateController.userList)
 api.put('/rates/:uid', rateController.update)
 api.delete('/rates/:uid', rateController.delete)
+api.get('/rateChecks' , rateController.checkAvailable)
+
 /**
  * 즐겨찾기 관리
  */

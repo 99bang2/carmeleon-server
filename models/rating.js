@@ -209,6 +209,7 @@ module.exports = (sequelize, DataTypes) => {
 		)
 		return count
 	}
+
 	rating.avgRate = async (targetType, targetUid) => {
 		let data = await rating.findAll({
 			attributes: [[sequelize.fn('AVG', sequelize.col('rate')), 'ratingAvg']],
