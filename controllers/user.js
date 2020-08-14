@@ -29,7 +29,23 @@ exports.update = async function (ctx) {
     let _ = ctx.request.body
     Object.assign(user, _)
     await user.save()
-    response.send(ctx, user)
+	const accessToken = jwt.sign(
+		{
+			uid: user.uid,
+			snsType: user.snsType,
+			name: user.name,
+			nickname: user.nickname,
+			email: user.email,
+			phone: user.phone,
+			profileImage: user.profileImage,
+		},
+		secret
+	)
+	let data = {
+    	user: user,
+		token: accessToken
+	}
+    response.send(ctx, data)
 }
 
 exports.delete = async function (ctx) {
