@@ -69,7 +69,7 @@ api.get('/rateChecks' , rateController.checkAvailable)
  * 즐겨찾기 관리
  */
 api.post('/favorites', favoriteController.create)
-api.get('/favorites/:uid', favoriteController.userList)
+api.get('/favorites/:userUid', favoriteController.userList)
 api.put('/favorites/:uid', favoriteController.update)
 api.delete('/favorites/:uid', favoriteController.delete)
 /**
