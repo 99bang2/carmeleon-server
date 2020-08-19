@@ -52,7 +52,7 @@ module.exports = (sequelize, DataTypes) => {
 		})
 	}
 	favorite.getByUid = async function (ctx, uid) {
-		let data = await favorite.findByPk(uid, { paranoid: false })
+		let data = await favorite.findByPk(uid)
 		if (!data) {
 			response.badRequest(ctx)
 		}
