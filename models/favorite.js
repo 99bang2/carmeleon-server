@@ -52,7 +52,7 @@ module.exports = (sequelize, DataTypes) => {
 		})
 	}
 	favorite.getByUid = async function (ctx, uid) {
-		let data = await favorite.findByPk(uid)
+		let data = await favorite.findByPk(uid, { paranoid: false })
 		if (!data) {
 			response.badRequest(ctx)
 		}
@@ -81,7 +81,6 @@ module.exports = (sequelize, DataTypes) => {
 			where: {userUid:userUid}
 		}).then(function(val){
 			val.map(function (obj) {
-				console.log(obj.dataValues)
 				let tempVal = {}
 				switch (obj.dataValues.targetType) {
 					case 0:
@@ -182,16 +181,23 @@ module.exports = (sequelize, DataTypes) => {
 		return result
 	}
 	favorite.checkFavorite = async (params) => {
-		let count = await favorite.count(
-			{
-				where: {
-					targetType: params.targetType,
-					targetUid: params.targetUid,
-					userUid: params.userUid
-				}
-			}
-		)
-		return count
+		let where = {
+			targetType: params.targetType,
+			targetUid: params.targetUid,
+			userUid: params.userUid
+		}
+
+		let data = await favorite.findAll({
+			paranoid: false,
+			where: where
+		})
+		// let count = await favorite.count(
+		// 	{
+		// 		where: where
+		// 	}
+		// )
+		//return asw
+		return data
 	}
 	return favorite
 }

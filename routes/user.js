@@ -70,8 +70,6 @@ api.get('/rateChecks' , rateController.checkAvailable)
  */
 api.post('/favorites', favoriteController.create)
 api.get('/favorites/:userUid', favoriteController.userList)
-api.put('/favorites/:uid', favoriteController.update)
-api.delete('/favorites/:uid', favoriteController.delete)
 /**
  * 유저 관련 컨트롤러
  */

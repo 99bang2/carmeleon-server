@@ -2,19 +2,24 @@ const models = require('../models')
 const response = require('../libs/response')
 
 exports.create = async function (ctx) {
-	let { targetUid, targetType } = ctx.params
+	//let { targetUid, targetType } = ctx.params
 	let _ = ctx.request.body
-	_.targetType = targetType
-	_.targetUid = targetUid
-	let checkFavorite = await  models.favorite.checkRate(_)
-	if(checkFavorite > 0){
-		ctx.throw({
-			code: 400,
-			message: '이미 등록 된 장소입니다.'
-		})
+	// _.targetType = targetType
+	// _.targetUid = targetUid
+	let checkFavorite = await  models.favorite.checkFavorite(_)
+	if(checkFavorite.length > 0){
+		if(checkFavorite[0].deletedAt === null){
+			await checkFavorite[0].destroy()
+		}else{
+			checkFavorite[0].setDataValue('deletedAt', null)
+			Object.assign(checkFavorite[0], _)
+			await checkFavorite[0].save({ paranoid: false })
+		}
+		response.send(ctx, checkFavorite[0])
+	}else{
+		let favorite = await models.favorite.create(_)
+		response.send(ctx, favorite)
 	}
-	let favorite = await models.favorite.create(_)
-	response.send(ctx, favorite)
 }
 
 exports.list = async function (ctx) {
@@ -26,15 +31,6 @@ exports.list = async function (ctx) {
 exports.read = async function (ctx) {
 	let {uid} = ctx.params
 	let favorite = await models.favorite.getByUid(ctx, uid)
-	response.send(ctx, favorite)
-}
-
-exports.update = async function (ctx) {
-	let {uid} = ctx.params
-	let favorite = await models.favorite.getByUid(ctx, uid)
-	let _ = ctx.request.body
-	Object.assign(favorite, _)
-	await favorite.save()
 	response.send(ctx, favorite)
 }
 
