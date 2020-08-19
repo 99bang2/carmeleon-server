@@ -9,7 +9,7 @@ module.exports = (sequelize, DataTypes) => {
 			autoIncrement: true,
 			primaryKey: true,
 		},
-		siteUid:{
+		siteUid: {
 			type: DataTypes.INTEGER,
 		},
 		ticketTitle: {
@@ -18,7 +18,7 @@ module.exports = (sequelize, DataTypes) => {
 				if (this.getDataValue('ticketType') !== null && this.getDataValue('ticketDayType') !== null) {
 					let ticketTitle = codes.ticketTypeOpts[this.getDataValue('ticketType')] +
 						'(' + codes.ticketDayTypeOpts[this.getDataValue('ticketDayType')] + ')'
-					if(this.getDataValue('ticketType') === 1 && this.getDataValue('ticketTime')){
+					if (this.getDataValue('ticketType') === 1 && this.getDataValue('ticketTime')) {
 						ticketTitle = this.getDataValue('ticketTime') + ticketTitle
 					}
 					return ticketTitle
@@ -62,7 +62,16 @@ module.exports = (sequelize, DataTypes) => {
 		isActive: {
 			type: DataTypes.BOOLEAN,
 			defaultValue: true
-		}
+		},
+		ticketStartDate: {
+			type: DataTypes.DATE,
+		},
+		ticketEndDate: {
+			type: DataTypes.DATE,
+		},
+		ticketCount: {
+			type: DataTypes.INTEGER,
+		},
 	}, {
 		timestamps: true,
 		underscored: true,
@@ -80,10 +89,10 @@ module.exports = (sequelize, DataTypes) => {
 	}
 	discountTicket.search = async (params, models) => {
 		let where = {}
-		if(params.siteUid){
+		if (params.siteUid) {
 			where.siteUid = params.siteUid
 		}
-		if(params.productTag){
+		if (params.productTag) {
 			where.ticketType = params.productTag
 		}
 		let result = await discountTicket.findAll({

@@ -87,19 +87,20 @@ exports.userList = async function (ctx) {
 
 exports.checkAvailable = async function (ctx) {
 	let _ = ctx.request.query
-	let checkCount = await models.rating.checkPay(_, models)
-	_.rateType = false
-	if(checkCount === 0){
-		_.rateType = true
+	let checkCount = 0
+	_.rateType = true
+	if(_.targetType === 0){
+		let checkCount = await models.rating.checkPay(_, models)
+		_.rateType = checkCount === 0;
 	}
 	let checkRate = await models.rating.checkRate(_)
-	if(_.rateType === true && checkRate > 0){
+	if(_.rateType === false && (checkRate >= checkCount)){
 		ctx.throw({
 			code: 400,
 			message: '이미 평가를 완료 했습니다.'
 		})
 	}
-	if(_.rateType === false && (checkRate >= checkCount)){
+	if(_.rateType === true && checkRate > 0){
 		ctx.throw({
 			code: 400,
 			message: '이미 평가를 완료 했습니다.'

@@ -169,12 +169,22 @@ module.exports = (sequelize, DataTypes) => {
 			foreignKey: 'siteUid'
 		})
 	}
-	parkingSite.getByUid = async function (ctx, uid, models) {
+	parkingSite.getByUid = async function (ctx, uid, params, models) {
+		let userUid = null
+		if(params.userUid){
+			userUid = params.userUid
+		}
+		let favoriteCheck = 'target_type = 0 AND target_uid = '+uid+' AND user_uid = '+userUid+')'
 		let data = await parkingSite.findByPk(uid, {
 			//TODO: Attribute 필요 항목만//
 			include: [{
 				model: models.discountTicket
-			}]
+			}],
+			attributes: {
+				include: [
+					[Sequelize.literal(`(SELECT count(uid) FROM favorites WHERE ` + favoriteCheck) , 'favoriteFlag']
+				]
+			}
 		})
 		if (!data) {
 			response.badRequest(ctx)
