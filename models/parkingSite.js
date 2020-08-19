@@ -174,7 +174,7 @@ module.exports = (sequelize, DataTypes) => {
 		if(params.userUid){
 			userUid = params.userUid
 		}
-		let favoriteCheck = 'target_type = 0 AND target_uid = '+uid+' AND user_uid = '+userUid+')'
+		let favoriteCheck = 'target_type = 0 AND target_uid = '+uid+' AND user_uid = '+userUid+' AND deleted_at IS NULL)'
 		let data = await parkingSite.findByPk(uid, {
 			//TODO: Attribute 필요 항목만//
 			include: [{
