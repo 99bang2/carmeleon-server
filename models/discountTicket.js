@@ -1,7 +1,10 @@
 'use strict'
 const response = require('../libs/response')
 const codes = require('../configs/codes.json')
+const moment = require('moment')
+const Sequelize = require('Sequelize')
 module.exports = (sequelize, DataTypes) => {
+	let currentDate = moment().format('YYYY-MM-DD')
 	const discountTicket = sequelize.define('discountTicket', {
 		uid: {
 			type: DataTypes.INTEGER,
@@ -96,6 +99,12 @@ module.exports = (sequelize, DataTypes) => {
 			where.ticketType = params.productTag
 		}
 		let result = await discountTicket.findAll({
+			attributes: {
+				include: [
+					[sequelize.literal(`case when '` + currentDate + `' between ticket_start_date AND ticket_end_date then 1 else 0 end`), 'expire'],
+					[sequelize.literal(`case when ((select count(uid) from pay_logs where discount_ticket_uid = uid) = ticket_count) then 1 else 0 end`), 'sold_out']
+				]
+			},
 			where: where
 		})
 		return result
