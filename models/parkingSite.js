@@ -143,7 +143,23 @@ module.exports = (sequelize, DataTypes) => {
 		},
 		accountUid: {
 			type: DataTypes.INTEGER
-		}
+		},
+		valetType: {
+			type: DataTypes.INTEGER,
+			defaultValue: 0
+		},
+		valetTypeName: {
+			type: DataTypes.VIRTUAL,
+			get: function () {
+				if (this.getDataValue('valetType') !== null) {
+					return codes.site[this.getDataValue('valetType')]
+				}
+			}
+		},
+		isBuy: {
+			type: DataTypes.BOOLEAN,
+			defaultValue: true
+		},
 	}, {
 		timestamps: true,
 		paranoid: true,
