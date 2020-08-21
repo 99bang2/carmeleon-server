@@ -152,7 +152,7 @@ module.exports = (sequelize, DataTypes) => {
 			type: DataTypes.VIRTUAL,
 			get: function () {
 				if (this.getDataValue('valetType') !== null) {
-					return codes.site[this.getDataValue('valetType')]
+					return codes.valetType[this.getDataValue('valetType')]
 				}
 			}
 		},
