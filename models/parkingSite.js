@@ -3,8 +3,14 @@ const response = require('../libs/response')
 const codes = require('../configs/codes.json')
 const Sequelize = require('sequelize')
 const Op = Sequelize.Op
+const moment = require('moment')
 
 module.exports = (sequelize, DataTypes) => {
+	let currentDate = moment().format('YYYY-MM-DD')
+	let currentDay = parseInt(moment().format('E'))
+	let dayType
+	(currentDay === 0 || currentDay === 6) ? dayType = 2 : dayType = 1
+
 	const parkingSite = sequelize.define('parkingSite', {
 		uid: {
 			type: DataTypes.INTEGER,
@@ -187,18 +193,24 @@ module.exports = (sequelize, DataTypes) => {
 	}
 	parkingSite.getByUid = async function (ctx, uid, params, models) {
 		let userUid = null
-		if(params.userUid){
+		if (params.userUid) {
 			userUid = params.userUid
 		}
-		let favoriteCheck = 'target_type = 0 AND target_uid = '+uid+' AND user_uid = '+userUid+' AND deleted_at IS NULL)'
+		let favoriteCheck = 'target_type = 0 AND target_uid = ' + uid + ' AND user_uid = ' + userUid + ' AND deleted_at IS NULL)'
 		let data = await parkingSite.findByPk(uid, {
 			//TODO: Attribute 필요 항목만//
 			include: [{
-				model: models.discountTicket
+				model: models.discountTicket,
+				attributes: {
+					include: [
+						[sequelize.literal(`case when ('` + currentDate + `' not between ticket_start_date AND ticket_end_date) AND (ticket_day_type !=` + dayType + `) then 1 else 0 end`), 'expire'],
+						[sequelize.literal(`case when ((select count(uid) from pay_logs where discount_ticket_uid = uid) = ticket_count) then 1 else 0 end`), 'sold_out']
+					]
+				},
 			}],
 			attributes: {
 				include: [
-					[Sequelize.literal(`(SELECT count(uid) FROM favorites WHERE ` + favoriteCheck) , 'favoriteFlag']
+					[Sequelize.literal(`(SELECT count(uid) FROM favorites WHERE ` + favoriteCheck), 'favoriteFlag']
 				]
 			}
 		})
