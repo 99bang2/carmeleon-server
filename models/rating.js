@@ -48,13 +48,13 @@ module.exports = (sequelize, DataTypes) => {
 	})
 	rating.associate = function (models) {
 		rating.belongsTo(models.user),
-		rating.belongsTo(models.reviewTemplate),
-		//rating.belongsTo(models.parkingSite, {foreignKey: 'site_uid', targetKey: 'uid'})
-		rating.belongsTo(models.parkingSite, {
-			foreignKey: 'targetUid',
-			constraints: false,
-			as: 'parkingSite'
-		})
+			rating.belongsTo(models.reviewTemplate),
+			//rating.belongsTo(models.parkingSite, {foreignKey: 'site_uid', targetKey: 'uid'})
+			rating.belongsTo(models.parkingSite, {
+				foreignKey: 'targetUid',
+				constraints: false,
+				as: 'parkingSite'
+			})
 		rating.belongsTo(models.gasStation, {
 			foreignKey: 'targetUid',
 			constraints: false,
@@ -112,7 +112,11 @@ module.exports = (sequelize, DataTypes) => {
 			}, {
 				as: 'carWash',
 				model: models.carWash
-			},],
+			}, {
+				as: 'evChargeStation',
+				model: models.evChargeStation
+			}
+			],
 			offset: offset,
 			limit: limit,
 			order: order,
@@ -131,16 +135,21 @@ module.exports = (sequelize, DataTypes) => {
 		if (params.targetType) {
 			where.targetType = params.targetType
 			switch (params.targetType) {
-				case '0' : targetTable = 'parking_sites';
-					break;
-				case '1' : targetTable = 'gas_stations';
-					break;
-				case '2' : targetTable = 'car_washes';
-					break;
-				case '3' : targetTable = 'ev_charges';
-					break;
-				default : targetTable = 'parking_sites';
-					break;
+				case '0' :
+					targetTable = 'parking_sites'
+					break
+				case '1' :
+					targetTable = 'gas_stations'
+					break
+				case '2' :
+					targetTable = 'car_washes'
+					break
+				case '3' :
+					targetTable = 'ev_charges'
+					break
+				default :
+					targetTable = 'parking_sites'
+					break
 			}
 		}
 		if (params.targetUid) {
@@ -152,7 +161,7 @@ module.exports = (sequelize, DataTypes) => {
 			offset = (Number(params.page) - 1) * limit
 		}
 		let order = [['createdAt', 'DESC']]
-		if (params.order){
+		if (params.order) {
 			order = sequelize.literal(`CHARACTER_LENGTH(review_content) DESC, \`rating\`.\`rate\` DESC, \`rating\`.\`created_at\` DESC`)
 		}
 		let result = await rating.findAll({
@@ -175,7 +184,7 @@ module.exports = (sequelize, DataTypes) => {
 				[sequelize.literal(`COUNT(CASE WHEN rate = 7 OR rate = 8 THEN 0 END)`), 'rate_4'],
 				[sequelize.literal(`COUNT(CASE WHEN rate = 9 OR rate = 10 THEN 0 END)`), 'rate_5'],
 				[sequelize.literal(`COUNT(*)`), 'count'],
-				[`(SELECT rate FROM `+targetTable+` WHERE uid=`+params.targetUid+')', 'avg_rate']
+				[`(SELECT rate FROM ` + targetTable + ` WHERE uid=` + params.targetUid + ')', 'avg_rate']
 			],
 			where: where
 		})
