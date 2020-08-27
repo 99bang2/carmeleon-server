@@ -2,23 +2,32 @@ const models = require('../models')
 const response = require('../libs/response')
 
 exports.create = async function (ctx) {
-	//let { targetUid, targetType } = ctx.params
 	let _ = ctx.request.body
-	// _.targetType = targetType
-	// _.targetUid = targetUid
+	let place
+	switch (_.targetType) {
+		case 0: place = await models.parkingSite.findByPk(_.targetUid, {raw:true})
+			break
+		case 1: place = await models.gasStation.findByPk(_.targetUid, {raw:true})
+			break
+		case 2: place = await models.carWash.findByPk(_.targetUid, {raw:true})
+			break
+		case 3: place = await models.evCharge.findByPk(_.targetUid, {raw:true})
+			break
+	}
 	let checkFavorite = await  models.favorite.checkFavorite(_)
 	if(checkFavorite.length > 0){
 		if(checkFavorite[0].deletedAt === null){
 			await checkFavorite[0].destroy()
+			place = null
 		}else{
 			checkFavorite[0].setDataValue('deletedAt', null)
 			Object.assign(checkFavorite[0], _)
 			await checkFavorite[0].save({ paranoid: false })
 		}
-		response.send(ctx, checkFavorite[0])
+		response.send(ctx, {data:checkFavorite[0], place:place})//checkFavorite[0])
 	}else{
 		let favorite = await models.favorite.create(_)
-		response.send(ctx, favorite)
+		response.send(ctx,{data:favorite, place:place})// favorite)
 	}
 }
 
