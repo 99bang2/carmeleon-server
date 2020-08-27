@@ -18,16 +18,18 @@ exports.create = async function (ctx) {
 	if(checkFavorite.length > 0){
 		if(checkFavorite[0].deletedAt === null){
 			await checkFavorite[0].destroy()
-			place = null
+			Object.assign(checkFavorite[0].dataValues, {place: null})
 		}else{
 			checkFavorite[0].setDataValue('deletedAt', null)
 			Object.assign(checkFavorite[0], _)
 			await checkFavorite[0].save({ paranoid: false })
 		}
-		response.send(ctx, {data:checkFavorite[0], place:place})//checkFavorite[0])
+		Object.assign(checkFavorite[0].dataValues, {place: place})
+		response.send(ctx, checkFavorite[0])//checkFavorite[0])
 	}else{
 		let favorite = await models.favorite.create(_)
-		response.send(ctx,{data:favorite, place:place})// favorite)
+		Object.assign(favorite.dataValues, {place: place})
+		response.send(ctx, favorite)// favorite)
 	}
 }
 
