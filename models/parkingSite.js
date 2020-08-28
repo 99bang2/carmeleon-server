@@ -193,8 +193,10 @@ module.exports = (sequelize, DataTypes) => {
 	}
 	parkingSite.getByUid = async function (ctx, uid, params, models) {
 		let userUid = null
-		if (params.userUid) {
-			userUid = params.userUid
+		if(params !== null) {
+			if (params.userUid) {
+				userUid = params.userUid
+			}
 		}
 		let favoriteCheck = 'target_type = 0 AND target_uid = ' + uid + ' AND user_uid = ' + userUid + ' AND deleted_at IS NULL)'
 		let data = await parkingSite.findByPk(uid, {
