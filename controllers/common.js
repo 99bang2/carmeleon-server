@@ -48,7 +48,7 @@ exports.avgRate = async function (ctx, targetType, targetUid){
 	}
 	switch (targetType) {
 		case '0' :
-			let parkingSite = await models.parkingSite.getByUid(ctx, targetUid, models)
+			let parkingSite = await models.parkingSite.getByUid(ctx, targetUid, null, models)
 			Object.assign(parkingSite, {rate: ratingAvg})
 			await parkingSite.save()
 		break;
