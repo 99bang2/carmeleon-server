@@ -15,7 +15,7 @@ exports.list = async function (ctx) {
 
 exports.read = async function (ctx) {
     let {uid} = ctx.params
-    let evChargeStation = await models.evChargeStation.getByUid(ctx, uid)
+    let evChargeStation = await models.evChargeStation.getByUid(ctx, uid, models)
     response.send(ctx, evChargeStation)
 }
 

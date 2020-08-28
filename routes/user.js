@@ -18,6 +18,7 @@ const discountTicketController = require('../controllers/discountTicket')
 const couponController = require('../controllers/coupon')
 const couponLogController = require('../controllers/couponLog')
 const reviewTemplateController = require('../controllers/reviewTemplate')
+const evChargeStationController = require('../controllers/evChargeStation')
 
 const commonController = require('../controllers/common')
 
@@ -54,6 +55,11 @@ api.get('/carWashes/:uid', carWashController.read)
  */
 api.get('/gasStations', gasStationController.userList)
 api.get('/gasStations/:uid', gasStationController.read)
+/**
+ * 전기차 충전소 관리(Main)
+ */
+api.get('/evChargeStations', evChargeStationController.list)
+api.get('/evChargeStations/:uid', evChargeStationController.read)
 /**
  * 리뷰 관리
  */

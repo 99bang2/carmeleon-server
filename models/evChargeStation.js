@@ -80,8 +80,12 @@ module.exports = (sequelize, DataTypes) => {
 			sourceKey: 'statId'
 		})
 	}
-	evChargeStation.getByUid = async function (ctx, uid) {
-		let data = await evChargeStation.findByPk(uid)
+	evChargeStation.getByUid = async function (ctx, uid, models) {
+		let data = await evChargeStation.findByPk(uid, {
+			include: [{
+				model: models.evCharger
+			}],
+		})
 		if (!data) {
 			response.badRequest(ctx)
 		}

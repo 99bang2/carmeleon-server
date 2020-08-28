@@ -24,6 +24,7 @@ const pointLogController = require('../controllers/point')
 const payLogController = require('../controllers/payLog')
 const couponController = require('../controllers/coupon')
 const couponLogController = require('../controllers/couponLog')
+const evChargeStationController = require('../controllers/evChargeStation')
 
 const tutorialController = require('../controllers/tutorial')
 
@@ -193,6 +194,15 @@ api.delete('/couponLogs/:uid', couponLogController.delete)
 api.post('/tutorials', tutorialController.setTutorial)
 api.get('/tutorials', tutorialController.getTutorial)
 //api.put('/tutorials/:uid', tutorialController.setTutorial)
+/**
+ * 전기차 충전소 관리(Main)
+ */
+api.post('/evChargeStations', evChargeStationController.create)
+api.get('/evChargeStations', evChargeStationController.list)
+api.get('/evChargeStations/:uid', evChargeStationController.read)
+api.put('/evChargeStations/:uid', evChargeStationController.update)
+api.delete('/evChargeStations/:uid', evChargeStationController.delete)
+api.post('/evChargeStations/bulkDelete', evChargeStationController.bulkDelete)//복수삭제
 /**
  * 공통 컨트롤러
  */

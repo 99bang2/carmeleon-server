@@ -65,6 +65,11 @@ module.exports = (sequelize, DataTypes) => {
 			constraints: false,
 			as: 'carWash'
 		})
+		rating.belongsTo(models.evChargeStation, {
+			foreignKey: 'targetUid',
+			constraints: false,
+			as: 'evChargeStation'
+		})
 	}
 	rating.getByUid = async function (ctx, uid, models) {
 		let data = await rating.findByPk(uid, {
