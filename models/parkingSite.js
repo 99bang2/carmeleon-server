@@ -4,6 +4,7 @@ const codes = require('../configs/codes.json')
 const Sequelize = require('sequelize')
 const Op = Sequelize.Op
 const moment = require('moment')
+const common = require('../controllers/common')
 
 module.exports = (sequelize, DataTypes) => {
 	let currentDate = moment().format('YYYY-MM-DD')
@@ -193,9 +194,13 @@ module.exports = (sequelize, DataTypes) => {
 	}
 	parkingSite.getByUid = async function (ctx, uid, params, models) {
 		let userUid = null
+		let rateCheck = null
 		if(params !== null) {
 			if (params.userUid) {
 				userUid = params.userUid
+				params.targetType = 0
+				params.targetUid = uid
+				rateCheck = await common.checkRateAvailable(params)
 			}
 		}
 		let favoriteCheck = 'target_type = 0 AND target_uid = ' + uid + ' AND user_uid = ' + userUid + ' AND deleted_at IS NULL)'
@@ -219,6 +224,7 @@ module.exports = (sequelize, DataTypes) => {
 		if (!data) {
 			response.badRequest(ctx)
 		}
+		data.dataValues.rateFlag = rateCheck
 		return data
 	}
 

@@ -9,18 +9,18 @@ const axios = require('axios')
 const codes = require('../configs/codes.json')
 const availableTargetTypes = ["0", "1", "2", "3"]
 
-exports.fileUpload = async function (ctx){
+exports.fileUpload = async function (ctx) {
 	let _ = ctx.request.body
-	let folder = _.dir+'/'
-	let dir = './uploads/'+folder
+	let folder = _.dir + '/'
+	let dir = './uploads/' + folder
 	let file = ctx.request.files.file
 	let filePath = imageUpload.imageUpload(ctx, file, dir, folder)
 	response.send(ctx, filePath)
 }
 
-exports.searchList = async function (ctx){
+exports.searchList = async function (ctx) {
 	let _ = ctx.request.body
-	let res = await axios.get('https://openapi.naver.com/v1/search/local.json?query='+encodeURI(_.keyword)+'&display='+_.count, {
+	let res = await axios.get('https://openapi.naver.com/v1/search/local.json?query=' + encodeURI(_.keyword) + '&display=' + _.count, {
 		headers: {
 			'X-Naver-Client-Id': config.naverClientID,
 			'X-Naver-Client-Secret': config.naverClientKey
@@ -29,9 +29,9 @@ exports.searchList = async function (ctx){
 	response.send(ctx, res.data)
 }
 
-exports.searchLocal = async function (ctx){
+exports.searchLocal = async function (ctx) {
 	let _ = ctx.request.body
-	let res = await axios.get('https://naveropenapi.apigw.ntruss.com/map-geocode/v2/geocode?query='+encodeURI(_.address), {
+	let res = await axios.get('https://naveropenapi.apigw.ntruss.com/map-geocode/v2/geocode?query=' + encodeURI(_.address), {
 		headers: {
 			'X-NCP-APIGW-API-KEY-ID': config.naverApiID,
 			'X-NCP-APIGW-API-KEY': config.naverApiKey
@@ -40,10 +40,10 @@ exports.searchLocal = async function (ctx){
 	response.send(ctx, res.data)
 }
 
-exports.avgRate = async function (ctx, targetType, targetUid){
+exports.avgRate = async function (ctx, targetType, targetUid) {
 	let res = await models.rating.avgRate(targetType, targetUid)
 	let ratingAvg = JSON.parse(JSON.stringify(res))[0].ratingAvg
-	if(!ratingAvg){
+	if (!ratingAvg) {
 		ratingAvg = 0
 	}
 	switch (targetType) {
@@ -51,33 +51,54 @@ exports.avgRate = async function (ctx, targetType, targetUid){
 			let parkingSite = await models.parkingSite.getByUid(ctx, targetUid, null, models)
 			Object.assign(parkingSite, {rate: ratingAvg})
 			await parkingSite.save()
-		break;
+			break
 		case '1' :
 			let gasStation = await models.gasStation.getByUid(ctx, targetUid)
 			Object.assign(gasStation, {rate: ratingAvg})
 			await gasStation.save()
-		break;
+			break
 		case '2' :
 			let carWash = await models.carWash.getByUid(ctx, targetUid)
 			Object.assign(carWash, {rate: ratingAvg})
 			await carWash.save()
-		break;
+			break
 	}
 	return true
 }
 
-exports.codes = function (ctx){
+exports.codes = function (ctx) {
 	response.send(ctx, codes)
 }
 
-
 exports.isAvailableTarget = async (ctx, next) => {
-	let { targetType } = ctx.params
-	if(availableTargetTypes.indexOf(targetType) < 0) {
+	let {targetType} = ctx.params
+	if (availableTargetTypes.indexOf(targetType) < 0) {
 		ctx.throw({
 			code: 400,
 			message: '잘못된 요청입니다.'
 		})
 	}
 	await next()
+}
+
+exports.checkRateAvailable = async function (data) {
+	let _ = data
+	if (typeof _.userUid === 'undefined' || typeof _.targetType == 'undefined') {
+		return false
+	}
+	let checkCount = 0
+	_.rateType = 0
+	if (_.targetType === 0) {
+		let checkCount = await models.rating.checkPay(_, models)
+		checkCount > 0 ? _.rateType = 1 : _.rateType = 0
+	}
+
+	let checkRate = await models.rating.checkRate(_)
+	if (_.rateType === 1 && (checkRate >= checkCount)) {
+		return false
+	}
+	if (_.rateType === 0 && checkRate > 0) {
+		return false
+	}
+	return true
 }

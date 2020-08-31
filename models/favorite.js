@@ -45,10 +45,10 @@ module.exports = (sequelize, DataTypes) => {
 			constraints: false,
 			as: 'carWash'
 		})
-		favorite.belongsTo(models.evCharge, {
+		favorite.belongsTo(models.evChargeStation, {
 			foreignKey: 'targetUid',
 			constraints: false,
-			as: 'evCharge'
+			as: 'evChargeStation'
 		})
 	}
 	favorite.getByUid = async function (ctx, uid) {
@@ -73,11 +73,10 @@ module.exports = (sequelize, DataTypes) => {
 				model: models.carWash,
 				attributes: ['uid', 'carWashName', 'address']
 			},{
-				as: 'evCharge',
-				model: models.evCharge,
+				as: 'evChargeStation',
+				model: models.evChargeStation,
 				attributes: ['uid', 'statNm', 'addr']
-			},
-			],
+			}],
 			where: {userUid:userUid}
 		}).then(function(val){
 			val.map(function (obj) {
@@ -117,15 +116,15 @@ module.exports = (sequelize, DataTypes) => {
 						tempVal.address = obj.dataValues.carWash.address
 						break;
 					case 3:
-						if(!obj.dataValues.evCharge){
+						if(!obj.dataValues.evChargeStation){
 							ctx.throw({
 								code: 400,
 								message: '존재 하지 않습니다.'
 							})
 						}
-						tempVal.uid = obj.dataValues.evCharge.uid
-						tempVal.name = obj.dataValues.evCharge.statNm
-						tempVal.address = obj.dataValues.evCharge.addr
+						tempVal.uid = obj.dataValues.evChargeStation.uid
+						tempVal.name = obj.dataValues.evChargeStation.statNm
+						tempVal.address = obj.dataValues.evChargeStation.addr
 						break;
 				}
 				obj.dataValues.place = tempVal
@@ -138,8 +137,8 @@ module.exports = (sequelize, DataTypes) => {
 				if(obj.dataValues.carWash) {
 					delete obj.dataValues.carWash
 				}
-				if(obj.dataValues.evCharge) {
-					delete obj.dataValues.evCharge
+				if(obj.dataValues.evChargeStation) {
+					delete obj.dataValues.evChargeStation
 				}
 			})
 			return val
