@@ -167,6 +167,10 @@ module.exports = (sequelize, DataTypes) => {
 			type: DataTypes.BOOLEAN,
 			defaultValue: true
 		},
+		isRate: {
+			type: DataTypes.BOOLEAN,
+			defaultValue: true
+		}
 	}, {
 		timestamps: true,
 		paranoid: true,
@@ -356,6 +360,5 @@ module.exports = (sequelize, DataTypes) => {
 		})
 		return result
 	}
-
 	return parkingSite
 }

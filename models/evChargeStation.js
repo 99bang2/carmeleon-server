@@ -95,7 +95,6 @@ module.exports = (sequelize, DataTypes) => {
 	evChargeStation.search = async (params, models) => {
 		let where = {}
 		let order = [['createdAt', 'DESC']]
-
 		if (params.searchKeyword) {
 			where = {
 				[Sequelize.Op.or]: [
@@ -109,6 +108,9 @@ module.exports = (sequelize, DataTypes) => {
 		}
 
 		let result = await evChargeStation.findAll({
+			include: [{
+				model: models.evCharger
+			}],
 			offset: params.offset ? Number(params.offset) : null,
 			limit: params.limit ? Number(params.limit) : null,
 			order: order,

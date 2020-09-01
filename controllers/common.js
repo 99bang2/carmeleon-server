@@ -86,18 +86,44 @@ exports.checkRateAvailable = async function (data) {
 	if (typeof _.userUid === 'undefined' || typeof _.targetType == 'undefined') {
 		return false
 	}
-	let checkCount = 0
-	_.rateType = 0
-	if (_.targetType === 0) {
-		let checkCount = await models.rating.checkPay(_, models)
-		checkCount > 0 ? _.rateType = 1 : _.rateType = 0
+	_.rateType = 1
+	let checkPlace = true
+	switch (_.targetType) {
+		case 0:
+			checkPlace = await models.parkingSite.findOne({
+				attributes: ['isRate'],
+				where: {uid: _.targetUid}
+			})
+			break
+		case 1:
+			checkPlace = await models.gasStation.findOne({
+				attributes: ['isRate'],
+				where: {uid: _.targetUid}
+			})
+			break
+		case 2:
+			checkPlace = await models.carWash.findOne({
+				attributes: ['isRate'],
+				where: {uid: _.targetUid}
+			})
+			break
+		case 3:
+			checkPlace = await models.evChargeStation.findOne({
+				attributes: ['isRate'],
+				where: {uid: _.targetUid}
+			})
+			break
 	}
-
+	console.log('checkPlace', checkPlace.isRate)
+	let checkCount = await models.rating.checkPay(_, models)
 	let checkRate = await models.rating.checkRate(_)
-	if (_.rateType === 1 && (checkRate >= checkCount)) {
-		return false
-	}
-	if (_.rateType === 0 && checkRate > 0) {
+	if(checkPlace.isRate === true){
+		console.log('checkCount', checkCount)
+		console.log('checkRate', checkRate)
+		if (checkRate >= checkCount) {
+			return false
+		}
+	} else {
 		return false
 	}
 	return true
