@@ -42,7 +42,9 @@
 		"pregnant": "임산부",
 		"female": "여성",
 		"elecCharge": "전기차충전",
-		"mechanical": "기계식"
+		"mechanical": "기계식",
+		"freightMedium": "화물 가능(중형)",
+		"freightLarge": "화물 가능(대형)"
 	},
 	"carTag": {
 		"bus": "버스",
