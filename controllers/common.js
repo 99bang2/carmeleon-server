@@ -114,10 +114,9 @@ exports.checkRateAvailable = async function (data) {
 			})
 			break
 	}
-	console.log('checkPlace', checkPlace.isRate)
 	let checkCount = await models.rating.checkPay(_, models)
 	let checkRate = await models.rating.checkRate(_)
-	if(checkPlace.isRate === true){
+	if(checkPlace === true){
 		console.log('checkCount', checkCount)
 		console.log('checkRate', checkRate)
 		if (checkRate >= checkCount) {
