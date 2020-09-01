@@ -264,6 +264,9 @@ module.exports = (sequelize, DataTypes) => {
 		if (params.siteType) {
 			where.site_type = params.siteType
 		}
+		if (params.valetType) {
+			where.valet_type = params.valetType
+		}
 		// if(params.paymentTag){
 		// 	if(params.paymentTag.indexOf(',') !== -1){
 		// 		let tagArr = params.paymentTag.split(',')
@@ -313,22 +316,22 @@ module.exports = (sequelize, DataTypes) => {
 		// 		}
 		// 	}
 		// }
-		// if(params.optionTag){
-		// 	if(params.optionTag.indexOf(',') !== -1){
-		// 		let tagArr = params.optionTag.split(',')
-		// 		let tagWhereArr = []
-		// 		for(let i in tagArr){
-		// 			tagWhereArr.push(sequelize.where(sequelize.literal(`option_tag`), 'like', '%'+tagArr[i]+'%'))
-		// 		}
-		// 		where.option_tag = {
-		// 			[Op.and] : tagWhereArr
-		// 		}
-		// 	}else{
-		// 		where.option_tag = {
-		// 			[Op.substring]: params.optionTag
-		// 		}
-		// 	}
-		// }
+		if(params.optionTag){
+			if(params.optionTag.indexOf(',') !== -1){
+				let tagArr = params.optionTag.split(',')
+				let tagWhereArr = []
+				for(let i in tagArr){
+					tagWhereArr.push(sequelize.where(sequelize.literal(`option_tag`), 'like', '%'+tagArr[i]+'%'))
+				}
+				where.option_tag = {
+					[Op.and] : tagWhereArr
+				}
+			}else{
+				where.option_tag = {
+					[Op.substring]: params.optionTag
+				}
+			}
+		}
 		// if(params.carTag){
 		// 	if(params.carTag.indexOf(',') !== -1){
 		// 		let tagArr = params.carTag.split(',')

@@ -22,8 +22,8 @@ exports.read = async function (ctx) {
 
 exports.update = async function (ctx) {
     let {uid} = ctx.params
-    let parkingSite = await models.parkingSite.getByUid(ctx, uid, models)
-    let _ = ctx.request.body
+	let _ = ctx.request.body
+    let parkingSite = await models.parkingSite.getByUid(ctx, uid, _, models)
     Object.assign(parkingSite, _)
     await parkingSite.save()
     response.send(ctx, parkingSite)
