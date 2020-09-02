@@ -68,6 +68,9 @@ module.exports = (sequelize, DataTypes) => {
 		},
 		cardUid: {
 			type: DataTypes.INTEGER
+		},
+		rateUid: {
+			type: DataTypes.INTEGER
 		}
 	}, {
 		timestamps: true,

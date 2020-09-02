@@ -95,6 +95,13 @@ module.exports = (sequelize, DataTypes) => {
 	evChargeStation.search = async (params, models) => {
 		let where = {}
 		let order = [['createdAt', 'DESC']]
+		let longitude = params.lon ? parseFloat(params.lon) : null
+		let latitude = params.lat ? parseFloat(params.lat) : null
+		let radius = params.radius
+		let distaceQuery = sequelize.where(sequelize.literal(`(6371 * acos(cos(radians(${latitude})) * cos(radians(lat)) * cos(radians(lon) - radians(${longitude})) + sin(radians(${latitude})) * sin(radians(lat))))`), '<=', radius)
+		if (!radius) {
+			distaceQuery = null
+		}
 		if (params.searchKeyword) {
 			where = {
 				[Sequelize.Op.or]: [
@@ -111,10 +118,18 @@ module.exports = (sequelize, DataTypes) => {
 			include: [{
 				model: models.evCharger
 			}],
+			attributes: {
+				include: [
+					[`(6371 * acos(cos(radians(${latitude})) * cos(radians(lat)) * cos(radians(lon) - radians(${longitude})) + sin(radians(${latitude})) * sin(radians(lat))))`, 'distance'],
+					[`(SELECT count(*) FROM ratings WHERE site_uid = carWash.uid)`, 'rate_count']]
+			},
 			offset: params.offset ? Number(params.offset) : null,
 			limit: params.limit ? Number(params.limit) : null,
 			order: order,
-			where: where
+			where: [
+				distaceQuery
+				, where
+			]
 		})
 		let count = await evChargeStation.scope(null).count({
 			where: where

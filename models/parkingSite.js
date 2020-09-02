@@ -202,9 +202,6 @@ module.exports = (sequelize, DataTypes) => {
 		if(params !== null) {
 			if (params.userUid) {
 				userUid = params.userUid
-				params.targetType = 0
-				params.targetUid = uid
-				rateCheck = await common.checkRateAvailable(params)
 			}
 		}
 		let favoriteCheck = 'target_type = 0 AND target_uid = ' + uid + ' AND user_uid = ' + userUid + ' AND deleted_at IS NULL)'
