@@ -171,7 +171,6 @@ module.exports = (sequelize, DataTypes) => {
 		if (params.carWashType) {
 			where.carWashType = params.carWashType
 		}
-		where.is_active = 1
 		let result = await carWash.findAll({
 			attributes: {
 				include: [

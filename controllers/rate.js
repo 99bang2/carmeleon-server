@@ -9,7 +9,7 @@ exports.create = async function (ctx) {
 	_.targetType = targetType
 	_.targetUid = targetUid
 	_.rateType = 1
-	let rateCheck = await commonController.checkRateAvailable(_)
+	let rateCheck = await commonController.checkRateAvailable(_.payLogUid)
 	if (rateCheck === false){
 		ctx.throw({
 			code: 400,
@@ -17,6 +17,7 @@ exports.create = async function (ctx) {
 		})
 	}
 	let rate = await models. rating.create(_)
+	await models.payLog.update({rateUid: rate.uid}, {where: {uid: _.payLogUid}})
 	await commonController.avgRate(ctx, targetType, targetUid)
 	response.send(ctx, rate)
 }

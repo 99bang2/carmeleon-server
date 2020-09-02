@@ -86,49 +86,13 @@ exports.isAvailableTarget = async (ctx, next) => {
 	await next()
 }
 
-exports.checkRateAvailable = async function (data) {
-	let _ = data
-	if (typeof _.userUid === 'undefined' || typeof _.targetType == 'undefined') {
-		return false
-	}
-	_.rateType = 1
-	let checkPlace = true
-	switch (_.targetType) {
-		case 0:
-			checkPlace = await models.parkingSite.findOne({
-				attributes: ['isRate'],
-				where: {uid: _.targetUid}
-			})
-			break
-		case 1:
-			checkPlace = await models.evChargeStation.findOne({
-				attributes: ['isRate'],
-				where: {uid: _.targetUid}
-			})
-			break
-		case 2:
-			checkPlace = await models.gasStation.findOne({
-				attributes: ['isRate'],
-				where: {uid: _.targetUid}
-			})
-			break
-		case 3:
-			checkPlace = await models.carWash.findOne({
-				attributes: ['isRate'],
-				where: {uid: _.targetUid}
-			})
-			break
-	}
-	let checkCount = await models.rating.checkPay(_, models)
-	let checkRate = await models.rating.checkRate(_)
-	if(checkPlace === true){
-		console.log('checkCount', checkCount)
-		console.log('checkRate', checkRate)
-		if (checkRate >= checkCount) {
-			return false
-		}
-	} else {
-		return false
-	}
-	return true
+exports.checkRateAvailable = async function (uid) {
+	// UID = PayLogUid //
+	let rateCheck = await models.payLog.findOne({
+		attributes: ['rate_uid'],
+		where: {uid: uid},
+		raw: true
+	})
+	console.log(rateCheck)
+	return rateCheck.rate_uid === null;
 }
