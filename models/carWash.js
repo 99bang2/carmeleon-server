@@ -168,6 +168,7 @@ module.exports = (sequelize, DataTypes) => {
 		if (!radius) {
 			distaceQuery = null
 		}
+		let rateWhere = 'target_type = 3 AND target_uid = carWash.uid)'
 		if (params.carWashType) {
 			where.carWashType = params.carWashType
 		}
@@ -175,7 +176,8 @@ module.exports = (sequelize, DataTypes) => {
 			attributes: {
 				include: [
 					[`(6371 * acos(cos(radians(${latitude})) * cos(radians(lat)) * cos(radians(lon) - radians(${longitude})) + sin(radians(${latitude})) * sin(radians(lat))))`, 'distance'],
-					[`(SELECT count(*) FROM ratings WHERE site_uid = carWash.uid)`, 'rate_count']]
+					[`(SELECT count(uid) FROM ratings WHERE ` + rateWhere, 'rate_count']
+				]
 			},
 			order: order,
 			where: [
