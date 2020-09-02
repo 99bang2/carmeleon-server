@@ -53,11 +53,16 @@ exports.avgRate = async function (ctx, targetType, targetUid) {
 			await parkingSite.save()
 			break
 		case '1' :
+			let evChargeStation = await models.evChargeStation.getByUid(ctx, targetUid)
+			Object.assign(evChargeStation, {rate: ratingAvg})
+			await evChargeStation.save()
+			break
+		case '2' :
 			let gasStation = await models.gasStation.getByUid(ctx, targetUid)
 			Object.assign(gasStation, {rate: ratingAvg})
 			await gasStation.save()
 			break
-		case '2' :
+		case '3' :
 			let carWash = await models.carWash.getByUid(ctx, targetUid)
 			Object.assign(carWash, {rate: ratingAvg})
 			await carWash.save()
@@ -96,19 +101,19 @@ exports.checkRateAvailable = async function (data) {
 			})
 			break
 		case 1:
-			checkPlace = await models.gasStation.findOne({
+			checkPlace = await models.evChargeStation.findOne({
 				attributes: ['isRate'],
 				where: {uid: _.targetUid}
 			})
 			break
 		case 2:
-			checkPlace = await models.carWash.findOne({
+			checkPlace = await models.gasStation.findOne({
 				attributes: ['isRate'],
 				where: {uid: _.targetUid}
 			})
 			break
 		case 3:
-			checkPlace = await models.evChargeStation.findOne({
+			checkPlace = await models.carWash.findOne({
 				attributes: ['isRate'],
 				where: {uid: _.targetUid}
 			})

@@ -8,7 +8,7 @@ module.exports = (sequelize, DataTypes) => {
 			autoIncrement: true,
 			primaryKey: true,
 		},
-		targetType:{
+		targetType: {
 			type: DataTypes.INTEGER,
 			allowNull: false
 		},
@@ -64,26 +64,26 @@ module.exports = (sequelize, DataTypes) => {
 				as: 'parkingSite',
 				model: models.parkingSite,
 				attributes: ['uid', 'name', 'address']
-			},{
+			}, {
 				as: 'gasStation',
 				model: models.gasStation,
 				attributes: ['uid', 'gasStationName', 'address']
-			},{
+			}, {
 				as: 'carWash',
 				model: models.carWash,
 				attributes: ['uid', 'carWashName', 'address']
-			},{
+			}, {
 				as: 'evChargeStation',
 				model: models.evChargeStation,
 				attributes: ['uid', 'statNm', 'addr']
 			}],
-			where: {userUid:userUid}
-		}).then(function(val){
+			where: {userUid: userUid}
+		}).then(function (val) {
 			val.map(function (obj) {
 				let tempVal = {}
 				switch (obj.dataValues.targetType) {
 					case 0:
-						if(!obj.dataValues.parkingSite){
+						if (!obj.dataValues.parkingSite) {
 							ctx.throw({
 								code: 400,
 								message: '존재 하지 않습니다.'
@@ -92,31 +92,9 @@ module.exports = (sequelize, DataTypes) => {
 						tempVal.uid = obj.dataValues.parkingSite.uid
 						tempVal.name = obj.dataValues.parkingSite.name
 						tempVal.address = obj.dataValues.parkingSite.address
-						break;
+						break
 					case 1:
-						if(!obj.dataValues.gasStation){
-							ctx.throw({
-								code: 400,
-								message: '존재 하지 않습니다.'
-							})
-						}
-						tempVal.uid = obj.dataValues.gasStation.uid
-						tempVal.name = obj.dataValues.gasStation.gasStationName
-						tempVal.address = obj.dataValues.gasStation.address
-						break;
-					case 2:
-						if(!obj.dataValues.carWash){
-							ctx.throw({
-								code: 400,
-								message: '존재 하지 않습니다.'
-							})
-						}
-						tempVal.uid = obj.dataValues.carWash.uid
-						tempVal.name = obj.dataValues.carWash.carWashName
-						tempVal.address = obj.dataValues.carWash.address
-						break;
-					case 3:
-						if(!obj.dataValues.evChargeStation){
+						if (!obj.dataValues.evChargeStation) {
 							ctx.throw({
 								code: 400,
 								message: '존재 하지 않습니다.'
@@ -125,19 +103,41 @@ module.exports = (sequelize, DataTypes) => {
 						tempVal.uid = obj.dataValues.evChargeStation.uid
 						tempVal.name = obj.dataValues.evChargeStation.statNm
 						tempVal.address = obj.dataValues.evChargeStation.addr
-						break;
+						break
+					case 2:
+						if (!obj.dataValues.gasStation) {
+							ctx.throw({
+								code: 400,
+								message: '존재 하지 않습니다.'
+							})
+						}
+						tempVal.uid = obj.dataValues.gasStation.uid
+						tempVal.name = obj.dataValues.gasStation.gasStationName
+						tempVal.address = obj.dataValues.gasStation.address
+						break
+					case 3:
+						if (!obj.dataValues.carWash) {
+							ctx.throw({
+								code: 400,
+								message: '존재 하지 않습니다.'
+							})
+						}
+						tempVal.uid = obj.dataValues.carWash.uid
+						tempVal.name = obj.dataValues.carWash.carWashName
+						tempVal.address = obj.dataValues.carWash.address
+						break
 				}
 				obj.dataValues.place = tempVal
-				if(obj.dataValues.parkingSite){
+				if (obj.dataValues.parkingSite) {
 					delete obj.dataValues.parkingSite
 				}
-				if(obj.dataValues.gasStation){
+				if (obj.dataValues.gasStation) {
 					delete obj.dataValues.gasStation
 				}
-				if(obj.dataValues.carWash) {
+				if (obj.dataValues.carWash) {
 					delete obj.dataValues.carWash
 				}
-				if(obj.dataValues.evChargeStation) {
+				if (obj.dataValues.evChargeStation) {
 					delete obj.dataValues.evChargeStation
 				}
 			})
@@ -156,22 +156,27 @@ module.exports = (sequelize, DataTypes) => {
 		if (params.targetType) {
 			where.targetType = params.targetType
 			switch (params.targetType) {
-				case '0' : targetTable = 'parking_sites';
-					break;
-				case '1' : targetTable = 'gas_stations';
-					break;
-				case '2' : targetTable = 'car_washes';
-					break;
-				case '3' : targetTable = 'ev_charges';
-					break;
-				default : targetTable = 'parking_sites';
-					break;
+				case '0' :
+					targetTable = 'parking_sites'
+					break
+				case '1' :
+					targetTable = 'ev_charge_stations'
+					break
+				case '2' :
+					targetTable = 'gas_stations'
+					break
+				case '3' :
+					targetTable = 'car_washes'
+					break
+				default :
+					targetTable = 'parking_sites'
+					break
 			}
 		}
 		if (params.targetUid) {
 			where.targetUid = params.targetUid
 		}
-		if(params.userUid){
+		if (params.userUid) {
 			where.userUid = params.userUid
 		}
 		let result = await favorite.findAll({
