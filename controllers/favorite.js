@@ -7,11 +7,11 @@ exports.create = async function (ctx) {
 	switch (_.targetType) {
 		case 0: place = await models.parkingSite.findByPk(_.targetUid, {raw:true})
 			break
-		case 1: place = await models.gasStation.findByPk(_.targetUid, {raw:true})
+		case 1: place = await models.evChargeStation.findByPk(_.targetUid, {raw:true})
 			break
-		case 2: place = await models.carWash.findByPk(_.targetUid, {raw:true})
+		case 2: place = await models.gasStation.findByPk(_.targetUid, {raw:true})
 			break
-		case 3: place = await models.evCharge.findByPk(_.targetUid, {raw:true})
+		case 3: place = await models.carWash.findByPk(_.targetUid, {raw:true})
 			break
 	}
 	let checkFavorite = await  models.favorite.checkFavorite(_)
