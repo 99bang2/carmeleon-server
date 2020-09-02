@@ -163,6 +163,10 @@ module.exports = (sequelize, DataTypes) => {
 				}
 			}
 		},
+		isRecommend: {
+			type: DataTypes.BOOLEAN,
+			defaultValue: false
+		},
 		isBuy: {
 			type: DataTypes.BOOLEAN,
 			defaultValue: true

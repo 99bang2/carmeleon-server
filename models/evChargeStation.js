@@ -50,10 +50,10 @@ module.exports = (sequelize, DataTypes) => {
 		picture:{
 			type: DataTypes.STRING
 		},
-		is_recommend:{
+		isRecommend: {
 			type: DataTypes.BOOLEAN,
 			defaultValue: false
-		}
+		},
 	}, {
 		timestamps: true,
 		paranoid: true,

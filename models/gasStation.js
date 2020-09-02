@@ -79,7 +79,11 @@ module.exports = (sequelize, DataTypes) => {
 		},
 		rate: {
 			type: DataTypes.DOUBLE
-		}
+		},
+		isRecommend: {
+			type: DataTypes.BOOLEAN,
+			defaultValue: false
+		},
 	}, {
 		timestamps: true,
 		paranoid: true,
