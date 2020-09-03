@@ -46,20 +46,20 @@ api.get('/events/:uid', eventController.read)
 api.get('/parkings', parkingController.userList)
 api.get('/parkings/:uid', parkingController.read)
 /**
- * 세차장 관리
+ * 전기차 충전소 관리(Main)
  */
-api.get('/carWashes', carWashController.userList)
-api.get('/carWashes/:uid', carWashController.read)
+api.get('/evChargeStations', evChargeStationController.list)
+api.get('/evChargeStations/:uid', evChargeStationController.read)
 /**
  * 주유소 관리
  */
 api.get('/gasStations', gasStationController.userList)
 api.get('/gasStations/:uid', gasStationController.read)
 /**
- * 전기차 충전소 관리(Main)
+ * 세차장 관리
  */
-api.get('/evChargeStations', evChargeStationController.list)
-api.get('/evChargeStations/:uid', evChargeStationController.read)
+api.get('/carWashes', carWashController.userList)
+api.get('/carWashes/:uid', carWashController.read)
 /**
  * 리뷰 관리
  */
