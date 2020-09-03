@@ -27,7 +27,7 @@ exports.read = async function (ctx) {
 
 exports.update = async function (ctx) {
 	let {uid} = ctx.params
-	let payLog = await models.payLog.getByUid(ctx, uid)
+	let payLog = await models.payLog.getByUid(ctx, uid, models)
 	let _ = ctx.request.body
 	Object.assign(payLog, _)
 	await payLog.save()
@@ -36,7 +36,7 @@ exports.update = async function (ctx) {
 
 exports.delete = async function (ctx) {
 	let {uid} = ctx.params
-	let payLog = await models.payLog.getByUid(ctx, uid)
+	let payLog = await models.payLog.getByUid(ctx, uid, models)
 	await payLog.destroy()
 	response.send(ctx, payLog)
 }
