@@ -15,7 +15,8 @@ exports.list = async function (ctx) {
 
 exports.read = async function (ctx) {
     let {uid} = ctx.params
-    let gasStation = await models.gasStation.getByUid(ctx, uid)
+	let _ = ctx.request.query
+    let gasStation = await models.gasStation.getByUid(ctx, uid, _)
     response.send(ctx, gasStation)
 }
 

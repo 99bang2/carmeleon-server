@@ -17,7 +17,7 @@ module.exports = (sequelize, DataTypes) => {
 			allowNull: false
 		},
 		gasStationUid: {
-			type:DataTypes.STRING
+			type: DataTypes.STRING
 		},
 		brandCode: {
 			type: DataTypes.STRING
@@ -47,17 +47,17 @@ module.exports = (sequelize, DataTypes) => {
 		sido: {
 			type: DataTypes.STRING
 		},
-		sigungu:{
+		sigungu: {
 			type: DataTypes.STRING
 		},
 		tel: {
 			type: DataTypes.STRING
 		},
 		lat: {
-			type:DataTypes.DOUBLE
+			type: DataTypes.DOUBLE
 		},
 		lon: {
-			type:DataTypes.DOUBLE
+			type: DataTypes.DOUBLE
 		},
 		isCarWash: {
 			type: DataTypes.BOOLEAN,
@@ -84,6 +84,24 @@ module.exports = (sequelize, DataTypes) => {
 			type: DataTypes.BOOLEAN,
 			defaultValue: false
 		},
+		Tag: {
+			type: DataTypes.JSON
+		},
+		Gasoline: {
+			type: DataTypes.INTEGER
+		},
+		Diesel: {
+			type: DataTypes.INTEGER
+		},
+		PremiumGasoline: {
+			type: DataTypes.INTEGER
+		},
+		HeatingOil: {
+			type: DataTypes.INTEGER
+		},
+		Lpg: {
+			type: DataTypes.INTEGER
+		}
 	}, {
 		timestamps: true,
 		paranoid: true,
@@ -106,8 +124,21 @@ module.exports = (sequelize, DataTypes) => {
 			}
 		})
 	}
-	gasStation.getByUid = async function (ctx, uid) {
-		let data = await gasStation.findByPk(uid)
+	gasStation.getByUid = async function (ctx, uid, params) {
+		let userUid = null
+		if(params !== null) {
+			if (params.userUid) {
+				userUid = params.userUid
+			}
+		}
+		let favoriteCheck = 'target_type = 2 AND target_uid = ' + uid + ' AND user_uid = ' + userUid + ' AND deleted_at IS NULL)'
+		let data = await gasStation.findByPk(uid, {
+			attributes: {
+				include: [
+					[Sequelize.literal(`(SELECT count(uid) FROM favorites WHERE ` + favoriteCheck), 'favoriteFlag']
+				]
+			},
+		})
 		if (!data) {
 			response.badRequest(ctx)
 		}
@@ -159,7 +190,7 @@ module.exports = (sequelize, DataTypes) => {
 		if (params.searchKpetro) {
 			where.isKpetro = params.searchKpetro
 		}
-		where.oilPrice = { [Op.ne]: null }
+		where.oilPrice = {[Op.ne]: null}
 
 		let result = await gasStation.findAll({
 			offset: params.offset ? Number(params.offset) : null,
@@ -182,8 +213,8 @@ module.exports = (sequelize, DataTypes) => {
 		let longitude = params.lon ? parseFloat(params.lon) : null
 		let latitude = params.lat ? parseFloat(params.lat) : null
 		let radius = params.radius
-		let distaceQuery = sequelize.where(sequelize.literal(`(6371 * acos(cos(radians(${latitude})) * cos(radians(lat)) * cos(radians(lon) - radians(${longitude})) + sin(radians(${latitude})) * sin(radians(lat))))`),'<=',radius)
-		if(!radius){
+		let distaceQuery = sequelize.where(sequelize.literal(`(6371 * acos(cos(radians(${latitude})) * cos(radians(lat)) * cos(radians(lon) - radians(${longitude})) + sin(radians(${latitude})) * sin(radians(lat))))`), '<=', radius)
+		if (!radius) {
 			distaceQuery = null
 		}
 		let rateWhere = 'target_type = 2 AND target_uid = gasStation.uid)'
@@ -207,7 +238,7 @@ module.exports = (sequelize, DataTypes) => {
 			order: order,
 			where: [
 				distaceQuery
-				,where
+				, where
 			]
 		})
 		return result

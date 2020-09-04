@@ -97,8 +97,21 @@ module.exports = (sequelize, DataTypes) => {
 			}
 		})
 	}
-	carWash.getByUid = async function (ctx, uid) {
-		let data = await carWash.findByPk(uid)
+	carWash.getByUid = async function (ctx, uid, params) {
+		let userUid = null
+		if(params !== null) {
+			if (params.userUid) {
+				userUid = params.userUid
+			}
+		}
+		let favoriteCheck = 'target_type = 3 AND target_uid = ' + uid + ' AND user_uid = ' + userUid + ' AND deleted_at IS NULL)'
+		let data = await carWash.findByPk(uid, {
+			attributes: {
+				include: [
+					[Sequelize.literal(`(SELECT count(uid) FROM favorites WHERE ` + favoriteCheck), 'favoriteFlag']
+				]
+			},
+		})
 		if (!data) {
 			response.badRequest(ctx)
 		}

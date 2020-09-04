@@ -80,11 +80,23 @@ module.exports = (sequelize, DataTypes) => {
 			sourceKey: 'statId'
 		})
 	}
-	evChargeStation.getByUid = async function (ctx, uid, models) {
+	evChargeStation.getByUid = async function (ctx, uid, params, models) {
+		let userUid = null
+		if(params !== null) {
+			if (params.userUid) {
+				userUid = params.userUid
+			}
+		}
+		let favoriteCheck = 'target_type = 1 AND target_uid = ' + uid + ' AND user_uid = ' + userUid + ' AND deleted_at IS NULL)'
 		let data = await evChargeStation.findByPk(uid, {
 			include: [{
 				model: models.evCharger
 			}],
+			attributes: {
+				include: [
+					[Sequelize.literal(`(SELECT count(uid) FROM favorites WHERE ` + favoriteCheck), 'favoriteFlag']
+				]
+			},
 		})
 		if (!data) {
 			response.badRequest(ctx)
