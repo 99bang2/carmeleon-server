@@ -72,6 +72,16 @@ module.exports = (sequelize, DataTypes) => {
 		tag: {
 			type: DataTypes.JSON
 		},
+		tagName: {
+			type: DataTypes.VIRTUAL,
+			get: function () {
+				if (this.getDataValue('tag') !== null) {
+					return this.getDataValue('tag').map(function (obj) {
+						return codes.gasStationTag[obj]
+					})
+				}
+			}
+		},
 		Gasoline: {
 			type: DataTypes.INTEGER
 		},
