@@ -59,9 +59,6 @@ module.exports = (sequelize, DataTypes) => {
 		lon: {
 			type: DataTypes.DOUBLE
 		},
-		oilPrice: {
-			type: DataTypes.JSON
-		},
 		picture: {
 			type: DataTypes.JSON
 		},
@@ -144,27 +141,7 @@ module.exports = (sequelize, DataTypes) => {
 						gasStationName: {
 							[Sequelize.Op.like]: '%' + params.searchKeyword + '%'
 						}
-					},
-					// {
-					// 	carWashIndustry: {
-					// 		[Sequelize.Op.like]: '%' + params.searchKeyword + '%'
-					// 	}
-					// },
-					// {
-					// 	address: {
-					// 		[Sequelize.Op.like]: '%' + params.searchKeyword + '%'
-					// 	}
-					// },
-					// {
-					// 	carWashChargeInfo: {
-					// 		[Sequelize.Op.like]: '%' + params.searchKeyword + '%'
-					// 	}
-					// },
-					// {
-					// 	phoneNumber: {
-					// 		[Sequelize.Op.like]: '%' + params.searchKeyword + '%'
-					// 	}
-					// }
+					}
 				]
 			}
 		}
@@ -175,11 +152,6 @@ module.exports = (sequelize, DataTypes) => {
 		if (params.searchType) {
 			where.gasStationType = params.searchType
 		}
-		if (params.searchKpetro) {
-			where.isKpetro = params.searchKpetro
-		}
-		where.oilPrice = {[Op.ne]: null}
-
 		let result = await gasStation.findAll({
 			offset: params.offset ? Number(params.offset) : null,
 			limit: params.limit ? Number(params.limit) : null,
