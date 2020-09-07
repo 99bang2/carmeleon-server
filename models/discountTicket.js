@@ -3,11 +3,6 @@ const response = require('../libs/response')
 const codes = require('../configs/codes.json')
 const moment = require('moment')
 module.exports = (sequelize, DataTypes) => {
-	let currentDate = moment().format('YYYY-MM-DD')
-	let currentDay = parseInt(moment().format('E'))
-	let dayType
-	(currentDay === 0 || currentDay === 6) ? dayType = 2 : dayType = 1
-
 	const discountTicket = sequelize.define('discountTicket', {
 		uid: {
 			type: DataTypes.INTEGER,
@@ -78,6 +73,7 @@ module.exports = (sequelize, DataTypes) => {
 		ticketCount: {
 			type: DataTypes.INTEGER,
 		},
+		//Todo: Macro 컬럼 JSON 추가 (수동 작업 예정)
 	}, {
 		timestamps: true,
 		underscored: true,
@@ -94,7 +90,10 @@ module.exports = (sequelize, DataTypes) => {
 		return data
 	}
 	discountTicket.search = async (params, models) => {
-		console.log(dayType)
+		let currentDate = moment().format('YYYY-MM-DD')
+		let currentDay = parseInt(moment().format('E'))
+		let dayType
+		(currentDay === 0 || currentDay === 6) ? dayType = 2 : dayType = 1
 		let where = {}
 		if (params.siteUid) {
 			where.siteUid = params.siteUid

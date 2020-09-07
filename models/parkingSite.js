@@ -7,11 +7,6 @@ const moment = require('moment')
 const common = require('../controllers/common')
 
 module.exports = (sequelize, DataTypes) => {
-	let currentDate = moment().format('YYYY-MM-DD')
-	let currentDay = parseInt(moment().format('E'))
-	let dayType
-	(currentDay === 0 || currentDay === 6) ? dayType = 2 : dayType = 1
-
 	const parkingSite = sequelize.define('parkingSite', {
 		uid: {
 			type: DataTypes.INTEGER,
@@ -201,6 +196,10 @@ module.exports = (sequelize, DataTypes) => {
 		})
 	}
 	parkingSite.getByUid = async function (ctx, uid, params, models) {
+		let currentDate = moment().format('YYYY-MM-DD')
+		let currentDay = parseInt(moment().format('E'))
+		let dayType
+		(currentDay === 0 || currentDay === 6) ? dayType = 2 : dayType = 1
 		let userUid = null
 		let rateCheck = null
 		if(params !== null) {
