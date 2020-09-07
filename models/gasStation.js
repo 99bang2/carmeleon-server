@@ -59,18 +59,6 @@ module.exports = (sequelize, DataTypes) => {
 		lon: {
 			type: DataTypes.DOUBLE
 		},
-		isCarWash: {
-			type: DataTypes.BOOLEAN,
-			allowNull: false,
-		},
-		isConvenience: {
-			type: DataTypes.BOOLEAN,
-			allowNull: false,
-		},
-		isKpetro: {
-			type: DataTypes.BOOLEAN,
-			allowNull: false,
-		},
 		oilPrice: {
 			type: DataTypes.JSON
 		},
@@ -84,7 +72,7 @@ module.exports = (sequelize, DataTypes) => {
 			type: DataTypes.BOOLEAN,
 			defaultValue: false
 		},
-		Tag: {
+		tag: {
 			type: DataTypes.JSON
 		},
 		Gasoline: {
@@ -99,7 +87,7 @@ module.exports = (sequelize, DataTypes) => {
 		HeatingOil: {
 			type: DataTypes.INTEGER
 		},
-		Lpg: {
+		lpg: {
 			type: DataTypes.INTEGER
 		}
 	}, {
