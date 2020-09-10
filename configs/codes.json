@@ -37,14 +37,13 @@
 	},
 	"optionTag": {
 		"cityCar": "경차",
-		"elderly": "노약자",
-		"disabled": "장애인",
-		"pregnant": "임산부",
 		"female": "여성",
 		"elecCharge": "전기차충전",
 		"mechanical": "기계식",
 		"freightMedium": "화물 가능(중형)",
-		"freightLarge": "화물 가능(대형)"
+		"freightLarge": "화물 가능(대형)",
+		"unmanned": "무인 정산",
+		"suv": "SUV"
 	},
 	"carTag": {
 		"bus": "버스",
@@ -76,7 +75,7 @@
 	},
 	"gasStationTypeOpts": {
 		"N": "주유소",
-		"Y":"충전소",
+		"Y": "충전소",
 		"C": "겸업"
 	},
 	"chgerTypeOpts": {
