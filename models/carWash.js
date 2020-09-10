@@ -95,7 +95,7 @@ module.exports = (sequelize, DataTypes) => {
 		timeTagName: {
 			type: DataTypes.VIRTUAL,
 			get: function () {
-				if (this.getDataValue(timeTag) !== null) {
+				if (this.getDataValue('timeTag') !== null) {
 					return this.getDataValue('timeTag').map(function (obj) {
 						return codes.carWashTimeTag[obj]
 					})
