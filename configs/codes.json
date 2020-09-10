@@ -137,5 +137,15 @@
 		"kpetro": "품질인증주유소",
 		"kpetroDp": "전산보고주유소",
 		"self": "셀프 주유소"
+	},
+	"carWashTypeTag": {
+		"self": "셀프세차",
+		"auto": "자동세차",
+		"hand": "손세차",
+		"trip": "출장세차"
+	},
+	"carWashTimeTag": {
+		"everyday": "연중무휴",
+		"night": "야간세차가능"
 	}
 }

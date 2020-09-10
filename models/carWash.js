@@ -2,6 +2,7 @@
 const response = require('../libs/response')
 const codes = require('../configs/codes.json')
 const Sequelize = require('sequelize')
+const Op = Sequelize.Op
 
 module.exports = (sequelize, DataTypes) => {
 	const carWash = sequelize.define('carWash', {
@@ -75,6 +76,32 @@ module.exports = (sequelize, DataTypes) => {
 			type: DataTypes.BOOLEAN,
 			defaultValue: false
 		},
+		typeTag: {
+			type: DataTypes.JSON
+		},
+		typeTagName: {
+			type: DataTypes.VIRTUAL,
+			get: function () {
+				if (this.getDataValue('typeTag') !== null) {
+					return this.getDataValue('typeTag').map(function (obj) {
+						return codes.carWashTypeTag[obj]
+					})
+				}
+			}
+		},
+		timeTag: {
+			type: DataTypes.JSON
+		},
+		timeTagName: {
+			type: DataTypes.VIRTUAL,
+			get: function () {
+				if (this.getDataValue(timeTag) !== null) {
+					return this.getDataValue('timeTag').map(function (obj) {
+						return codes.carWashTimeTag[obj]
+					})
+				}
+			}
+		},
 	}, {
 		timestamps: true,
 		paranoid: true,
@@ -99,7 +126,7 @@ module.exports = (sequelize, DataTypes) => {
 	}
 	carWash.getByUid = async function (ctx, uid, params) {
 		let userUid = null
-		if(params !== null) {
+		if (params !== null) {
 			if (params.userUid) {
 				userUid = params.userUid
 			}
@@ -157,6 +184,38 @@ module.exports = (sequelize, DataTypes) => {
 		if (params.searchType) {
 			where.carWashIndustry = {
 				[Sequelize.Op.like]: '%' + params.searchType + '%'
+			}
+		}
+		if (params.typeTag) {
+			if (params.typeTag.indexOf(',') !== -1) {
+				let tagArr = params.typeTag.split(',')
+				let tagWhereArr = []
+				for (let i in tagArr) {
+					tagWhereArr.push(sequelize.where(sequelize.literal(`type_tag`), 'like', '%' + tagArr[i] + '%'))
+				}
+				where.type_tag = {
+					[Op.and]: tagWhereArr
+				}
+			} else {
+				where.type_tag = {
+					[Op.substring]: params.typeTag
+				}
+			}
+		}
+		if (params.timeTag) {
+			if (params.timeTag.indexOf(',') !== -1) {
+				let tagArr = params.timeTag.split(',')
+				let tagWhereArr = []
+				for (let i in tagArr) {
+					tagWhereArr.push(sequelize.where(sequelize.literal(`time_tag`), 'like', '%' + tagArr[i] + '%'))
+				}
+				where.time_tag = {
+					[Op.and]: tagWhereArr
+				}
+			} else {
+				where.time_tag = {
+					[Op.substring]: params.timeTag
+				}
 			}
 		}
 
