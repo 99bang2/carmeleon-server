@@ -194,8 +194,21 @@ module.exports = (sequelize, DataTypes) => {
 		if (params.gasStationType) {
 			where.gasStationType = params.gasStationType
 		}
-		if (params.isKpetro) {
-			where.isKpetro = params.isKpetro
+		if (params.tag) {
+			if (params.tag.indexOf(',') !== -1) {
+				let tagArr = params.tag.split(',')
+				let tagWhereArr = []
+				for (let i in tagArr) {
+					tagWhereArr.push(sequelize.where(sequelize.literal(`tag`), 'like', '%' + tagArr[i] + '%'))
+				}
+				where.tag = {
+					[Op.and]: tagWhereArr
+				}
+			} else {
+				where.tag = {
+					[Op.substring]: params.tag
+				}
+			}
 		}
 
 		let result = await gasStation.findAll({
