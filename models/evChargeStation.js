@@ -54,6 +54,9 @@ module.exports = (sequelize, DataTypes) => {
 			type: DataTypes.BOOLEAN,
 			defaultValue: false
 		},
+		tag: {
+			type: DataTypes.JSON
+		}
 	}, {
 		timestamps: true,
 		paranoid: true,

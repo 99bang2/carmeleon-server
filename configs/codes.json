@@ -146,5 +146,18 @@
 	"carWashTimeTag": {
 		"everyday": "연중무휴",
 		"night": "야간세차가능"
+	},
+	"evTag": {
+		"rapidity": "급속",
+		"slow": "완속",
+		"free": "무료",
+		"pay": "유료",
+		"DCCombo": "DC콤보",
+		"AC": "AC3상",
+		"DCChademo": "DC차데모",
+		"superCharger": "슈퍼차저",
+		"destination": "데스티네이션",
+		"parkingFree": "주차무료",
+		"24h": "24시 이용가능"
 	}
 }
