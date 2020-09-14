@@ -132,3 +132,9 @@ exports.bulkDelete = async function (ctx) {
 	})
 	response.send(ctx, deleteResult)
 }
+
+exports.getBadge = async function (ctx) {
+	let {uid} = ctx.params
+	let user = await models.user.getBadge(ctx, uid)
+	response.send(ctx, user)
+}

@@ -80,11 +80,10 @@ api.get('/favorites/:userUid', favoriteController.userList)
  * 유저 관련 컨트롤러
  */
 api.post('/users', userController.create)
-api.get('/users', userController.list)
 api.get('/users/:uid', userController.read)
 api.put('/users/:uid', userController.update)
 api.delete('/users/:uid', userController.delete)
-api.post('/users/bulkDelete', userController.bulkDelete)
+api.get('/getBadge/:uid', userController.getBadge)
 
 api.post('/cars', carController.create)
 api.get('/cars', carController.list)
