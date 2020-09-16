@@ -19,7 +19,7 @@ app.use(cors())
 app.use(koaBody({
 	formidable: {
 		uploadDir: './uploads',
-		maxFileSize: 200 * 1024 * 1024, //Upload file size
+		maxFieldsSize: 200 * 1024 * 1024, //Upload file size
 		keepExtensions: true //  Extensions to save images
 	},
 	multipart: true,
