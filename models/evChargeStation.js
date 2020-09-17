@@ -157,5 +157,43 @@ module.exports = (sequelize, DataTypes) => {
 		}
 	}
 
+	evChargeStation.searchAdmin = async (params, models) => {
+		let where = {}
+		let order = [['createdAt', 'DESC']]
+		let rateWhere = 'target_type = 1 AND target_uid = evChargeStation.uid)'
+		if (params.searchKeyword) {
+			where = {
+				[Sequelize.Op.or]: [
+					{
+						statNm: {
+							[Sequelize.Op.like]: '%' + params.searchKeyword + '%'
+						}
+					}
+				]
+			}
+		}
+
+		let result = await evChargeStation.findAll({
+			include: [{
+				model: models.evCharger
+			}],
+			attributes: {
+				include: [
+					[`(SELECT count(uid) FROM ratings WHERE ` + rateWhere, 'rate_count']
+				]
+			},
+			offset: params.offset ? Number(params.offset) : null,
+			limit: params.limit ? Number(params.limit) : null,
+			order: order,
+			where: where
+		})
+		let count = await evChargeStation.scope(null).count({
+			where: where
+		})
+		return {
+			rows: result,
+			count: count
+		}
+	}
 	return evChargeStation
 }

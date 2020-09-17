@@ -198,7 +198,7 @@ api.get('/tutorials', tutorialController.getTutorial)
  * 전기차 충전소 관리(Main)
  */
 api.post('/evChargeStations', evChargeStationController.create)
-api.get('/evChargeStations', evChargeStationController.list)
+api.get('/evChargeStations', evChargeStationController.listAdmin)
 api.get('/evChargeStations/:uid', evChargeStationController.read)
 api.put('/evChargeStations/:uid', evChargeStationController.update)
 api.delete('/evChargeStations/:uid', evChargeStationController.delete)

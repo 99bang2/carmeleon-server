@@ -13,6 +13,12 @@ exports.list = async function (ctx) {
 	response.send(ctx, evChargeStation)
 }
 
+exports.listAdmin = async function (ctx) {
+	let _ = ctx.request.query
+	let evChargeStation = await models.evChargeStation.searchAdmin(_, models)
+	response.send(ctx, evChargeStation)
+}
+
 exports.read = async function (ctx) {
     let {uid} = ctx.params
 	let _ = ctx.request.query

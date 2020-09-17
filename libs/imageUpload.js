@@ -17,7 +17,7 @@ exports.imageUpload = function imageUpload(ctx, file, dir, folder, name){
 		fs.unlinkSync(file.path)
 		ctx.throw({
 			code: 400,
-			message: '확장자가 이지미 파일이어야 합니다.'
+			message: '이미지 파일이어야 합니다.'
 		})
 	}
 	//파일 용량, 사이즈 정의 필요

@@ -123,6 +123,8 @@ module.exports = (sequelize, DataTypes) => {
 			type: DataTypes.INTEGER
 		},
 		rate: {
+
+
 			type: DataTypes.DOUBLE
 		},
 		address: {
@@ -192,7 +194,8 @@ module.exports = (sequelize, DataTypes) => {
 			}
 		})
 		parkingSite.hasMany(models.discountTicket, {
-			foreignKey: 'siteUid'
+			foreignKey: 'siteUid',
+			sourceKey: 'uid'
 		})
 	}
 	parkingSite.getByUid = async function (ctx, uid, params, models) {
@@ -215,7 +218,7 @@ module.exports = (sequelize, DataTypes) => {
 				attributes: {
 					include: [
 						[sequelize.literal(`case when ('` + currentDate + `' not between ticket_start_date AND ticket_end_date) AND (ticket_day_type !=` + dayType + `) then 1 else 0 end`), 'expire'],
-						[sequelize.literal(`case when ((select count(uid) from pay_logs where discount_ticket_uid = uid) = ticket_count) then 1 else 0 end`), 'sold_out']
+						[sequelize.literal(`case when ((select count(uid) from pay_logs where discount_ticket_uid = uid) >= ticket_count) then 1 else 0 end`), 'sold_out']
 					]
 				},
 			}],
@@ -236,18 +239,34 @@ module.exports = (sequelize, DataTypes) => {
 		let where = {}
 		let order = [['createdAt', 'DESC']]
 
-		if (params.siteType) {
-			where.siteType = params.siteType
+		if (params.searchSiteType) {
+			where.siteType = params.searchSiteType
+		}
+		if (params.searchActive) {
+			where.isActive = params.searchActive
+		}
+		if (params.searchRating) {
+			where.rate = params.searchRating
+		}
+		if (params.searchKeyword) {
+			where.name = params.searchKeyword
 		}
 		if (params.accountUid) {
 			where.accountUid = params.accountUid
 		}
-
 		let result = await parkingSite.findAll({
+			offset: params.offset ? Number(params.offset) : null,
+			limit: params.limit ? Number(params.limit) : null,
 			order: order,
 			where: where
 		})
-		return result
+		let count = await parkingSite.scope(null).count({
+			where: where
+		})
+		return {
+			rows: result,
+			count: count
+		}
 	}
 
 	parkingSite.userSearch = async (params, models) => {

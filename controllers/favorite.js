@@ -27,6 +27,12 @@ exports.create = async function (ctx) {
 		}
 		response.send(ctx, checkFavorite[0])//checkFavorite[0])
 	}else{
+		if(place === null){
+			ctx.throw({
+				code: 400,
+				message: '존재 하지 않습니다.'
+			})
+		}
 		let favorite = await models.favorite.create(_)
 		Object.assign(favorite.dataValues, {place: place})
 		response.send(ctx, favorite)// favorite)
