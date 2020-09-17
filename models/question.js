@@ -16,7 +16,7 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.STRING
         },
 		category: {
-			type: DataTypes.INTENGER
+			type: DataTypes.INTEGER
 		},
 		categoryName: {
 			type: DataTypes.VIRTUAL,
