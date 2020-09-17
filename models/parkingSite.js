@@ -171,6 +171,9 @@ module.exports = (sequelize, DataTypes) => {
 		isRate: {
 			type: DataTypes.BOOLEAN,
 			defaultValue: true
+		},
+		message: {
+			type: DataTypes.TEXT
 		}
 	}, {
 		timestamps: true,
