@@ -19,6 +19,7 @@ const couponController = require('../controllers/coupon')
 const couponLogController = require('../controllers/couponLog')
 const reviewTemplateController = require('../controllers/reviewTemplate')
 const evChargeStationController = require('../controllers/evChargeStation')
+const questionController = require('../controllers/question')
 
 const commonController = require('../controllers/common')
 
@@ -121,6 +122,12 @@ api.get('/couponLogs/:uid', couponLogController.read)
 
 api.get('/reviewTemplates', reviewTemplateController.list)
 api.get('/reviewTemplates/:uid', reviewTemplateController.read)
+
+api.post('/questions', questionController.create)
+//필요 없을 시 삭제//
+api.get('/questions', questionController.list)
+api.get('/questions/:uid', questionController.read)
+///////////////////
 
 /**
  * 공통 컨트롤러
