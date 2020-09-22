@@ -22,8 +22,8 @@ exports.read = async function (ctx) {
 
 exports.update = async function (ctx) {
     let {uid} = ctx.params
-    let carWash = await models.carWash.getByUid(ctx, uid)
-    let _ = ctx.request.body
+	let _ = ctx.request.body
+    let carWash = await models.carWash.getByUid(ctx, uid, _)
     Object.assign(carWash, _)
     await carWash.save()
     response.send(ctx, carWash)
@@ -31,7 +31,8 @@ exports.update = async function (ctx) {
 
 exports.delete = async function (ctx) {
     let {uid} = ctx.params
-    let carWash = await models.carWash.getByUid(ctx, uid)
+	let _ = ctx.request.query
+    let carWash = await models.carWash.getByUid(ctx, uid, _)
     await carWash.destroy()
     response.send(ctx, carWash)
 }

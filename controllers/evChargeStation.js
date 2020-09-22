@@ -28,8 +28,8 @@ exports.read = async function (ctx) {
 
 exports.update = async function (ctx) {
     let {uid} = ctx.params
-    let evChargeStation = await models.evChargeStation.getByUid(ctx, uid)
-    let _ = ctx.request.body
+	let _ = ctx.request.body
+    let evChargeStation = await models.evChargeStation.getByUid(ctx, uid, _, models)
     Object.assign(evChargeStation, _)
     await evChargeStation.save()
     response.send(ctx, evChargeStation)
@@ -37,7 +37,8 @@ exports.update = async function (ctx) {
 
 exports.delete = async function (ctx) {
     let {uid} = ctx.params
-    let evChargeStation = await models.evChargeStation.getByUid(ctx, uid)
+	let _ = ctx.request.query
+    let evChargeStation = await models.evChargeStation.getByUid(ctx, uid, _, models)
     await evChargeStation.destroy()
     response.send(ctx, evChargeStation)
 }

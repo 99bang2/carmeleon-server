@@ -4,12 +4,6 @@ const response = require('../libs/response')
 exports.create = async function (ctx) {
     let _ = ctx.request.body
     let gasStation = await models.gasStation.create(_)
-    response.send(ctx, gasStation)
-}
-
-exports.list = async function (ctx) {
-    let _ = ctx.request.query
-    let gasStation = await models.gasStation.search(_, models)
 	response.send(ctx, gasStation)
 }
 
@@ -31,7 +25,8 @@ exports.update = async function (ctx) {
 
 exports.delete = async function (ctx) {
     let {uid} = ctx.params
-    let gasStation = await models.gasStation.getByUid(ctx, uid)
+	let _ = ctx.request.query
+    let gasStation = await models.gasStation.getByUid(ctx, uid, _)
     await gasStation.destroy()
     response.send(ctx, gasStation)
 }
