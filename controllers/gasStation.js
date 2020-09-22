@@ -31,7 +31,8 @@ exports.update = async function (ctx) {
 
 exports.delete = async function (ctx) {
     let {uid} = ctx.params
-    let gasStation = await models.gasStation.getByUid(ctx, uid)
+	let _ = ctx.request.query
+    let gasStation = await models.gasStation.getByUid(ctx, uid, _)
     await gasStation.destroy()
     response.send(ctx, gasStation)
 }
