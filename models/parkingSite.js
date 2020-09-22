@@ -252,7 +252,7 @@ module.exports = (sequelize, DataTypes) => {
 			where.rate = params.searchRating
 		}
 		if (params.searchKeyword) {
-			where.name = params.searchKeyword
+			where.name = {[Sequelize.Op.like]: '%' + params.searchKeyword + '%'}
 		}
 		if (params.accountUid) {
 			where.accountUid = params.accountUid
