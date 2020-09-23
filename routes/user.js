@@ -9,6 +9,7 @@ const parkingController = require('../controllers/parkingSite')
 const carWashController = require('../controllers/carWash')
 const gasStationController = require('../controllers/gasStation')
 const rateController = require('../controllers/rate')
+const rateTipController = require('../controllers/rateTip')
 const carController = require('../controllers/car')
 const cardController = require('../controllers/card')
 const favoriteController = require('../controllers/favorite')
@@ -71,7 +72,8 @@ api.get('/rates/:uid', rateController.userList)
 api.put('/rates/:uid', rateController.update)
 api.delete('/rates/:uid', rateController.delete)
 api.get('/rateChecks' , rateController.checkAvailable)
-
+/* 리뷰 꿀팁 */
+api.post('/rateTips', rateTipController.create)
 /**
  * 즐겨찾기 관리
  */

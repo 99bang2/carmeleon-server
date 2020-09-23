@@ -8,16 +8,23 @@ exports.create = async function (ctx) {
 	let _ = ctx.request.body
 	_.targetType = targetType
 	_.targetUid = targetUid
-	_.rateType = 1
-	let rateCheck = await commonController.checkRateAvailable(_.payLogUid)
-	if (rateCheck === false){
+	let isRate = false
+	if(targetType === '0'){
+		console.log(targetType)
+		let parkingData = await models.parkingSite.findByPk(targetUid, {
+			attributes: ['isRate'],
+			raw: true
+		})
+		isRate = parkingData.isRate
+	}
+	if (isRate === false){
 		ctx.throw({
 			code: 400,
-			message: '이미 평가를 완료 했습니다.'
+			message: '평가를 할 수 없는 주차장 입니다.'
 		})
 	}
+	///////////////////////////
 	let rate = await models. rating.create(_)
-	await models.payLog.update({rateUid: rate.uid}, {where: {uid: _.payLogUid}})
 	await commonController.avgRate(ctx, targetType, targetUid)
 	response.send(ctx, rate)
 }

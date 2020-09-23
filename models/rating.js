@@ -23,14 +23,8 @@ module.exports = (sequelize, DataTypes) => {
 			type: DataTypes.INTEGER,
 			allowNull: false
 		},
-		reviewTemplateUid: {
-			type: DataTypes.INTEGER,
-		},
 		rate: {
 			type: DataTypes.DOUBLE
-		},
-		reviewTitle: {
-			type: DataTypes.STRING
 		},
 		reviewContent: {
 			type: DataTypes.TEXT
@@ -40,6 +34,9 @@ module.exports = (sequelize, DataTypes) => {
 			allowNull: false,
 			defaultValue: false
 		},
+		picture: {
+			type: DataTypes.JSON,
+		}
 	}, {
 		timestamps: true,
 		underscored: true,
@@ -48,7 +45,6 @@ module.exports = (sequelize, DataTypes) => {
 	})
 	rating.associate = function (models) {
 		rating.belongsTo(models.user),
-		rating.belongsTo(models.reviewTemplate),
 		//rating.belongsTo(models.parkingSite, {foreignKey: 'site_uid', targetKey: 'uid'})
 		rating.belongsTo(models.parkingSite, {
 			foreignKey: 'targetUid',
@@ -108,6 +104,9 @@ module.exports = (sequelize, DataTypes) => {
 			offset = (Number(params.page) - 1) * limit
 		}
 		let data = await rating.findAll({
+			attributes: {
+				include: [[sequelize.literal(`(SELECT COUNT(uid) FROM rate_tips WHERE rate_uid= rating.uid AND rate_tip = true)`), 'rate_tip_count']]
+			},
 			include: [{
 				as: 'parkingSite',
 				model: models.parkingSite,
@@ -237,9 +236,13 @@ module.exports = (sequelize, DataTypes) => {
 			order = sequelize.literal(`CHARACTER_LENGTH(review_content) DESC, \`rating\`.\`rate\` DESC, \`rating\`.\`created_at\` DESC`)
 		}
 		let result = await rating.findAll({
+			attributes: {
+				include: [[sequelize.literal(`(SELECT COUNT(uid) FROM rate_tips WHERE rate_uid= rating.uid AND rate_tip = true)`), 'rate_tip_count']]
+			},
 			include: [
 				{
 					model: models.user,
+					attributes: ['name', 'nickname', 'email']
 				}
 			],
 			offset: offset,
