@@ -220,8 +220,8 @@ module.exports = (sequelize, DataTypes) => {
 				model: models.discountTicket,
 				attributes: {
 					include: [
-						[sequelize.literal(`case when ('` + currentDate + `' not between ticket_start_date AND ticket_end_date) AND (ticket_day_type !=` + dayType + `) then 1 else 0 end`), 'expire'],
-						[sequelize.literal(`case when ((select count(uid) from pay_logs where discount_ticket_uid = uid) >= ticket_count) then 1 else 0 end`), 'sold_out']
+						[sequelize.literal(`case when ('` + currentDate + `' not between ticket_start_date AND ticket_end_date) AND (ticket_day_type !=` + dayType + `) then true else false end`), 'expire'],
+						[sequelize.literal(`case when ((select count(uid) from pay_logs where discount_ticket_uid = uid) >= ticket_count) then true else false end`), 'sold_out']
 					]
 				},
 			}],
