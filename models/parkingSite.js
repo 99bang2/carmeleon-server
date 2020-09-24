@@ -246,10 +246,13 @@ module.exports = (sequelize, DataTypes) => {
 			where.siteType = params.searchSiteType
 		}
 		if (params.searchActive) {
-			where.isActive = params.searchActive
+			where.isActive = params.searchActive === 'true'?1:0
 		}
 		if (params.searchRating) {
-			where.rate = params.searchRating
+			let start = parseInt(params.searchRating.split(";")[0])
+			let end = parseInt(params.searchRating.split(";")[1])
+			//where.rate = params.searchRating
+			where.rate = {[Sequelize.Op.between]: [start, end]}
 		}
 		if (params.searchKeyword) {
 			where.name = {[Sequelize.Op.like]: '%' + params.searchKeyword + '%'}

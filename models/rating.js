@@ -202,6 +202,7 @@ module.exports = (sequelize, DataTypes) => {
 		let where = {}
 		let offset = null
 		let limit = null
+		let userUid = null
 		let targetTable = ''
 		if (params.targetType) {
 			where.targetType = params.targetType
@@ -226,6 +227,9 @@ module.exports = (sequelize, DataTypes) => {
 		if (params.targetUid) {
 			where.targetUid = params.targetUid
 		}
+		if (params.userUid) {
+			userUid = params.userUid
+		}
 		if (params.page) {
 			//offset, limit 처리//
 			limit = 10
@@ -237,12 +241,15 @@ module.exports = (sequelize, DataTypes) => {
 		}
 		let result = await rating.findAll({
 			attributes: {
-				include: [[sequelize.literal(`(SELECT COUNT(uid) FROM rate_tips WHERE rate_uid= rating.uid AND rate_tip = true)`), 'rate_tip_count']]
+				include: [
+					[sequelize.literal(`(SELECT COUNT(uid) FROM rate_tips WHERE rate_uid= rating.uid AND rate_tip = true)`), 'rate_tip_count'],
+					[sequelize.literal(`(SELECT COUNT(uid) FROM rate_tips WHERE user_uid=` + userUid + ` AND rate_uid = rating.uid AND rate_tip = true)`), 'user_tip_check'],
+				]
 			},
 			include: [
 				{
 					model: models.user,
-					attributes: ['name', 'nickname', 'email']
+					attributes: ['name', 'nickname', 'email', 'profile_image']
 				}
 			],
 			offset: offset,

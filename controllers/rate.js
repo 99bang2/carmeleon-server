@@ -10,7 +10,6 @@ exports.create = async function (ctx) {
 	_.targetUid = targetUid
 	let isRate = false
 	if(targetType === '0'){
-		console.log(targetType)
 		let parkingData = await models.parkingSite.findByPk(targetUid, {
 			attributes: ['isRate'],
 			raw: true
