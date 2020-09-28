@@ -1,6 +1,7 @@
 'use strict'
 const response = require('../libs/response')
 const Sequelize = require('sequelize')
+const codes = require('../configs/codes.json')
 
 module.exports = (sequelize, DataTypes) => {
 	const evChargeStation = sequelize.define('evChargeStation', {
@@ -56,6 +57,28 @@ module.exports = (sequelize, DataTypes) => {
 		},
 		tag: {
 			type: DataTypes.JSON
+		},
+		phone: {
+			type: DataTypes.STRING
+		},
+		evType: {
+			type: DataTypes.INTEGER,
+			defaultValue: 0
+		},
+		evTypeName: {
+			type: DataTypes.VIRTUAL,
+			get: function () {
+				if (this.getDataValue('evType') !== null) {
+					return codes.evType[this.getDataValue('evType')]
+				}
+			}
+		},
+		// Todo: 테슬라 슈퍼차저 충전기 상태 일단 보류
+		// stall: {
+		// 	type: DataTypes.INTEGER
+		// },
+		info: {
+			type: DataTypes.TEXT
 		}
 	}, {
 		timestamps: true,

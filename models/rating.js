@@ -44,7 +44,7 @@ module.exports = (sequelize, DataTypes) => {
 		hooks: {}
 	})
 	rating.associate = function (models) {
-		rating.belongsTo(models.user),
+		rating.belongsTo(models.user)
 		//rating.belongsTo(models.parkingSite, {foreignKey: 'site_uid', targetKey: 'uid'})
 		rating.belongsTo(models.parkingSite, {
 			foreignKey: 'targetUid',

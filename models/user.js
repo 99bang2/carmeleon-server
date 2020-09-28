@@ -110,7 +110,7 @@ module.exports = (sequelize, DataTypes) => {
 					//주차권
 					[Sequelize.literal(`(SELECT count(uid) FROM pay_logs WHERE user_uid=user.uid)`), 'ticket'],
 					//이용내역
-					//[Sequelize.literal(`(SELECT count(uid) FROM pay_logs WHERE user_uid=user.uid)`), 'payLog'],
+					[Sequelize.literal(`(SELECT count(uid) FROM pay_logs WHERE user_uid=user.uid)`), 'payLog'],
 					/////////////////////////////////////////
 					// TODO : FCM 추가 필요 //
 					// 알림 카운트 //

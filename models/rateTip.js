@@ -35,10 +35,10 @@ module.exports = (sequelize, DataTypes) => {
 			foreignKey: 'uid',
 			sourceKey: 'userUid'
 		})
-		rateTip.hasMany(models.rating, {
-			foreignKey: 'uid',
-			sourceKey: 'rateUid'
-		})
+		// rateTip.hasMany(models.rating, {
+		// 	foreignKey: 'uid',
+		// 	sourceKey: 'rateUid'
+		// })
 	}
 	rateTip.getByParams = async function (ctx, params) {
 		let data = await rateTip.findOne({
