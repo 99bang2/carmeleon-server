@@ -3,6 +3,7 @@ const Promise = require('bluebird')
 const bcrypt = Promise.promisifyAll(require('bcrypt-nodejs'))
 const response = require('../libs/response')
 const Sequelize = require('sequelize')
+const codes = require('../configs/codes.json')
 
 module.exports = (sequelize, DataTypes) => {
 	const user = sequelize.define('user', {
@@ -49,6 +50,18 @@ module.exports = (sequelize, DataTypes) => {
 		},
 		memo: {
 			type: DataTypes.TEXT
+		},
+		navigationType: {
+			type: DataTypes.INTEGER,
+			defaultValue: 0
+		},
+		navigationTypeName: {
+			type: DataTypes.VIRTUAL,
+			get: function () {
+				if (this.getDataValue('navigationType') !== null) {
+					return codes.navigationType[this.getDataValue('navigationType')]
+				}
+			}
 		}
 		/* 토큰 관련 컬럼 추가 예정*/
 	}, {
