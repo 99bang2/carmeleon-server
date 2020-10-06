@@ -38,6 +38,7 @@ exports.update = async function (ctx) {
 			email: user.email,
 			phone: user.phone,
 			profileImage: user.profileImage,
+			navigationType: user.navigationType,
 		},
 		secret
 	)
@@ -86,6 +87,7 @@ exports.login = async function (ctx) {
 			email: user.email,
 			phone: user.phone,
 			profileImage: user.profileImage,
+			navigationType: user.navigationType,
 		},
 		secret
 	)
