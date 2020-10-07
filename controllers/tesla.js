@@ -14,6 +14,12 @@ exports.teslaLogin = async function (ctx) {
 	}
 	let vehicleData = await getVehicleId(data)
 	//에러 처리 서버 or 클라 count가 0 or data null
+	if(vehicleData.success === false){
+		ctx.throw({
+			code: vehicleData.code,
+			message: vehicleData.msg
+		})
+	}
 	response.send(ctx, vehicleData)
 }
 exports.teslaData = async function (ctx) {
@@ -34,9 +40,10 @@ exports.teslaData = async function (ctx) {
 		let checkVehicle = await wakeVehicle("qts-6483a6a879bdf615d9b400e49962717953b243439e1dc71933fa08641de18623", 153321439572)
 		//깨웠을 경우 알림 추가 예정//
 		if(checkVehicle.data.response.state !== "online"){
-			res.success = false,
-			res.code = 301,
-			res.msg = "다시 시도해주세요."
+			ctx.throw({
+				code: 301,
+				message: "다시 시도해주세요."
+			})
 		}
 	//}
 	//let chargeData = await chargeList(vehicleData.accessToken, vehicleData.data[0].id)
