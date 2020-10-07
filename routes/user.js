@@ -21,6 +21,7 @@ const couponLogController = require('../controllers/couponLog')
 const reviewTemplateController = require('../controllers/reviewTemplate')
 const evChargeStationController = require('../controllers/evChargeStation')
 const questionController = require('../controllers/question')
+const teslaController = require('../controllers/tesla')
 
 const commonController = require('../controllers/common')
 
@@ -130,7 +131,11 @@ api.post('/questions', questionController.create)
 api.get('/questions', questionController.list)
 api.get('/questions/:uid', questionController.read)
 ///////////////////
-
+/**
+ * 테슬라 컨트롤러
+ */
+api.post('/teslaLogin', teslaController.teslaLogin)
+api.post('/teslas', teslaController.teslaData)
 /**
  * 공통 컨트롤러
  */

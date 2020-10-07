@@ -74,9 +74,12 @@ module.exports = (sequelize, DataTypes) => {
 			}
 		},
 		// Todo: 테슬라 슈퍼차저 충전기 상태 일단 보류
-		// stall: {
-		// 	type: DataTypes.INTEGER
-		// },
+		stall: {
+			type: DataTypes.INTEGER
+		},
+		availableStall:{
+			type: DataTypes.INTEGER
+		},
 		info: {
 			type: DataTypes.TEXT
 		}

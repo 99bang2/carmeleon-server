@@ -27,6 +27,10 @@ exports.teslaData = async function (ctx) {
 		//깨웠을 경우 알림 추가 예정//
 	}
 	let chargeData = await chargeList(vehicleData.accessToken, vehicleData.data[0].id)
+	console.log(chargeData.response.superchargers)
+	for(let i in chargeData.response.superchargers){
+		console.log(chargeData.response.superchargers[i])
+	}
 	response.send(ctx, chargeData.response)
 }
 async function getVehicleId(teslaData){
