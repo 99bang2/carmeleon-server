@@ -140,6 +140,7 @@ async function getVehicleId(teslaData) {
 
 async function wakeVehicle(accessToken, vehicleId) {
 	console.log('wakeVehicle', vehicleId)
+	console.log('accessToken', accessToken)
 	let data = await axios.post(config.teslaUrl + `api/1/vehicles/${vehicleId}/wake_up`, null, {
 		headers: {
 			"Authorization": "Bearer " + accessToken
