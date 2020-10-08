@@ -77,12 +77,16 @@ async function getVehicleId(teslaData) {
 	console.log(options)
 	let data = await axios.post(config.teslaUrl + "oauth/token", options)
 		.then(async (data) => {
+			console.log('data', data)
 			let accessToken = data.data.access_token
 			let vehicleData = await axios.get(config.teslaUrl + "api/1/vehicles", {
 				headers: {
 					"Authorization": "Bearer " + accessToken
 				}
 			}).then((res) => {
+				console.log('res', res)
+
+
 				let vehicleInfo = {
 					count: res.data.count,
 					data: res.data.response
