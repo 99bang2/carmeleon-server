@@ -89,9 +89,14 @@ async function getVehicleId(teslaData) {
 				return vehicleInfo
 			}).catch((err) => {
 				console.log(err)
+				return {
+					success: false,
+					code: 401,
+					msg: "계정 정보를 확인 해주세요."
+				}
 			})
-			vehicleData.accessToken = accessToken
-			return vehicleData
+			/*vehicleData.accessToken = accessToken
+			return vehicleData*/
 		}).catch((err) => {
 			console.log(err)
 			if (err.response.status !== 200)
@@ -101,19 +106,19 @@ async function getVehicleId(teslaData) {
 					msg: "계정 정보를 확인 해주세요."
 				}
 		})
-	let res = {}
+	/*let res = {}
 	if (data.success === false){
 		return data
 	}
 	res.success = true
 	res.code = 100
 	res.msg = "성공"
-	/*if (data.count === 0) {
+	/!*if (data.count === 0) {
 		res.success = false
 		res.code = 101
 		res.msg = "차량이 1대 이상 있어야 합니다."
-	}*/
-	return res
+	}*!/
+	return res*/
 }
 
 async function wakeVehicle(accessToken, vehicleId) {
