@@ -35,7 +35,8 @@ exports.teslaData = async function (ctx) {
 	}
 	let vehicleData = await getVehicleId(data)
 	//online 상태가 아닐 시 wakeup
-	if (vehicleData.data[0].state !== "online") {
+	console.log('vehicleData', vehicleData)
+	if (vehicleData.data.state !== "online") {
 		let checkVehicle = await wakeVehicle(vehicleData.accessToken, vehicleData.data[0].id)
 		//let checkVehicle = await wakeVehicle("qts-6483a6a879bdf615d9b400e49962717953b243439e1dc71933fa08641de18623", 153321439572)
 		//깨웠을 경우 알림 추가 예정//
