@@ -76,6 +76,20 @@ async function getVehicleId(teslaData) {
 	Object.assign(options, teslaData)
 	console.log(options)
 	let data = await axios.post(config.teslaUrl + "oauth/token", options)
+	let accessToken = data.data.access_token
+	console.log('accessToken', accessToken)
+	let vehicleData = await axios.get(config.teslaUrl + "api/1/vehicles", {
+		headers: {
+			"Authorization": "Bearer " + accessToken
+		}
+	})
+	console.log('count', vehicleData.data.count)
+	let vehicleInfo = {
+		count: vehicleData.data.count,
+		data: vehicleData.data.response
+	}
+	return vehicleInfo
+	/*let data = await axios.post(config.teslaUrl + "oauth/token", options)
 		.then(async (data) => {
 			let accessToken = data.data.access_token
 			console.log('accessToken', accessToken)
@@ -98,8 +112,8 @@ async function getVehicleId(teslaData) {
 					msg: "계정 정보를 확인 해주세요."
 				}
 			})
-			/*vehicleData.accessToken = accessToken
-			return vehicleData*/
+			/!*vehicleData.accessToken = accessToken
+			return vehicleData*!/
 		}).catch((err) => {
 			console.log(err)
 			if (err.response.status !== 200)
@@ -108,7 +122,7 @@ async function getVehicleId(teslaData) {
 					code: 401,
 					msg: "계정 정보를 확인 해주세요."
 				}
-		})
+		})*/
 	/*let res = {}
 	if (data.success === false){
 		return data
