@@ -14,7 +14,8 @@ exports.teslaLogin = async function (ctx) {
 	}
 	let vehicleData = await getVehicleId(data)
 	//에러 처리 서버 or 클라 count가 0 or data null
-	if(vehicleData.success === false){
+	console.log('vehicleData', vehicleData)
+	if(vehicleData.success && vehicleData.success === false){
 		ctx.throw({
 			code: vehicleData.code,
 			message: vehicleData.msg
