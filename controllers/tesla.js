@@ -33,7 +33,7 @@ exports.teslaData = async function (ctx) {
 		code: 100,
 		msg: "성공"
 	}
-	let vehicleData = await getVehicleId(data)
+	//let vehicleData = await getVehicleId(data)
 	//online 상태가 아닐 시 wakeup
 	//if (vehicleData.data[0].state !== "online") {
 		//let checkVehicle = await wakeVehicle(vehicleData.accessToken, vehicleData.data[0].id)
@@ -116,11 +116,13 @@ async function getVehicleId(teslaData) {
 }
 
 async function wakeVehicle(accessToken, vehicleId) {
+	console.log('wakeVehicle', vehicleId)
 	let data = await axios.post(config.teslaUrl + `api/1/vehicles/${vehicleId}/wake_up`, null, {
 		headers: {
 			"Authorization": "Bearer " + accessToken
 		}
 	})
+	console.log('wakeVehicle', vehicleId)
 	return data
 }
 
