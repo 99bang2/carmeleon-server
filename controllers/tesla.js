@@ -33,11 +33,11 @@ exports.teslaData = async function (ctx) {
 		code: 100,
 		msg: "성공"
 	}
-	//let vehicleData = await getVehicleId(data)
+	let vehicleData = await getVehicleId(data)
 	//online 상태가 아닐 시 wakeup
-	//if (vehicleData.data[0].state !== "online") {
-		//let checkVehicle = await wakeVehicle(vehicleData.accessToken, vehicleData.data[0].id)
-		let checkVehicle = await wakeVehicle("qts-6483a6a879bdf615d9b400e49962717953b243439e1dc71933fa08641de18623", 153321439572)
+	if (vehicleData.data[0].state !== "online") {
+		let checkVehicle = await wakeVehicle(vehicleData.accessToken, vehicleData.data[0].id)
+		//let checkVehicle = await wakeVehicle("qts-6483a6a879bdf615d9b400e49962717953b243439e1dc71933fa08641de18623", 153321439572)
 		//깨웠을 경우 알림 추가 예정//
 		if(checkVehicle.data.response.state !== "online"){
 			ctx.throw({
@@ -45,9 +45,9 @@ exports.teslaData = async function (ctx) {
 				message: "다시 시도해주세요."
 			})
 		}
-	//}
-	//let chargeData = await chargeList(vehicleData.accessToken, vehicleData.data[0].id)
-	let chargeData = await chargeList("qts-6483a6a879bdf615d9b400e49962717953b243439e1dc71933fa08641de18623", 153321439572)
+	}
+	let chargeData = await chargeList(vehicleData.accessToken, vehicleData.data[0].id)
+	//let chargeData = await chargeList("qts-6483a6a879bdf615d9b400e49962717953b243439e1dc71933fa08641de18623", 153321439572)
 	for (let i in chargeData.response.superchargers) {
 		let name = chargeData.response.superchargers[i].name
 		if (name.indexOf('-') !== -1) {
