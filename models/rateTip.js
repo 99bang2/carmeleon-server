@@ -31,7 +31,7 @@ module.exports = (sequelize, DataTypes) => {
 		hooks: {}
 	})
 	rateTip.associate = function (models) {
-		rateTip.hasMany(models.user, {
+		rateTip.belongsTo(models.user, {
 			foreignKey: 'uid',
 			sourceKey: 'userUid'
 		})
