@@ -15,5 +15,5 @@ RUN npm install
 ENV HOST 0.0.0.0
 EXPOSE 3000
 
-#CMD [ "pm2-runtime", "start", "ecosystem.config.js", "--env", "production"]
-CMD [ "/usr/local/bin/entrypoint.sh" ]
+CMD [ "pm2-runtime", "start", "ecosystem.config.cluster.js", "--env", "production"]
+#CMD [ "/usr/local/bin/entrypoint.sh" ]
