@@ -14,6 +14,9 @@ const response = require('./libs/response')
 const env = process.env.NODE_ENV || 'development'
 const config = require(__dirname + '/configs/config.json')[env]
 
+router.get('/', (ctx) => {
+	ctx.body = 'OK'
+})
 router.use('/api', response.res, apiV1Router.routes())
 app.use(cors())
 app.use(koaBody({
