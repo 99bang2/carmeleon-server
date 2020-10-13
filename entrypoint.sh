@@ -1,7 +1,7 @@
 #!/bin/bash
 
 cd /app && npx sequelize-cli db:migrate --env production
-pm2-runtime start ecosystem.config.js --env production &
+pm2-docker ecosystem.config.js --env production &
 PM2_PID="$!"
 if [[ -z $PM2_PID ]]; then
     exit 1
