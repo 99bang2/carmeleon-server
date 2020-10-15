@@ -12,9 +12,9 @@
   "production": {
     "username": "carmeleon",
     "password": "thwlsWkd123",
-    "database": "carmeleon-db",
-    "host": "carmeleon-db",
-    "port": "3306",
+    "database": "carmeleon",
+    "host": "10.34.108.209",
+    "port": "23306",
     "dialect": "mysql",
     "timezone": "+09:00",
     "logging": false
