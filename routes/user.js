@@ -135,7 +135,7 @@ api.get('/questions/:uid', questionController.read)
  * 테슬라 컨트롤러
  */
 api.post('/teslaLogin', teslaController.teslaLogin)
-api.post('/teslas', teslaController.teslaData)
+api.post('/teslas', teslaController.teslaUpdate)
 /**
  * 공통 컨트롤러
  */

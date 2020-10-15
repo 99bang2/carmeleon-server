@@ -82,6 +82,9 @@ module.exports = (sequelize, DataTypes) => {
 		},
 		info: {
 			type: DataTypes.TEXT
+		},
+		updateTime: {
+			type: DataTypes.DATE
 		}
 	}, {
 		timestamps: true,

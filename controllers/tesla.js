@@ -5,6 +5,7 @@ const config = require('../configs/config.json')[env]
 const axios = require('axios')
 const Sequelize = require('sequelize')
 const Op = Sequelize.Op
+const moment = require('moment')
 
 exports.teslaLogin = async function (ctx) {
 	let _ = ctx.request.body
@@ -65,6 +66,29 @@ exports.teslaData = async function (ctx) {
 		)
 	}
 	response.send(ctx, res)
+}
+
+exports.teslaUpdate = async function (ctx) {
+	let currentDateTime = moment().format('YYYY-MM-DD HH:mm:ss')
+	console.log(currentDateTime)
+	let _ = ctx.request.body
+	let data = _.superchargers
+	//console.log(data.response.superchargers)
+	for (let i in data) {
+		let name = data[i].name
+		if (name.indexOf('-') !== -1) {
+			name = name.replace('-', ' – ')
+		}
+		await models.evChargeStation.update(
+			{availableStall: data[i].available_stalls, updateTime: currentDateTime}, {
+				where: {
+					evType: 1,
+					statNm: {[Op.like]: "%" + name + "%"}
+				}
+			}
+		)
+		response.send(ctx, true)
+	}
 }
 
 async function getVehicleId(teslaData) {
