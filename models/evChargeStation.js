@@ -49,7 +49,7 @@ module.exports = (sequelize, DataTypes) => {
 			type: DataTypes.STRING
 		},
 		picture:{
-			type: DataTypes.STRING
+			type: DataTypes.JSON
 		},
 		isRecommend: {
 			type: DataTypes.BOOLEAN,

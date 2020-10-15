@@ -123,8 +123,6 @@ module.exports = (sequelize, DataTypes) => {
 			type: DataTypes.INTEGER
 		},
 		rate: {
-
-
 			type: DataTypes.DOUBLE
 		},
 		address: {
