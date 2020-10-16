@@ -70,20 +70,16 @@ exports.teslaData = async function (ctx) {
 
 exports.teslaUpdate = async function (ctx) {
 	let currentDateTime = moment().format('YYYY-MM-DD HH:mm:ss')
-	console.log(currentDateTime)
 	let _ = ctx.request.body
 	let data = _.superchargers
 	//console.log(data.response.superchargers)
 	for (let i in data) {
-		let name = data[i].name
-		if (name.indexOf('-') !== -1) {
-			name = name.replace('-', ' – ')
-		}
+		let compareName = data[i].compare_name
 		await models.evChargeStation.update(
 			{availableStall: data[i].available_stalls, updateTime: currentDateTime}, {
 				where: {
 					evType: 1,
-					statNm: {[Op.like]: "%" + name + "%"}
+					compareName: compareName
 				}
 			}
 		)

@@ -13,10 +13,13 @@ module.exports = (sequelize, DataTypes) => {
 		},
 		statNm: {
 			type: DataTypes.STRING,
+			unique: true,
+			allowNull: false
 		},
 		statId: {
 			type:DataTypes.STRING,
-			unique: true
+			unique: true,
+			allowNull: false
 		},
 		addr: {
 			type: DataTypes.STRING
@@ -85,6 +88,9 @@ module.exports = (sequelize, DataTypes) => {
 		},
 		updateTime: {
 			type: DataTypes.DATE
+		},
+		compareName: {
+			type: DataTypes.STRING
 		}
 	}, {
 		timestamps: true,
