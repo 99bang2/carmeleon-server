@@ -13,8 +13,6 @@ module.exports = (sequelize, DataTypes) => {
 		},
 		statNm: {
 			type: DataTypes.STRING,
-			unique: true,
-			allowNull: false
 		},
 		statId: {
 			type:DataTypes.STRING,
