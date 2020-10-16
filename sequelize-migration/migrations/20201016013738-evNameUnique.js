@@ -28,7 +28,7 @@ module.exports = {
 		  return queryInterface.dropTable('users');
 		*/
 		try {
-			await queryInterface.removeConstraint('ev_charge_stations', 'stat_nm')
+			await queryInterface.sequelize.query("DROP INDEX ev_charge_stations_stat_nm_uk ON ev_charge_stations")
 			return Promise.resolve();
 		} catch (e) {
 			return Promise.reject(e);
