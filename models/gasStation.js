@@ -143,8 +143,6 @@ module.exports = (sequelize, DataTypes) => {
 	gasStation.search = async (params, models) => {
 		let where = {}
 		let order = [['createdAt', 'DESC']]
-
-		console.log(params)
 		if (params.searchKeyword) {
 			where = {
 				[Sequelize.Op.or]: [
@@ -169,11 +167,9 @@ module.exports = (sequelize, DataTypes) => {
 			order: order,
 			where: where
 		})
-		console.log(result)
 		let count = await gasStation.scope(null).count({
 			where: where
 		})
-		console.log(count)
 		return {
 			rows: result,
 			count: count
