@@ -9,7 +9,10 @@ exports.create = async function (ctx) {
 
 exports.list = async function (ctx) {
     let _ = ctx.request.query
+    console.log(_)
     let gasStation = await models.gasStation.search(_, models)
+    console.log('gasStation')
+
 	response.send(ctx, gasStation)
 }
 
