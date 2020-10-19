@@ -79,7 +79,7 @@ exports.teslaUpdate = async function (ctx) {
 			{availableStall: data[i].available_stalls, updateTime: currentDateTime}, {
 				where: {
 					evType: 1,
-					compareName: compareName
+					compareName: {[Op.like]: "%" + compareName + "%"}
 				}
 			}
 		)
