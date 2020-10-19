@@ -143,7 +143,6 @@ module.exports = (sequelize, DataTypes) => {
 	gasStation.search = async (params, models) => {
 		let where = {}
 		let order = [['createdAt', 'DESC']]
-
 		if (params.searchKeyword) {
 			where = {
 				[Sequelize.Op.or]: [

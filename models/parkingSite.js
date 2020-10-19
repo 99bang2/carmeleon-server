@@ -372,12 +372,17 @@ module.exports = (sequelize, DataTypes) => {
 		// 	}
 		// }
 		let result = await parkingSite.findAll({
-			attributes: {
+			/*attributes: {
 				include: [
 					[`(6371 * acos(cos(radians(${latitude})) * cos(radians(lat)) * cos(radians(lon) - radians(${longitude})) + sin(radians(${latitude})) * sin(radians(lat))))`, 'distance'],
 					[`(SELECT count(uid) FROM ratings WHERE ` + rateWhere, 'rate_count']
 				]
-			},
+			},*/
+			attributes: [
+				'uid', 'name', 'isBuy', 'rate', 'optionTag', 'valetType', 'isRecommend', 'price', 'lat', 'lon',
+				[`(6371 * acos(cos(radians(${latitude})) * cos(radians(lat)) * cos(radians(lon) - radians(${longitude})) + sin(radians(${latitude})) * sin(radians(lat))))`, 'distance'],
+				[`(SELECT count(uid) FROM ratings WHERE ` + rateWhere, 'rate_count']
+			],
 			order: order,
 			where: [
 				distanceQuery
