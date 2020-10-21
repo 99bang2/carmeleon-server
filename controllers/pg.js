@@ -25,6 +25,7 @@ exports.pgPayment = async function (ctx) {
 	let _ = ctx.request.body
 	let serverName = os.hostname()
 	let clientIP = ctx.ip
+	//sampleData
 	let testData = {
 		goodName: '상품',
 		buyerName: '테스트',
