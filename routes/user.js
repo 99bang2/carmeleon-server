@@ -23,6 +23,7 @@ const evChargeStationController = require('../controllers/evChargeStation')
 const questionController = require('../controllers/question')
 const teslaController = require('../controllers/tesla')
 
+const pgController = require('../controllers/pg')
 const commonController = require('../controllers/common')
 
 /**
@@ -146,5 +147,8 @@ api.post('/searchList', commonController.searchList)
 //keyword : '주차장'
 api.post('/avgRate', commonController.avgRate)
 api.post('/codes', commonController.codes)
+
+api.post('/pg', pgController.pgSave)
+api.post('/pgPay', pgController.pgPayment)
 
 module.exports = api
