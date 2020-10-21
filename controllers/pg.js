@@ -1,29 +1,69 @@
 const models = require('../models')
 const response = require('../libs/response')
-const crypto = require('crypto-js')
+const SHA512 = require('crypto-js/SHA512')
+const os = require('os')
 const axios = require('axios')
+const moment = require('moment')
 
-exports.pgOpen = async function (ctx) {
+exports.pgSave = async function (ctx) {
 	let _ = ctx.request.body
-	let data = {
-		"P_AMT": "33000",
-		"P_EMAIL": "",
-		"P_GOODS": "5회 주차권",
-		"P_HPP_METHOD": "1",
-		"P_INI_PAYMENT": "CARD",
-		"P_MID": "INIpayTest",
-		"P_NEXT_URL": "http://localhost:70/?ic_page=payment&ic_sub_page=payment_check",
-		"P_NOTI": "",
-		"P_NOTI_URL": "http://localhost:70/?ic_page=payment&ic_sub_page=payment_complete",
-		"P_OID": "inicisTestOid1603079358087",
-		"P_RESERVED": "",
-		"P_UNAME": ""
+	if (_.resultcode === '00') {
+		let insertData = {}
+		let data = {}
+		data.cardCode = _.cardcd
+		data.cardNumber = _.cardno
+		data.billKey = _.billkey
+		insertData.userUid = _.p_noti
+		insertData.cardInfo = data
+		let card = await models.card.create(insertData)
+		response.send(ctx, card)
+	} else {
+		response.send(ctx, _.resultmsg)
 	}
-	let res = await axios.post('https://mobile.inicis.com/smart/payment/', {
-		headers: {
-			'accept-charset': 'euc-kr'
-		},
-		data: data
-	})
-	response.send(ctx, res)
+}
+exports.pgPayment = async function (ctx) {
+	let _ = ctx.request.body
+	let serverName = os.hostname()
+	let clientIP = ctx.ip
+	//sampleData
+	let testData = {
+		goodName: '상품',
+		buyerName: '테스트',
+		buyerEmail: 'test@test.com',
+		buyerTel: '01000000000',
+		price: '1000',
+		billKey: 'bcb28d6f2af792eed2b69710dfed7f8a826612d5',
+		orderId: 'testOrder',
+		mid: 'INIBillTst'
+	}
+	//성공
+	let dataArr = []
+	let beforeHash = "rKnPljRn5m6J9MzzBillingCard" + moment().format("YYYYMMDDHHiiss") +
+		clientIP + testData.mid + testData.orderId + testData.price + testData.billKey
+	dataArr["type"] = "Billing"
+	dataArr["paymethod"] = "Card"
+	dataArr["timestamp"] = moment().format("YYYYMMDDHHiiss")
+	dataArr["clientIp"] = clientIP
+	dataArr["mid"] = testData.mid
+	dataArr["url"] = serverName
+	dataArr["moid"] = testData.orderId
+	dataArr["goodName"] = testData.goodName
+	dataArr["buyerName"] = testData.buyerName
+	dataArr["buyerEmail"] = testData.buyerEmail
+	dataArr["buyerTel"] = testData.buyerTel
+	dataArr["price"] = testData.price
+	dataArr["billKey"] = testData.billKey
+	dataArr["authentification"] = "00"
+	dataArr["hashData"] = SHA512(beforeHash).toString()
+	let queryString = generateQueryString(dataArr)
+	let res = await axios.post('https://iniapi.inicis.com/api/v1/billing?' + encodeURI(queryString))
+	if (res.data.resultCode === '00') {
+		response.send(ctx, true)
+	} else {
+		response.send(ctx, res.data.resultMsg)
+	}
+}
+
+function generateQueryString(object) {
+	return Object.keys(object).map(key => `${key}=${object[key]}`).join('&')
 }
