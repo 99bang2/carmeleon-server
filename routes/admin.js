@@ -25,6 +25,7 @@ const payLogController = require('../controllers/payLog')
 const couponController = require('../controllers/coupon')
 const couponLogController = require('../controllers/couponLog')
 const evChargeStationController = require('../controllers/evChargeStation')
+const questionController = require('../controllers/question')
 
 const tutorialController = require('../controllers/tutorial')
 
@@ -56,6 +57,14 @@ api.put('/notices/:uid', noticeController.update)
 api.delete('/notices/:uid', noticeController.delete)
 api.post('/notices/bulkDelete', noticeController.bulkDelete) //복수삭제
 api.get('/userNotices', noticeController.userList)
+/**
+ * 문의사항 관리
+ */
+api.get('/questions', questionController.list)
+api.get('/questions/:uid', questionController.read)
+api.delete('/questions/:uid', questionController.delete)
+api.post('/questions/bulkDelete', questionController.bulkDelete) //복수삭제
+
 /**
  * 이벤트 관리
  */
