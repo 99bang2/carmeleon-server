@@ -7,7 +7,9 @@ const moment = require('moment')
 
 exports.pgSave = async function (ctx) {
 	let _ = ctx.request.body
-	if (_.resultcode === '00') {
+	let flg = _.resultcode === '00'
+
+	if (flg) {
 		let insertData = {}
 		let data = {}
 		data.cardCode = _.cardcd
@@ -15,11 +17,10 @@ exports.pgSave = async function (ctx) {
 		data.billKey = _.billkey
 		insertData.userUid = _.p_noti
 		insertData.cardInfo = data
-		let card = await models.card.create(insertData)
-		response.send(ctx, card)
-	} else {
-		response.send(ctx, _.resultmsg)
+		await models.card.create(insertData)
 	}
+
+	ctx.redirect(`http://192.168.0.101:3000/redirect?success=${flg}`)
 }
 exports.pgPayment = async function (ctx) {
 	let _ = ctx.request.body
