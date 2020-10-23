@@ -25,42 +25,35 @@ exports.pgPayment = async function (ctx) {
 	let _ = ctx.request.body
 	let serverName = os.hostname()
 	let clientIP = ctx.ip
-	//sampleData
-	let testData = {
-		goodName: '상품',
-		buyerName: '테스트',
-		buyerEmail: 'test@test.com',
-		buyerTel: '01000000000',
-		price: '1000',
-		billKey: 'bcb28d6f2af792eed2b69710dfed7f8a826612d5',
-		orderId: 'testOrder',
-		mid: 'INIBillTst'
-	}
-	//성공
 	let dataArr = []
 	let beforeHash = "rKnPljRn5m6J9MzzBillingCard" + moment().format("YYYYMMDDHHiiss") +
-		clientIP + testData.mid + testData.orderId + testData.price + testData.billKey
+		clientIP + _.mid + _.orderId + _.price + _.billKey
 	dataArr["type"] = "Billing"
 	dataArr["paymethod"] = "Card"
 	dataArr["timestamp"] = moment().format("YYYYMMDDHHiiss")
 	dataArr["clientIp"] = clientIP
-	dataArr["mid"] = testData.mid
+	dataArr["mid"] = _.mid
 	dataArr["url"] = serverName
-	dataArr["moid"] = testData.orderId
-	dataArr["goodName"] = testData.goodName
-	dataArr["buyerName"] = testData.buyerName
-	dataArr["buyerEmail"] = testData.buyerEmail
-	dataArr["buyerTel"] = testData.buyerTel
-	dataArr["price"] = testData.price
-	dataArr["billKey"] = testData.billKey
+	dataArr["moid"] = _.orderId
+	dataArr["goodName"] = _.goodName
+	dataArr["buyerName"] = _.buyerName
+	dataArr["buyerEmail"] = _.buyerEmail
+	dataArr["buyerTel"] = _.buyerTel
+	dataArr["price"] = _.price
+	dataArr["billKey"] = _.billKey
 	dataArr["authentification"] = "00"
 	dataArr["hashData"] = SHA512(beforeHash).toString()
 	let queryString = generateQueryString(dataArr)
 	let res = await axios.post('https://iniapi.inicis.com/api/v1/billing?' + encodeURI(queryString))
 	if (res.data.resultCode === '00') {
-		response.send(ctx, true)
+		response.send(ctx, {
+			result: true
+		})
 	} else {
-		response.send(ctx, res.data.resultMsg)
+		response.send(ctx, {
+			result: false,
+			msg: res.data.resultMsg
+		})
 	}
 }
 
