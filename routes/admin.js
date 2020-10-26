@@ -27,6 +27,7 @@ const couponLogController = require('../controllers/couponLog')
 const evChargeStationController = require('../controllers/evChargeStation')
 const questionController = require('../controllers/question')
 
+const pgController = require('../controllers/pg')
 const tutorialController = require('../controllers/tutorial')
 
 /**
@@ -212,6 +213,9 @@ api.get('/evChargeStations/:uid', evChargeStationController.read)
 api.put('/evChargeStations/:uid', evChargeStationController.update)
 api.delete('/evChargeStations/:uid', evChargeStationController.delete)
 api.post('/evChargeStations/bulkDelete', evChargeStationController.bulkDelete)//복수삭제
+
+//결제 취소 //
+api.get('/pg/:uid', pgController.pgCancel)
 /**
  * 공통 컨트롤러
  */
