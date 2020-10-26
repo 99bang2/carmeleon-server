@@ -39,6 +39,7 @@ exports.update = async function (ctx) {
 			phone: user.phone,
 			profileImage: user.profileImage,
 			navigationType: user.navigationType,
+			token: user.token
 		},
 		secret
 	)
@@ -76,6 +77,9 @@ exports.login = async function (ctx) {
 			email: _.user.email,
 			phone: _.user.phone,
 			profileImage: _.user.profileImage,
+			token: _.user.token,
+			push: true,
+			marketing: true
 		})
 	}
 	const accessToken = jwt.sign(
@@ -88,6 +92,7 @@ exports.login = async function (ctx) {
 			phone: user.phone,
 			profileImage: user.profileImage,
 			navigationType: user.navigationType,
+			token: user.token
 		},
 		secret
 	)
