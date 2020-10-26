@@ -46,9 +46,11 @@ exports.pgPayment = async function (ctx) {
 	dataArr["hashData"] = SHA512(beforeHash).toString()
 	let queryString = generateQueryString(dataArr)
 	let res = await axios.post('https://iniapi.inicis.com/api/v1/billing?' + encodeURI(queryString))
+	console.log(res.data)
 	if (res.data.resultCode === '00') {
 		response.send(ctx, {
-			result: true
+			result: true,
+			value: res.data
 		})
 	} else {
 		response.send(ctx, {
@@ -59,16 +61,16 @@ exports.pgPayment = async function (ctx) {
 }
 exports.pgCancel = async function (ctx){
 	let {uid} = ctx.params
-	let payInfo = await models.payLog.getByUid(ctx, uid)
+	let payInfo = await models.payLog.getByUid(ctx, uid, models)
 	let dataArr = []
 	let mid = 'INIBillTst'
-	let beforeHash = "rKnPljRn5m6J9MzzRefundCard" + moment().format("YYYYMMDDHHiiss") + payInfo.payInfo.clientIp + mid + payInfo.payInfo.orderId
+	let beforeHash = "rKnPljRn5m6J9MzzRefundCard" + moment().format("YYYYMMDDHHiiss") + payInfo.payInfo.clientIp + mid + payInfo.payInfo.result.value.tid
 	dataArr["type"] = "Refund"
 	dataArr["paymethod"] = "Card"
 	dataArr["timestamp"] = moment().format("YYYYMMDDHHiiss")
 	dataArr["clientIp"] = payInfo.payInfo.clientIp
 	dataArr["mid"] = mid
-	dataArr["tid"] = payInfo.payInfo.orderId
+	dataArr["tid"] = payInfo.payInfo.result.value.tid
 	dataArr["msg"] = "관리자 취소" // 취소 사유
 	dataArr["hashData"] = SHA512(beforeHash).toString()
 	let queryString = generateQueryString(dataArr)
