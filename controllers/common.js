@@ -93,6 +93,10 @@ exports.checkRateAvailable = async function (uid) {
 		where: {uid: uid},
 		raw: true
 	})
-	console.log(rateCheck)
 	return rateCheck.rate_uid === null;
+}
+
+exports.pushMessage = async function (data) {
+	let push = await models.push.create(data)
+	return push
 }
