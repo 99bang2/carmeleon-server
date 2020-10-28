@@ -1,6 +1,6 @@
 const models = require('../models')
 const response = require('../libs/response')
-const SHA512 = require('crypto-js/SHA512')
+const SHA512 = require('crypto-js/sha512')
 const os = require('os')
 const axios = require('axios')
 const moment = require('moment')
