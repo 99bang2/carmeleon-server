@@ -23,6 +23,9 @@ module.exports = (sequelize, DataTypes) => {
         phoneNumber: {
             type: DataTypes.STRING
         },
+        email: {
+            type: DataTypes.STRING
+        },
         reserveTime: {
             type: DataTypes.STRING
         },

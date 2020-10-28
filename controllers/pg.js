@@ -25,6 +25,7 @@ exports.pgPayment = async function (ctx) {
     let payLogUid = _.payLogUid
     let serverName = os.hostname()
     let clientIP = ctx.ip
+    console.log(ctx)
     let dataArr = []
     let beforeHash = "rKnPljRn5m6J9MzzBillingCard" + moment().format("YYYYMMDDHHiiss") +
         _.clientIp + _.mid + _.orderId + _.price + _.billKey
@@ -54,7 +55,8 @@ exports.pgPayment = async function (ctx) {
         models.payLog.update(
             {
                 status: 10,
-                payInfo: payInfo
+                payInfo: payInfo,
+                email: ctx.user.email
             }, {where: {uid: payLogUid}})
         response.send(ctx, {
             result: true,
@@ -64,7 +66,8 @@ exports.pgPayment = async function (ctx) {
         models.payLog.update(
             {
                 status: -10,
-                payInfo: payInfo
+                payInfo: payInfo,
+                email: ctx.user.email
             }, {where: {uid: payLogUid}})
         response.send(ctx, {
             result: false,
