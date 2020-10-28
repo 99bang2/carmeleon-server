@@ -10,7 +10,7 @@
 		"naverClientKey": "ThBIVBiils",
 		"naverApiID": "7yrt63cf83",
 		"naverApiKey": "262Z4zFfVXU6BNgUCDzwqyZXpnto5qXF10cFcsGk",
-		"imagePathUrl": "http://localhost:3030/",
+		"clientUrl": "http://localhost:3030/",
 		"teslaUrl": "https://owner-api.teslamotors.com/",
 		"teslaId": "81527cff06843c8634fdc09e8ac0abefb46ac849f38fe1e431c2ef2106796384",
 		"teslaSecret": "c7257eb71a564034f9419ee651c7d0e5f7aa6bfbd18bafb5c5c033b093bb2fa3"
@@ -26,7 +26,7 @@
 		"naverClientKey": "ThBIVBiils",
 		"naverApiID": "747rpqhmlc",
 		"naverApiKey": "NzinJwV0bbybo5msvo4kLLjeZYbpz7XLOFa67k3r",
-		"imagePathUrl": "https://carmeleon.rocketlaunch.co.kr:3000/",
+		"clientUrl": "https://carmeleon.rocketlaunch.co.kr:3000/",
 		"teslaUrl": "https://owner-api.teslamotors.com/",
 		"teslaId": "81527cff06843c8634fdc09e8ac0abefb46ac849f38fe1e431c2ef2106796384",
 		"teslaSecret": "c7257eb71a564034f9419ee651c7d0e5f7aa6bfbd18bafb5c5c033b093bb2fa3"

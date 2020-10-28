@@ -22,7 +22,7 @@ exports.imageUpload = function imageUpload(ctx, file, dir, folder, name){
 	}
 	//파일 용량, 사이즈 정의 필요
 	let imagePath = file.path
-	let address = config.imagePathUrl
+	let address = config.clientUrl
 	let fileExt = path.extname(imagePath)
 	if(!name){
 		name = ''

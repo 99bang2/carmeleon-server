@@ -4,6 +4,8 @@ const SHA512 = require('crypto-js/sha512')
 const os = require('os')
 const axios = require('axios')
 const moment = require('moment')
+const env = process.env.NODE_ENV || 'development'
+const config = require('../configs/config.json')[env]
 
 exports.pgSave = async function (ctx) {
     let _ = ctx.request.body
@@ -18,7 +20,7 @@ exports.pgSave = async function (ctx) {
         insertData.cardInfo = data
         await models.card.create(insertData)
     }
-    ctx.redirect(`http://192.168.0.101:3000/redirect?success=${flg}`)
+    ctx.redirect(`${config.clientUrl}redirect?success=${flg}`)
 }
 exports.pgPayment = async function (ctx) {
     let _ = ctx.request.body
