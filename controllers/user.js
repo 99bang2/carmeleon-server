@@ -81,6 +81,9 @@ exports.login = async function (ctx) {
 			push: true,
 			marketing: true
 		})
+	}else{
+		user.token = _.user.token
+		await user.save()
 	}
 	const accessToken = jwt.sign(
 		{
