@@ -221,6 +221,7 @@ api.get('/pushes', pushController.list)
 api.get('/pushes/:uid', pushController.read)
 api.put('/pushes/:uid', pushController.update)
 api.delete('/pushes/:uid', pushController.delete)
+api.post('/pushes/bulkDelete', pushController.bulkDelete)
 //결제 취소 //
 api.get('/pg/:uid', pgController.pgCancel)
 /**
