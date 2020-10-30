@@ -29,7 +29,6 @@ exports.create = async function (ctx) {
 	}else{
 		rateTip = await models.rateTip.create(_)
 	}
-	console.log(rateTip)
 	response.send(ctx, rateTip)
 }
 
