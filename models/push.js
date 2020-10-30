@@ -25,7 +25,7 @@ module.exports = (sequelize, DataTypes) => {
 			type: DataTypes.STRING
 		},
 		sendDate: {
-			type: DataTypes.STRING
+			type: DataTypes.DATE
 		},
 		status: {
 			type: DataTypes.INTEGER,

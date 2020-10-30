@@ -82,6 +82,10 @@ module.exports = (sequelize, DataTypes) => {
 				}
 			}
 		},
+		isRate: {
+			type: DataTypes.BOOLEAN,
+			defaultValue: true
+		},
 		Gasoline: {
 			type: DataTypes.INTEGER
 		},

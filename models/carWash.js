@@ -89,6 +89,10 @@ module.exports = (sequelize, DataTypes) => {
 				}
 			}
 		},
+		isRate: {
+			type: DataTypes.BOOLEAN,
+			defaultValue: true
+		},
 		timeTag: {
 			type: DataTypes.JSON
 		},

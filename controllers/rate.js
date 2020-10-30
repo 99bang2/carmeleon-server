@@ -9,21 +9,49 @@ exports.create = async function (ctx) {
 	_.targetType = targetType
 	_.targetUid = targetUid
 	let isRate = false
-	if(targetType === '0'){
-		let parkingData = await models.parkingSite.findByPk(targetUid, {
-			attributes: ['isRate'],
-			raw: true
-		})
-		isRate = parkingData.isRate
+	let targetName = ''
+	switch(targetType){
+		case '0':
+			let parkingData = await models.parkingSite.findByPk(targetUid, {
+				attributes: ['isRate'],
+				raw: true
+			})
+			isRate = parkingData.isRate
+			targetName = '주차장'
+			break;
+		case '1':
+			let evChargeStationData = await models.evChargeStation.findByPk(targetUid, {
+				attributes: ['isRate'],
+				raw: true
+			})
+			isRate = evChargeStationData.isRate
+			targetName = '충전소'
+			break;
+		case '2':
+			let gasStationData = await models.gasStation.findByPk(targetUid, {
+				attributes: ['isRate'],
+				raw: true
+			})
+			isRate = gasStationData.isRate
+			targetName = '주유소'
+			break;
+		case '3':
+			let carWashData = await models.carWash.findByPk(targetUid, {
+				attributes: ['isRate'],
+				raw: true
+			})
+			isRate = carWashData.isRate
+			targetName = '세차장'
+			break;
 	}
 	if (isRate === false){
 		ctx.throw({
 			code: 400,
-			message: '평가를 할 수 없는 주차장 입니다.'
+			message: `평가를 할 수 없는 ${targetName} 입니다.`
 		})
 	}
 	///////////////////////////
-	let rate = await models. rating.create(_)
+	let rate = await models.rating.create(_)
 	await commonController.avgRate(ctx, targetType, targetUid)
 	response.send(ctx, rate)
 }
