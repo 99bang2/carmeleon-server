@@ -52,7 +52,11 @@ exports.pgPayment = async function (ctx) {
     dataArr["authentification"] = "00"
     dataArr["hashData"] = SHA512(beforeHash).toString()
     let queryString = generateQueryString(dataArr)
-    let res = await axios.post('https://iniapi.inicis.com/api/v1/billing?' + encodeURI(queryString))
+    let res = await axios.post('https://iniapi.inicis.com/api/v1/billing?' + encodeURI(queryString),{
+    	headers: {
+			'Content-type': 'application/x-www-form-urlencoded;charset=utf-8'
+		}
+	})
     let payInfo = {
         orderId: _.orderId,
         clientIP: _.clientIp,
