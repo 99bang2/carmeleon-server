@@ -6,6 +6,7 @@ const axios = require('axios')
 const moment = require('moment')
 const env = process.env.NODE_ENV || 'development'
 const config = require('../configs/config.json')[env]
+const qs = require('qs')
 
 exports.pgSave = async function (ctx) {
     let _ = ctx.request.body
@@ -32,31 +33,29 @@ exports.pgPayment = async function (ctx) {
     let payLogUid = _.payLogUid
     let serverName = os.hostname()
     let clientIP = ctx.ip
-    console.log(ctx)
-    let dataArr = []
     let beforeHash = "rKnPljRn5m6J9MzzBillingCard" + moment().format("YYYYMMDDHHiiss") +
         _.clientIp + _.mid + _.orderId + _.price + _.billKey
-    dataArr["type"] = "Billing"
-    dataArr["paymethod"] = "Card"
-    dataArr["timestamp"] = moment().format("YYYYMMDDHHiiss")
-    dataArr["clientIp"] = _.clientIp
-    dataArr["mid"] = _.mid
-    dataArr["url"] = serverName
-    dataArr["moid"] = _.orderId
-    dataArr["goodName"] = _.goodName
-    dataArr["buyerName"] = _.buyerName
-    dataArr["buyerEmail"] = _.buyerEmail
-    dataArr["buyerTel"] = _.buyerTel
-    dataArr["price"] = _.price
-    dataArr["billKey"] = _.billKey
-    dataArr["authentification"] = "00"
-    dataArr["hashData"] = SHA512(beforeHash).toString()
-    let queryString = generateQueryString(dataArr)
-    let res = await axios.post('https://iniapi.inicis.com/api/v1/billing?' + encodeURI(queryString),{
-    	headers: {
-			'Content-type': 'application/x-www-form-urlencoded;charset=utf-8'
-		}
-	})
+    let res = await axios.post('https://iniapi.inicis.com/api/v1/billing', qs.stringify({
+        type: 'Billing',
+        paymethod: 'Card',
+        timestamp: moment().format("YYYYMMDDHHiiss"),
+        clientIp: _.clientIp,
+        mid: _.mid,
+        url: serverName,
+        moid: _.orderId,
+        goodName: _.goodName,
+        buyerName: _.buyerName,
+        buyerEmail: _.buyerEmail,
+        buyerTel: _.buyerTel,
+        price: _.price,
+        billKey: _.billKey,
+        authentification: '00',
+        hashData: SHA512(beforeHash).toString()
+    }),{
+        headers: {
+            'content-type': 'application/x-www-form-urlencoded;charset=utf-8'
+        }
+    })
     let payInfo = {
         orderId: _.orderId,
         clientIP: _.clientIp,
