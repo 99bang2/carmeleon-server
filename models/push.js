@@ -48,6 +48,18 @@ module.exports = (sequelize, DataTypes) => {
 	}
 	push.search = async (params, models) => {
 		let where = {}
+		if(params.status){
+			where.status = params.status
+		}
+		let result = await push.findAll({
+			where: where
+		})
+		return result
+	}
+	push.userList = async () => {
+		let where = {}
+		where.status = 1
+		where.userToken = null
 		let result = await push.findAll({
 			where: where
 		})
