@@ -40,7 +40,6 @@ exports.update = async function (ctx) {
 			profileImage: user.profileImage,
 			navigationType: user.navigationType,
 			token: user.token,
-			push : user.push,
 			marketing : user.marketing
 		},
 		secret
@@ -84,7 +83,6 @@ exports.login = async function (ctx) {
 			marketing: true
 		})
 	}else{
-		user.push = _.user.push
 		user.marketing = _.user.marketing
 		user.token = _.user.token
 		await user.save()
@@ -100,7 +98,6 @@ exports.login = async function (ctx) {
 			profileImage: user.profileImage,
 			navigationType: user.navigationType,
 			token: user.token,
-			push: user.push,
 			marketing: user.marketing
 		},
 		secret
