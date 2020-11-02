@@ -124,10 +124,8 @@ module.exports = (sequelize, DataTypes) => {
 					[Sequelize.literal(`(SELECT count(uid) FROM pay_logs WHERE user_uid=user.uid AND status='10')`), 'ticket'],
 					//이용내역
 					[Sequelize.literal(`(SELECT count(uid) FROM pay_logs WHERE user_uid=user.uid)`), 'payLog'],
-					/////////////////////////////////////////
-					// TODO : FCM 추가 필요 //
 					// 알림 카운트 //
-					/////////////////////////
+					[Sequelize.literal(`(SELECT count(uid) FROM pushes WHERE send_date > (NOW() - INTERVAL 1 DAY))`), 'push'],
 					//포인트
 					[Sequelize.literal(`(SELECT count(uid) FROM coupon_logs WHERE user_uid=user.uid)`), 'coupon'],
 					//공지
