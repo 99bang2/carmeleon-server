@@ -60,14 +60,14 @@ module.exports = (sequelize, DataTypes) => {
 		return result
 	}
 	push.userList = async () => {
-		let currentDate = moment().format('YYYY-MM-DD')
+		let currentDate = moment().format('YYYY-MM-DD HH:mm:ss')
 		let where = {}
 		where.status = 1
 		where.userToken = null
 		where.sendDate = {
 			[Op.between]: [
-				currentDate,
-				moment().add(4, 'weeks').format('YYYY-MM-DD')
+				moment().add(-4, 'weeks').format('YYYY-MM-DD'),
+				currentDate
 			]
 		}
 		let result = await push.findAll({
@@ -76,7 +76,8 @@ module.exports = (sequelize, DataTypes) => {
 					[sequelize.literal(`case when DATE(send_date) = DATE(NOW()) THEN true ELSE false END`), 'flag']
 				]
 			},
-			where: where
+			where: where,
+			order: [['sendDate','DESC']]
 		})
 		return result
 	}
