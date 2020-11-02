@@ -121,7 +121,7 @@ module.exports = (sequelize, DataTypes) => {
 					//'uid',
 					// TODO : payLogs Status에 따라 정리 필요 //
 					//주차권
-					[Sequelize.literal(`(SELECT count(uid) FROM pay_logs WHERE user_uid=user.uid)`), 'ticket'],
+					[Sequelize.literal(`(SELECT count(uid) FROM pay_logs WHERE user_uid=user.uid AND status='10')`), 'ticket'],
 					//이용내역
 					[Sequelize.literal(`(SELECT count(uid) FROM pay_logs WHERE user_uid=user.uid)`), 'payLog'],
 					/////////////////////////////////////////

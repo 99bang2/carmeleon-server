@@ -17,6 +17,12 @@ exports.list = async function (ctx) {
 	response.send(ctx, pushs)
 }
 
+exports.userList = async function (ctx) {
+	let _ = ctx.request.query
+	let pushs = await models.push.userList()
+	response.send(ctx, pushs)
+}
+
 exports.read = async function (ctx) {
 	let {uid} = ctx.params
 	let push = await models.push.getByUid(ctx, uid, models)
