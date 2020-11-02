@@ -1,5 +1,8 @@
 'use strict'
 const response = require('../libs/response')
+const Op = require('sequelize').Op
+const moment = require('moment')
+
 module.exports = (sequelize, DataTypes) => {
 	const push = sequelize.define('push', {
 		uid: {
@@ -57,10 +60,22 @@ module.exports = (sequelize, DataTypes) => {
 		return result
 	}
 	push.userList = async () => {
+		let currentDate = moment().format('YYYY-MM-DD')
 		let where = {}
 		where.status = 1
 		where.userToken = null
+		where.sendDate = {
+			[Op.between]: [
+				currentDate,
+				moment().add(4, 'weeks').format('YYYY-MM-DD')
+			]
+		}
 		let result = await push.findAll({
+			attributes: {
+				include: [
+					[sequelize.literal(`case when DATE(send_date) = DATE(NOW()) THEN true ELSE false END`), 'flag']
+				]
+			},
 			where: where
 		})
 		return result
