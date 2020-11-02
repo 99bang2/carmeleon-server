@@ -80,7 +80,7 @@ exports.login = async function (ctx) {
 			profileImage: _.user.profileImage,
 			token: _.user.token,
 			push: true,
-			marketing: true
+			marketing: _.user.marketing
 		})
 	}else{
 		user.marketing = _.user.marketing
