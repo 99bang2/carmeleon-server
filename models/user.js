@@ -125,7 +125,7 @@ module.exports = (sequelize, DataTypes) => {
 					//이용내역
 					[Sequelize.literal(`(SELECT count(uid) FROM pay_logs WHERE user_uid=user.uid)`), 'payLog'],
 					// 알림 카운트 //
-					[Sequelize.literal(`(SELECT count(uid) FROM pushes WHERE send_date > (NOW() - INTERVAL 1 DAY))`), 'push'],
+					[Sequelize.literal(`(SELECT count(uid) FROM pushes WHERE send_date > (NOW() - INTERVAL 1 DAY))`), 'alarm'],
 					//포인트
 					[Sequelize.literal(`(SELECT count(uid) FROM coupon_logs WHERE user_uid=user.uid)`), 'coupon'],
 					//공지
