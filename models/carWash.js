@@ -12,6 +12,9 @@ module.exports = (sequelize, DataTypes) => {
 			autoIncrement: true,
 			primaryKey: true,
 		},
+		bookingCode:{
+			type:DataTypes.STRING
+		},
 		carWashName: {
 			type: DataTypes.STRING,
 			allowNull: false
