@@ -253,7 +253,13 @@ module.exports = (sequelize, DataTypes) => {
 			where.rate = {[Sequelize.Op.between]: [start, end]}
 		}
 		if (params.searchKeyword) {
-			where.name = {[Sequelize.Op.like]: '%' + params.searchKeyword + '%'}
+			let searchObj = {
+				[Op.or]: [
+					{name: {[Sequelize.Op.like]: '%' + params.searchKeyword + '%'}},
+					{address: {[Sequelize.Op.like]: '%' + params.searchKeyword + '%'}}
+				]
+			}
+			Object.assign(where, searchObj)
 		}
 		if (params.accountUid) {
 			where.accountUid = params.accountUid
