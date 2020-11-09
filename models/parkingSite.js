@@ -280,122 +280,18 @@ module.exports = (sequelize, DataTypes) => {
 	}
 
 	parkingSite.userSearch = async (params, models) => {
-		let where = {}
-		let order = [['createdAt', 'DESC']]
 		let longitude = params.lon ? parseFloat(params.lon) : null
 		let latitude = params.lat ? parseFloat(params.lat) : null
 		let radius = params.radius
-		let distanceQuery = sequelize.where(sequelize.literal(`(6371 * acos(cos(radians(${latitude})) * cos(radians(lat)) * cos(radians(lon) - radians(${longitude})) + sin(radians(${latitude})) * sin(radians(lat))))`), '<=', radius)
-		let rateWhere = 'target_type = 0 AND target_uid = parkingSite.uid)'
-		if (!radius) {
-			distanceQuery = null
+		let where = {}
+		if(radius) {
+			let distanceQuery = sequelize.where(sequelize.literal(`(6371 * acos(cos(radians(${latitude})) * cos(radians(lat)) * cos(radians(lon) - radians(${longitude})) + sin(radians(${latitude})) * sin(radians(lat))))`), '<=', radius)
+			where = [distanceQuery]
 		}
-		if (params.siteType) {
-			where.site_type = params.siteType
-		}
-		if (params.valetType) {
-			where.valet_type = params.valetType
-		}
-		// if(params.paymentTag){
-		// 	if(params.paymentTag.indexOf(',') !== -1){
-		// 		let tagArr = params.paymentTag.split(',')
-		// 		let tagWhereArr = []
-		// 		for(let i in tagArr){
-		// 			tagWhereArr.push(sequelize.where(sequelize.literal(`payment_tag`), 'like', '%'+tagArr[i]+'%'))
-		// 		}
-		// 		where.payment_tag = {
-		// 			[Op.and] : tagWhereArr
-		// 		}
-		// 	}else{
-		// 		where.payment_tag = {
-		// 			[Op.substring]: params.paymentTag
-		// 		}
-		// 	}
-		// }
-		// if(params.brandTag){
-		// 	//where.brandTag = params.brandTag
-		// 	if(params.brandTag.indexOf(',') !== -1){
-		// 		let tagArr = params.brandTag.split(',')
-		// 		let tagWhereArr = []
-		// 		for(let i in tagArr){
-		// 			tagWhereArr.push(sequelize.where(sequelize.literal(`brand_tag`), 'like', '%'+tagArr[i]+'%'))
-		// 		}
-		// 		where.brand_tag = {
-		// 			[Op.and] : tagWhereArr
-		// 		}
-		// 	}else{
-		// 		where.brand_tag = {
-		// 			[Op.substring]: params.brandTag
-		// 		}
-		// 	}
-		// }
-		// if(params.productTag){
-		// 	if(params.productTag.indexOf(',') !== -1){
-		// 		let tagArr = params.productTag.split(',')
-		// 		let tagWhereArr = []
-		// 		for(let i in tagArr){
-		// 			tagWhereArr.push(sequelize.where(sequelize.literal(`product_tag`), 'like', '%'+tagArr[i]+'%'))
-		// 		}
-		// 		where.product_tag = {
-		// 			[Op.and] : tagWhereArr
-		// 		}
-		// 	}else{
-		// 		where.product_tag = {
-		// 			[Op.substring]: params.productTag
-		// 		}
-		// 	}
-		// }
-		if(params.optionTag){
-			if(params.optionTag.indexOf(',') !== -1){
-				let tagArr = params.optionTag.split(',')
-				let tagWhereArr = []
-				for(let i in tagArr){
-					tagWhereArr.push(sequelize.where(sequelize.literal(`option_tag`), 'like', '%'+tagArr[i]+'%'))
-				}
-				where.option_tag = {
-					[Op.and] : tagWhereArr
-				}
-			}else{
-				where.option_tag = {
-					[Op.substring]: params.optionTag
-				}
-			}
-		}
-		// if(params.carTag){
-		// 	if(params.carTag.indexOf(',') !== -1){
-		// 		let tagArr = params.carTag.split(',')
-		// 		let tagWhereArr = []
-		// 		for(let i in tagArr){
-		// 			tagWhereArr.push(sequelize.where(sequelize.literal(`car_tag`), 'like', '%'+tagArr[i]+'%'))
-		// 		}
-		// 		where.car_tag = {
-		// 			[Op.and] : tagWhereArr
-		// 		}
-		// 	}else{
-		// 		where.car_tag = {
-		// 			[Op.substring]: params.carTag
-		// 		}
-		// 	}
-		// }
-		let result = await parkingSite.findAll({
-			/*attributes: {
-				include: [
-					[`(6371 * acos(cos(radians(${latitude})) * cos(radians(lat)) * cos(radians(lon) - radians(${longitude})) + sin(radians(${latitude})) * sin(radians(lat))))`, 'distance'],
-					[`(SELECT count(uid) FROM ratings WHERE ` + rateWhere, 'rate_count']
-				]
-			},*/
-			attributes: [
-				'uid', 'name', 'isBuy', 'rate', 'optionTag', 'valetType', 'isRecommend', 'price', 'lat', 'lon',
-				[`(6371 * acos(cos(radians(${latitude})) * cos(radians(lat)) * cos(radians(lon) - radians(${longitude})) + sin(radians(${latitude})) * sin(radians(lat))))`, 'distance'],
-				[`(SELECT count(uid) FROM ratings WHERE ` + rateWhere, 'rate_count']
-			],
-			order: order,
-			where: [
-				distanceQuery
-				, where
-			]
-		})
+		let attributes = ['uid', 'name', 'isBuy', 'rate', 'optionTag', 'valetType', 'isRecommend', 'price', 'lat', 'lon']
+		let result = await parkingSite.findAll({ attributes, where })
 		return result
 	}
+
 	return parkingSite
 }
