@@ -145,53 +145,21 @@ module.exports = (sequelize, DataTypes) => {
 	}
 
 	evChargeStation.search = async (params, models) => {
-		let where = {}
-		let order = [['createdAt', 'DESC']]
 		let longitude = params.lon ? parseFloat(params.lon) : null
 		let latitude = params.lat ? parseFloat(params.lat) : null
 		let radius = params.radius
-		let distaceQuery = sequelize.where(sequelize.literal(`(6371 * acos(cos(radians(${latitude})) * cos(radians(lat)) * cos(radians(lon) - radians(${longitude})) + sin(radians(${latitude})) * sin(radians(lat))))`), '<=', radius)
-		if (!radius) {
-			distaceQuery = null
+		let where = {}
+		if(radius) {
+			let distanceQuery = sequelize.where(sequelize.literal(`(6371 * acos(cos(radians(${latitude})) * cos(radians(lat)) * cos(radians(lon) - radians(${longitude})) + sin(radians(${latitude})) * sin(radians(lat))))`), '<=', radius)
+			where = [distanceQuery]
 		}
-		let rateWhere = 'target_type = 1 AND target_uid = evChargeStation.uid)'
-		if (params.searchKeyword) {
-			where = {
-				[Sequelize.Op.or]: [
-					{
-						statNm: {
-							[Sequelize.Op.like]: '%' + params.searchKeyword + '%'
-						}
-					}
-				]
-			}
-		}
-
-		let result = await evChargeStation.findAll({
-			include: [{
-				model: models.evCharger
-			}],
-			attributes: {
-				include: [
-					[`(6371 * acos(cos(radians(${latitude})) * cos(radians(lat)) * cos(radians(lon) - radians(${longitude})) + sin(radians(${latitude})) * sin(radians(lat))))`, 'distance'],
-					[`(SELECT count(uid) FROM ratings WHERE ` + rateWhere, 'rate_count']
-				]
-			},
-			offset: params.offset ? Number(params.offset) : null,
-			limit: params.limit ? Number(params.limit) : null,
-			order: order,
-			where: [
-				distaceQuery
-				, where
-			]
-		})
-		let count = await evChargeStation.scope(null).count({
-			where: where
-		})
-		return {
-			rows: result,
-			count: count
-		}
+		let attributes = ['uid', 'statNm', 'evType', 'rate', 'tag', 'availableStall', 'isRecommend', 'updateTime', 'lat', 'lon', 'stall']
+		let include = [{
+			model: models.evCharger,
+			attributes: ['stat']
+		}]
+		let result = await evChargeStation.findAll({include, attributes, where})
+		return result
 	}
 
 	evChargeStation.searchAdmin = async (params, models) => {
