@@ -10,8 +10,26 @@ module.exports = (sequelize, DataTypes) => {
 			autoIncrement: true,
 			primaryKey: true,
 		},
-		cardInfo: {
-			type: DataTypes.JSON
+		cardNumber: {
+			type: DataTypes.STRING
+		},
+		cardCode: {
+			type: DataTypes.STRING
+		},
+		expiryYear: {
+			type: DataTypes.STRING
+		},
+		expiryMonth: {
+			type: DataTypes.STRING
+		},
+		cardPassword: {
+			type: DataTypes.STRING
+		},
+		cardId: {
+			type: DataTypes.STRING
+		},
+		billKey: {
+			type: DataTypes.STRING
 		},
 		userUid: {
 			type: DataTypes.INTEGER

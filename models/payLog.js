@@ -13,8 +13,8 @@ module.exports = (sequelize, DataTypes) => {
             primaryKey: true,
         },
         //// 사용 내역 정보 /////
-        payInfo: {
-            type: DataTypes.JSON
+        payResultUid: {
+            type: DataTypes.INTEGER
         },
         // or carModel uid //
         carNumber: {
@@ -75,7 +75,10 @@ module.exports = (sequelize, DataTypes) => {
         },
         rateUid: {
             type: DataTypes.INTEGER
-        }
+        },
+		payOid: {
+			type: DataTypes.INTEGER
+		}
     }, {
         timestamps: true,
         underscored: true,
@@ -83,6 +86,7 @@ module.exports = (sequelize, DataTypes) => {
     })
     payLog.associate = function (models) {
         payLog.belongsTo(models.user)
+		payLog.belongsTo(models.payResult)
         payLog.belongsTo(models.parkingSite, {foreignKey: 'site_uid', targetKey: 'uid'})
         payLog.belongsTo(models.discountTicket)
         payLog.belongsTo(models.card)
