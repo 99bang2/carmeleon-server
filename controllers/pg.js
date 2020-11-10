@@ -125,6 +125,8 @@ exports.pgBillNice = async function(ctx){
 
 	let ediDate = moment().format('YYYYMMDDHHmmss')
 	let moid = 'nice_bill_test_3.0';
+	//IDno : 생년월일(YYMMDD) or 사업자등록번호(법인카드 등록 시)
+	//CardPw : 카드 비밀번호 앞 2자리
 	let aesString = "CardNo=" + _.CardNo + "&ExpYear=" + _.ExpYear + "&ExpMonth=" + _.ExpMonth + "&IDNo=" + _.IDNo + "&CardPw=" + _.CardPw;
 
 	let options = {
@@ -300,7 +302,8 @@ exports.pgPaymentNice = async function(ctx){
 			{
 				status: 10,
 				payResultUid: payResult.uid,
-				email: ctx.user.email
+				email: ctx.user.email,
+				payOid: moid
 			}, {where: {uid: payLogUid}})
 		response.send(ctx, {
 			result: true,
