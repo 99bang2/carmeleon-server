@@ -1,5 +1,6 @@
 const models = require('../models')
 const response = require('../libs/response')
+const pg = require('../controllers/pg')
 
 exports.create = async function (ctx) {
 	let _ = ctx.request.body
@@ -44,8 +45,16 @@ exports.update = async function (ctx) {
 exports.delete = async function (ctx) {
 	let {uid} = ctx.params
 	let card = await models.card.getByUid(ctx, uid)
-	await card.destroy()
-	response.send(ctx, card)
+	let result = await pg.pgPaymentCancelNice(card.billKey)
+	if(result === true){
+		await card.destroy()
+		response.send(ctx, card)
+	}else{
+		ctx.throw({
+			code: 400,
+			message: '삭제 실패'
+		})
+	}
 }
 
 exports.userList = async function (ctx) {
