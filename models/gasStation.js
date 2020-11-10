@@ -181,52 +181,16 @@ module.exports = (sequelize, DataTypes) => {
 	}
 
 	gasStation.userSearch = async (params, models) => {
-		let where = {}
-		let order = [['createdAt', 'DESC']]
 		let longitude = params.lon ? parseFloat(params.lon) : null
 		let latitude = params.lat ? parseFloat(params.lat) : null
 		let radius = params.radius
-		let distaceQuery = sequelize.where(sequelize.literal(`(6371 * acos(cos(radians(${latitude})) * cos(radians(lat)) * cos(radians(lon) - radians(${longitude})) + sin(radians(${latitude})) * sin(radians(lat))))`), '<=', radius)
-		if (!radius) {
-			distaceQuery = null
+		let where = {}
+		if (radius) {
+			let distanceQuery = sequelize.where(sequelize.literal(`(6371 * acos(cos(radians(${latitude})) * cos(radians(lat)) * cos(radians(lon) - radians(${longitude})) + sin(radians(${latitude})) * sin(radians(lat))))`), '<=', radius)
+			where = [distanceQuery]
 		}
-		let rateWhere = 'target_type = 2 AND target_uid = gasStation.uid)'
-		if (params.brandCode) {
-			where.site_type = params.brandCode
-		}
-		if (params.gasStationType) {
-			where.gasStationType = params.gasStationType
-		}
-		if (params.tag) {
-			if (params.tag.indexOf(',') !== -1) {
-				let tagArr = params.tag.split(',')
-				let tagWhereArr = []
-				for (let i in tagArr) {
-					tagWhereArr.push(sequelize.where(sequelize.literal(`tag`), 'like', '%' + tagArr[i] + '%'))
-				}
-				where.tag = {
-					[Op.and]: tagWhereArr
-				}
-			} else {
-				where.tag = {
-					[Op.substring]: params.tag
-				}
-			}
-		}
-
-		let result = await gasStation.findAll({
-			attributes: {
-				include: [
-					[`(6371 * acos(cos(radians(${latitude})) * cos(radians(lat)) * cos(radians(lon) - radians(${longitude})) + sin(radians(${latitude})) * sin(radians(lat))))`, 'distance'],
-					[`(SELECT count(uid) FROM ratings WHERE ` + rateWhere, 'rate_count']
-				]
-			},
-			order: order,
-			where: [
-				distaceQuery
-				, where
-			]
-		})
+		let attributes = ['uid', 'gasStationName', 'gasStationUid', 'brandCode', 'gasStationType', 'lat', 'lon','rate', 'isRecommend', 'tag', 'Gasoline', 'Diesel', 'PremiumGasoline', 'lpg']
+		let result = await gasStation.findAll({ attributes, where })
 		return result
 	}
 
