@@ -242,32 +242,16 @@ module.exports = (sequelize, DataTypes) => {
 	}
 
 	carWash.userSearch = async (params, models) => {
-		let where = {}
-		let order = [['createdAt', 'DESC']]
 		let longitude = params.lon ? parseFloat(params.lon) : null
 		let latitude = params.lat ? parseFloat(params.lat) : null
 		let radius = params.radius
-		let distaceQuery = sequelize.where(sequelize.literal(`(6371 * acos(cos(radians(${latitude})) * cos(radians(lat)) * cos(radians(lon) - radians(${longitude})) + sin(radians(${latitude})) * sin(radians(lat))))`), '<=', radius)
-		if (!radius) {
-			distaceQuery = null
+		let where = {}
+		if(radius) {
+			let distanceQuery = sequelize.where(sequelize.literal(`(6371 * acos(cos(radians(${latitude})) * cos(radians(lat)) * cos(radians(lon) - radians(${longitude})) + sin(radians(${latitude})) * sin(radians(lat))))`), '<=', radius)
+			where = [distanceQuery]
 		}
-		let rateWhere = 'target_type = 3 AND target_uid = carWash.uid)'
-		if (params.carWashType) {
-			where.carWashType = params.carWashType
-		}
-		let result = await carWash.findAll({
-			attributes: {
-				include: [
-					[`(6371 * acos(cos(radians(${latitude})) * cos(radians(lat)) * cos(radians(lon) - radians(${longitude})) + sin(radians(${latitude})) * sin(radians(lat))))`, 'distance'],
-					[`(SELECT count(uid) FROM ratings WHERE ` + rateWhere, 'rate_count']
-				]
-			},
-			order: order,
-			where: [
-				distaceQuery
-				, where
-			]
-		})
+		let attributes = ['uid', 'carWashName', 'carWashType', 'rate', 'typeTag', 'timeTag', 'isRecommend', 'lat', 'lon', 'bookingCode']
+		let result = await carWash.findAll({ attributes, where })
 		return result
 	}
 

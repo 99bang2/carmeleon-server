@@ -189,7 +189,7 @@ module.exports = (sequelize, DataTypes) => {
 			let distanceQuery = sequelize.where(sequelize.literal(`(6371 * acos(cos(radians(${latitude})) * cos(radians(lat)) * cos(radians(lon) - radians(${longitude})) + sin(radians(${latitude})) * sin(radians(lat))))`), '<=', radius)
 			where = [distanceQuery]
 		}
-		let attributes = ['uid', 'gasStationName', 'gasStationUid', 'brandCode', 'gasStationType', 'lat', 'lon','rate', 'isRecommend', 'tag', 'Gasoline', 'Diesel', 'PremiumGasoline', 'lpg']
+		let attributes = ['uid', 'gasStationName', 'brandCode', 'lat', 'lon','rate', 'isRecommend', 'tag', 'Gasoline', 'Diesel', 'PremiumGasoline', 'lpg']
 		let result = await gasStation.findAll({ attributes, where })
 		return result
 	}
