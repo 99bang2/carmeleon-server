@@ -77,7 +77,10 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.INTEGER
         },
 		payOid: {
-			type: DataTypes.INTEGER
+			type: DataTypes.STRING
+		},
+		payTid: {
+			type: DataTypes.STRING
 		}
     }, {
         timestamps: true,
