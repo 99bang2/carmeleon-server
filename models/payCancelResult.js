@@ -1,7 +1,7 @@
 'use strict'
 const response = require('../libs/response')
 module.exports = (sequelize, DataTypes) => {
-	const payResult = sequelize.define('payResult', {
+	const payCancelResult = sequelize.define('payCancelResult', {
 		uid: {
 			type: DataTypes.INTEGER,
 			allowNull: false,
@@ -55,25 +55,25 @@ module.exports = (sequelize, DataTypes) => {
 		underscored: true,
 		paranoid: true
 	})
-	payResult.associate = function (models) {
-		payResult.belongsTo(models.user)
+	payCancelResult.associate = function (models) {
+		payCancelResult.belongsTo(models.user)
 	}
-	payResult.getByUid = async function (ctx, uid) {
-		let data = await payResult.findByPk(uid)
+	payCancelResult.getByUid = async function (ctx, uid) {
+		let data = await payCancelResult.findByPk(uid)
 		if (!data) {
 			response.badRequest(ctx)
 		}
 		return data
 	}
-	payResult.search = async (params) => {
+	payCancelResult.search = async (params) => {
 		let where = {}
 		if(params.userUid){
 			where.userUid = params.userUid
 		}
-		let result = await payResult.findAll({
+		let result = await payCancelResult.findAll({
 			where: where,
 		})
 		return result
 	}
-	return payResult
+	return payCancelResult
 }
