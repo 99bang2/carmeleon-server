@@ -122,58 +122,53 @@ exports.pgCancel = async function (ctx) {
 }
 exports.pgBillNice = async function(ctx){
 	let _ = ctx.request.body
-
+	let data = _.encryptedData
+	let hashKey = CryptoJS.SHA512(ctx.user.email).toString()
+	let decryptedDate = CryptoJS.AES.decrypt(data, hashKey)
+	let decryptData = (JSON.parse(decryptedDate.toString(CryptoJS.enc.Utf8)))
+	//hmacHash
+	//let testDecrypt = CryptoJS.AES.decrypt(data, );
 	let ediDate = moment().format('YYYYMMDDHHmmss')
 	let moid = 'nice_bill_test_3.0';
 	//IDno : 생년월일(YYMMDD) or 사업자등록번호(법인카드 등록 시)
 	//CardPw : 카드 비밀번호 앞 2자리
-	let aesString = "CardNo=" + _.CardNo + "&ExpYear=" + _.ExpYear + "&ExpMonth=" + _.ExpMonth + "&IDNo=" + _.IDNo + "&CardPw=" + _.CardPw;
+	let aesString = "CardNo=" + decryptData.CardNo + "&ExpYear=" + decryptData.ExpYear + "&ExpMonth=" + decryptData.ExpMonth + "&IDNo=" + decryptData.IDNo + "&CardPw=" + decryptData.CardPw
 
-	let options = {
-		url : "https://webapi.nicepay.co.kr/webapi/billing/billing_regist.jsp",
-		method : 'POST',
-		header : {
-			'User-Agent' : 'Super Agent/0.0.1',
-			'Content-Type': 'application/x-www-form-urlencoded'
-		},
-		encoding : null,
-		form : {
-			'MID' : merchantID,
-			'EdiDate' : ediDate,
-			'Moid' : moid,
-			'EncData' : getAES(aesString, merchantKey),
-			'SignData' : getSignData(merchantID + ediDate + moid + merchantKey).toString(),
-			'CharSet' : 'utf-8',
-		}
-	}
-	let result = await authRequest(options)
+	let result = await axios.post("https://webapi.nicepay.co.kr/webapi/billing/billing_regist.jsp", qs.stringify({
+		'MID': merchantID,
+		'EdiDate': ediDate,
+		'Moid': moid,
+		'EncData': getAES(aesString, merchantKey),
+		'SignData': getSignData(merchantID + ediDate + moid + merchantKey).toString(),
+		'CharSet': 'utf-8',
+	}))
 	let convertResult = {
-		resultCode : result.ResultCode,
-		resultMsg : result.ResultMsg,
-		bid : result.BID,
-		authDate : result.AuthDate,
-		cardCode : result.CardCode,
-		cardName : result.CardName,
-		tid : result.TID,
-		userUid : _.userUid
+		resultCode: result.ResultCode,
+		resultMsg: result.ResultMsg,
+		bid: result.BID,
+		authDate: result.AuthDate,
+		cardCode: result.CardCode,
+		cardName: result.CardName,
+		tid: result.TID,
+		userUid: _.userUid
 	}
 	// 공통
 	await models.billResult.create(convertResult)
 
-	if(result.ResultCode === "F100"){
+	if (result.data.ResultCode === "F100") {
 		//성공
 		let cardData = {
 			cardNumber : _.CardNo,
-			cardCode : result.CardCode,
+			cardCode : result.data.CardCode,
 			expiryYear : rabbitHash(_.ExpYear),
 			expiryMonth : rabbitHash(_.ExpMonth),
 			cardPassword : rabbitHash(_.CardPw),
 			cardId : rabbitHash(_.IDNo),
-			billKey : result.BID,
+			billKey : result.data.BID,
 			userUid : _.userUid
 		}
 		await models.card.create(cardData)
-	}else{
+	} else {
 		//실패
 		ctx.throw({
 			code: 300,
@@ -185,51 +180,41 @@ exports.pgBillNice = async function(ctx){
 }
 exports.pgBillRemoveNice = async function(billKey, userUid){
 	let ediDate = moment().format('YYYYMMDDHHmmss')
-	let moid = 'nice_bill_test_3.0';
+	let moid = 'nice_bill_test_3.0'
 
-	let options = {
-		url : "https://webapi.nicepay.co.kr/webapi/billing/billkey_remove.jsp",
-		method : 'POST',
-		header : {
-			'User-Agent' : 'Super Agent/0.0.1',
-			'Content-Type': 'application/x-www-form-urlencoded'
-		},
-		encoding : null,
-		form : {
-			'BID' : billKey,
-			'MID' : merchantID,
-			'EdiDate' : ediDate,
-			'Moid' : moid,
-			'SignData' : getSignData(merchantID + ediDate + moid + billKey + merchantKey).toString(),
-			'CharSet' : 'utf-8',
-		}
-	}
-	let result = await authRequest(options)
+	let result = await axios.post("https://webapi.nicepay.co.kr/webapi/billing/billkey_remove.jsp", qs.stringify({
+		'BID': billKey,
+		'MID': merchantID,
+		'EdiDate': ediDate,
+		'Moid': moid,
+		'SignData': getSignData(merchantID + ediDate + moid + billKey + merchantKey).toString(),
+		'CharSet': 'utf-8',
+	}))
 	let convertResult = {
-		resultCode : result.ResultCode,
-		resultMsg : result.ResultMsg,
-		bid : result.BID,
-		authDate : result.AuthDate,
-		tid : result.TID,
-		userUid : userUid
+		resultCode: result.data.ResultCode,
+		resultMsg: result.data.ResultMsg,
+		bid: result.data.BID,
+		authDate: result.data.AuthDate,
+		tid: result.data.TID,
+		userUid: userUid
 	}
 	await models.billResult.create(convertResult)
 	// 공통
-	if(result.ResultCode === "F101"){
+	if (result.data.ResultCode === "F101") {
 		//성공
 		return true
-	}else{
+	} else {
 		//실패
 		return false
 	}
 }
-exports.pgPaymentNice = async function(ctx){
+exports.pgPaymentNice = async function (ctx) {
 	let _ = ctx.request.body
 	let payLogUid = _.payLogUid
 
 	let ediDate = moment().format('YYYYMMDDHHmmss')
-	let ranNum = Math.floor(Math.random()*(9999-1000+1)) + 1000
-	let transactionID = merchantID + "0116" + ediDate.substr(2,12) + ranNum
+	let ranNum = Math.floor(Math.random() * (9999 - 1000 + 1)) + 1000
+	let transactionID = merchantID + "0116" + ediDate.substr(2, 12) + ranNum
 
 	let bid = _.billKey
 	let amt = _.price
@@ -239,57 +224,48 @@ exports.pgPaymentNice = async function(ctx){
 	//가맹점 분담 무이자 사용 여부 (0: 사용안함_이자 / 1: 사용_무이자)
 	// 가맹점 분담 무이자를 지칭하며, 가맹점관리자페이지에서 설정 후 사용 가능.
 	// TODO:확인 필요
-	let cardInterest = "0";
+	let cardInterest = "0"
 	//할부개월 (00: 일시불 / 02: 2개월 / 03: 3개월 … )
-	let cardQuota = "00";
-
-	let options = {
-		url : "https://webapi.nicepay.co.kr/webapi/billing/billing_approve.jsp",
-		method : 'POST',
-		header : {
-			'User-Agent' : 'Super Agent/0.0.1',
-			'Content-Type': 'application/x-www-form-urlencoded'
-		},
-		encoding : null,
-		form : {
-			'TID' : transactionID,
-			'BID' : bid,
-			'MID' : merchantID,
-			'EdiDate' : ediDate,
-			'Moid' : moid,
-			'Amt' : amt,
-			'GoodsName' : _.goodName,
-			'SignData' : signData,
-			'CardInterest' : cardInterest,
-			'CardQuota' : cardQuota,
-			'BuyerName' : _.buyerName,
-			'BuyerEmail' : _.buyerEmail,
-			'BuyerTel' : _.buyerTel,
-			'CharSet' : 'utf-8',
-		}
-	}
-	//console.log(await authRequest(options))
-	let result = await authRequest(options)
-	//공통
+	let cardQuota = "00"
+	let result = await axios.post("https://webapi.nicepay.co.kr/webapi/billing/billing_approve.jsp", qs.stringify({
+		'TID': transactionID,
+		'BID': bid,
+		'MID': merchantID,
+		'EdiDate': ediDate,
+		'Moid': moid,
+		'Amt': amt,
+		//iconv.encode(name, 'euc-kr');
+		//iconv.decode(strContents, 'euc-kr').toString()
+		//euckr
+		'GoodsName': _.goodName,
+		'SignData': signData,
+		'CardInterest': cardInterest,
+		'CardQuota': cardQuota,
+		'BuyerName': _.buyerName,
+		'BuyerEmail': _.buyerEmail,
+		'BuyerTel': _.buyerTel,
+		'CharSet': 'utf-8',
+	}))
+	console.log(result)
 	let convertResult = {
-		resultCode : result.ResultCode,
-		resultMsg : result.ResultMsg,
-		authCode: result.AuthCode,
-		authDate : result.AuthDate,
-		acquCardCode: result.AcquCardCode,
-		acquCardName: result.AcquCardName,
-		cardCode : result.CardCode,
-		cardName : result.CardName,
-		cardQuota: result.CardQuota,
-		CardInterest: result.CardInterest,
-		cardCl: result.CardCl,
-		amt: result.Amt,
-		goodsName: result.GoodsName,
-		buyerName: result.BuyerName,
+		resultCode : result.data.ResultCode,
+		resultMsg : result.data.ResultMsg,
+		authCode: result.data.AuthCode,
+		authDate : result.data.AuthDate,
+		acquCardCode: result.data.AcquCardCode,
+		acquCardName: result.data.AcquCardName,
+		cardCode : result.data.CardCode,
+		cardName : result.data.CardName,
+		cardQuota: result.data.CardQuota,
+		CardInterest: result.data.CardInterest,
+		cardCl: result.data.CardCl,
+		amt: result.data.Amt,
+		goodsName: result.data.GoodsName,
+		buyerName: result.data.BuyerName,
 		buyerEmail: _.buyerEmail,
 		buyerTel: _.buyerTel,
-		tid: result.TID,
-		cardNo: result.CardNo,
+		tid: result.data.TID,
+		cardNo: result.data.CardNo,
 		userUid : _.userUid
 	}
 	// 공통
@@ -325,7 +301,7 @@ exports.pgPaymentNice = async function(ctx){
 	}
 	response.send(ctx, true)
 }
-exports.pgPaymentCancelNice = async function(ctx){
+exports.pgPaymentCancelNice = async function (ctx) {
 	let {uid} = ctx.params
 	let payInfo = await models.payLog.getByUid(ctx, uid, models)
 	let ediDate = moment().format('YYYYMMDDHHmmss')
@@ -336,55 +312,46 @@ exports.pgPaymentCancelNice = async function(ctx){
 	let userUid = payInfo.userUid
 	let signData = getSignData(merchantID + amt + ediDate + merchantKey).toString()
 
-	let options = {
-		url : "https://webapi.nicepay.co.kr/webapi/cancel_process.jsp",
-		method : 'POST',
-		header : {
-			'User-Agent' : 'Super Agent/0.0.1',
-			'Content-Type': 'application/x-www-form-urlencoded'
-		},
-		encoding : null,
-		form : {
-			'TID' : transactionID,
-			'MID' : merchantID,
-			'Moid' : moid,
-			'CancelAmt' : amt,
-			'CancelMsg' : '결제 취소',
+	let result = await axios.post("https://webapi.nicepay.co.kr/webapi/cancel_process.jsp", qs.stringify(
+		{
+			'TID': transactionID,
+			'MID': merchantID,
+			'Moid': moid,
+			'CancelAmt': amt,
+			'CancelMsg': '결제 취소',
 			//부분 취소 여부 0:전체, 1:부분//
-			'PartialCancelCode' : '0',
-			'EdiDate' : ediDate,
-			'SignData' : signData,
-			'CharSet' : 'utf-8',
+			'PartialCancelCode': '0',
+			'EdiDate': ediDate,
+			'SignData': signData,
+			'CharSet': 'utf-8',
 		}
-	}
-	//console.log(await authRequest(options))
-	let result = await authRequest(options)
+	))
 	//공통
 	let convertResult = {
-		resultCode : result.ResultCode,
-		resultMsg : result.ResultMsg,
-		errorCd: result.ErrorCD,
-		errorMsg : result.ErrorMsg,
-		CancelAmt: result.CancelAmt,
-		moid: result.Moid,
-		signature : result.Signature,
-		payMethod : result.PayMethod,
-		tid : result.TID,
-		cancelDate: result.CancelDate,
-		cancelTime: result.CancelTime,
-		cancelNum: result.CancelNum,
-		remainAmt: result.RemainAmt,
+		resultCode: result.data.ResultCode,
+		resultMsg: result.data.ResultMsg,
+		errorCd: result.data.ErrorCD,
+		errorMsg: result.data.ErrorMsg,
+		CancelAmt: result.data.CancelAmt,
+		moid: result.data.Moid,
+		signature: result.data.Signature,
+		payMethod: result.data.PayMethod,
+		tid: result.data.TID,
+		cancelDate: result.data.CancelDate,
+		cancelTime: result.data.CancelTime,
+		cancelNum: result.data.CancelNum,
+		remainAmt: result.data.RemainAmt,
 		userUid : userUid
 	}
 	// 공통
 	await models.payCancelResult.create(convertResult)
-	if(result.ResultCode === "2001"){
+	if (result.data.ResultCode === "2001") {
 		//성공
 		payInfo.update({status: -20})
 		response.send(ctx, {
 			result: true
 		})
-	}else{
+	} else {
 		//실패
 		response.send(ctx, {
 			result: false,
@@ -394,41 +361,21 @@ exports.pgPaymentCancelNice = async function(ctx){
 }
 
 function generateQueryString(object) {
-    return Object.keys(object).map(key => `${key}=${object[key]}`).join('&')
+	return Object.keys(object).map(key => `${key}=${object[key]}`).join('&')
 }
 
 function getSignData(str) {
-	let encrypted = CryptoJS.SHA256(str);
-	return encrypted;
+	let encrypted = CryptoJS.SHA256(str)
+	return encrypted
 }
 
-function getAES(text, key){
-	let encKey = key.substr(0,16);
-
-	let cipher = crypto.createCipheriv('aes-128-ecb', encKey, Buffer.alloc(0));
-	let ciphertext = Buffer.concat([cipher.update(text, 'utf8'), cipher.final()]).toString('hex');
-
-	return ciphertext;
+function getAES(text, key) {
+	let encKey = key.substr(0, 16)
+	let cipher = crypto.createCipheriv('aes-128-ecb', encKey, Buffer.alloc(0))
+	let ciphertext = Buffer.concat([cipher.update(text, 'utf8'), cipher.final()]).toString('hex')
+	return ciphertext
 }
 
-function authRequest(options){
-	// Start the request
-	let res = request(options, function(error, response, body) {
-		if (!error && response.statusCode == 200) {
-			let strContents = new Buffer(body);
-			let returnObj = JSON.parse(iconv.decode(strContents, 'utf-8').toString())
-			return returnObj
-		}
-	}).then(function(data){
-		let strContents = new Buffer(data);
-		let returnObj = JSON.parse(iconv.decode(strContents, 'utf-8').toString())
-		return returnObj
-	}).catch(function(e){
-		return false
-	})
-	return res
-}
-
-function rabbitHash(str){
+function rabbitHash(str) {
 	return CryptoJS.Rabbit.encrypt(str, secret).toString()
 }

@@ -40,6 +40,14 @@ module.exports = (sequelize, DataTypes) => {
 		isMain: {
 			type: DataTypes.BOOLEAN,
 			defaultValue: false
+		},
+		maskingCardNumber: {
+			type: DataTypes.VIRTUAL,
+			get: function () {
+				if (this.getDataValue('cardNumber') !== null) {
+					return this.getDataValue('cardNumber').replace(/\d(?=.{4})/gi, "*");
+				}
+			}
 		}
 	}, {
 		timestamps: true,
@@ -50,7 +58,9 @@ module.exports = (sequelize, DataTypes) => {
 		card.belongsTo(models.user)
 	}
 	card.getByUid = async function (ctx, uid) {
-		let data = await card.findByPk(uid)
+		let data = await card.findByPk(uid,{
+			attributes: ['maskingCardNumber', 'cardCode', 'billKey', 'userUid', 'isMain']
+		})
 		if (!data) {
 			response.badRequest(ctx)
 		}
@@ -58,6 +68,7 @@ module.exports = (sequelize, DataTypes) => {
 	}
 	card.getByUserUid = async function (ctx, uid) {
 		let data = await card.findAll({
+			attributes: ['maskingCardNumber', 'cardCode', 'billKey', 'userUid', 'isMain'],
 			where: {userUid: uid}
 		})
 		if (!data) {
@@ -72,6 +83,7 @@ module.exports = (sequelize, DataTypes) => {
 			where.userUid = params.userUid
 		}
 		let result = await card.findAll({
+			attributes: ['maskingCardNumber', 'cardCode', 'billKey', 'userUid', 'isMain'],
 			where: where,
 			order: order
 		})
