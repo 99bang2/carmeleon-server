@@ -122,11 +122,14 @@ exports.pgCancel = async function (ctx) {
 }
 exports.pgBillNice = async function(ctx){
 	let _ = ctx.request.body
-	let data = _.encryptedData
+	let data = _.data
+	console.log(data)
 	let hashKey = CryptoJS.SHA512(ctx.user.email).toString()
-	let decryptedDate = CryptoJS.AES.decrypt(data, hashKey)
-	let decryptData = (JSON.parse(decryptedDate.toString(CryptoJS.enc.Utf8)))
+	console.log('email',ctx.user.email)
+	let decryptedData = CryptoJS.AES.decrypt(data, hashKey)
+	let decryptData = JSON.parse(decryptedData.toString(CryptoJS.enc.Utf8))
 	//hmacHash
+	console.log(decryptData)
 	//let testDecrypt = CryptoJS.AES.decrypt(data, );
 	let ediDate = moment().format('YYYYMMDDHHmmss')
 	let moid = 'nice_bill_test_3.0';
@@ -143,13 +146,13 @@ exports.pgBillNice = async function(ctx){
 		'CharSet': 'utf-8',
 	}))
 	let convertResult = {
-		resultCode: result.ResultCode,
-		resultMsg: result.ResultMsg,
-		bid: result.BID,
-		authDate: result.AuthDate,
-		cardCode: result.CardCode,
-		cardName: result.CardName,
-		tid: result.TID,
+		resultCode: result.data.ResultCode,
+		resultMsg: result.data.ResultMsg,
+		bid: result.data.BID,
+		authDate: result.data.AuthDate,
+		cardCode: result.data.CardCode,
+		cardName: result.data.CardName,
+		tid: result.data.TID,
 		userUid: _.userUid
 	}
 	// 공통
