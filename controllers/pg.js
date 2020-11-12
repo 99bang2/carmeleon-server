@@ -161,14 +161,14 @@ exports.pgBillNice = async function(ctx){
 	if (result.data.ResultCode === "F100") {
 		//성공
 		let cardData = {
-			cardNumber : _.CardNo,
+			cardNumber : decryptData.CardNo,
 			cardCode : result.data.CardCode,
 			expiryYear : rabbitHash(_.ExpYear),
 			expiryMonth : rabbitHash(_.ExpMonth),
 			cardPassword : rabbitHash(_.CardPw),
 			cardId : rabbitHash(_.IDNo),
 			billKey : result.data.BID,
-			userUid : _.userUid
+			userUid : decryptData.userUid
 		}
 		await models.card.create(cardData)
 	} else {
