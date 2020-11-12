@@ -242,36 +242,27 @@ exports.pgPaymentNice = async function(ctx){
 	let cardInterest = "0";
 	//할부개월 (00: 일시불 / 02: 2개월 / 03: 3개월 … )
 	let cardQuota = "00";
-
-	let options = {
-		url : "https://webapi.nicepay.co.kr/webapi/billing/billing_approve.jsp",
-		method : 'POST',
-		header : {
-			'User-Agent' : 'Super Agent/0.0.1',
-			'Content-Type': 'application/x-www-form-urlencoded'
-		},
-		encoding : null,
-		form : {
-			'TID' : transactionID,
-			'BID' : bid,
-			'MID' : merchantID,
-			'EdiDate' : ediDate,
-			'Moid' : moid,
-			'Amt' : amt,
-			'GoodsName' : _.goodName,
-			'SignData' : signData,
-			'CardInterest' : cardInterest,
-			'CardQuota' : cardQuota,
-			'BuyerName' : _.buyerName,
-			'BuyerEmail' : _.buyerEmail,
-			'BuyerTel' : _.buyerTel,
-			'CharSet' : 'utf-8',
-		}
-	}
-	//console.log(await authRequest(options))
-	let result = await authRequest(options)
-	//공통
-	let convertResult = {
+	let result = await axios.post("https://webapi.nicepay.co.kr/webapi/billing/billing_approve.jsp", qs.stringify({
+		'TID' : transactionID,
+		'BID' : bid,
+		'MID' : merchantID,
+		'EdiDate' : ediDate,
+		'Moid' : moid,
+		'Amt' : amt,
+		//iconv.encode(name, 'euc-kr');
+		//iconv.decode(strContents, 'euc-kr').toString()
+		//euckr
+		'GoodsName' : _.goodsName,
+		'SignData' : signData,
+		'CardInterest' : cardInterest,
+		'CardQuota' : cardQuota,
+		'BuyerName' : _.buyerName,
+		'BuyerEmail' : _.buyerEmail,
+		'BuyerTel' : _.buyerTel,
+		'CharSet' : 'utf-8',
+	}))
+	console.log(result)
+	/*let convertResult = {
 		resultCode : result.ResultCode,
 		resultMsg : result.ResultMsg,
 		authCode: result.AuthCode,
@@ -321,8 +312,8 @@ exports.pgPaymentNice = async function(ctx){
 			result: false,
 			msg: result.ResultMsg
 		})
-	}
-	response.send(ctx, true)
+	}*/
+	response.send(ctx, result.data)
 }
 exports.pgPaymentCancelNice = async function(ctx){
 	let {uid} = ctx.params
@@ -409,24 +400,6 @@ function getAES(text, key){
 	let ciphertext = Buffer.concat([cipher.update(text, 'utf8'), cipher.final()]).toString('hex');
 
 	return ciphertext;
-}
-
-function authRequest(options){
-	// Start the request
-	let res = request(options, function(error, response, body) {
-		if (!error && response.statusCode == 200) {
-			let strContents = new Buffer(body);
-			let returnObj = JSON.parse(iconv.decode(strContents, 'utf-8').toString())
-			return returnObj
-		}
-	}).then(function(data){
-		let strContents = new Buffer(data);
-		let returnObj = JSON.parse(iconv.decode(strContents, 'utf-8').toString())
-		return returnObj
-	}).catch(function(e){
-		return false
-	})
-	return res
 }
 
 function rabbitHash(str){
