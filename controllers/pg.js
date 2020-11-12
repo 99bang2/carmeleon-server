@@ -164,7 +164,7 @@ exports.pgBillNice = async function(ctx){
 		//성공
 		let cardData = {
 			cardNumber : _.CardNo,
-			cardCode : result.ResultMsg,
+			cardCode : result.CardCode,
 			expiryYear : rabbitHash(_.ExpYear),
 			expiryMonth : rabbitHash(_.ExpMonth),
 			cardPassword : rabbitHash(_.CardPw),
@@ -183,7 +183,7 @@ exports.pgBillNice = async function(ctx){
 	response.send(ctx, true)
 	// decrypted // CryptoJS.Rabbit.decrypt(encrypted, secret).toString(CryptoJS.enc.Utf8);
 }
-exports.pgBillRemoveNice = async function(billKey){
+exports.pgBillRemoveNice = async function(billKey, userUid){
 	let ediDate = moment().format('YYYYMMDDHHmmss')
 	let moid = 'nice_bill_test_3.0';
 
@@ -211,7 +211,7 @@ exports.pgBillRemoveNice = async function(billKey){
 		bid : result.BID,
 		authDate : result.AuthDate,
 		tid : result.TID,
-		userUid : _.userUid
+		userUid : userUid
 	}
 	await models.billResult.create(convertResult)
 	// 공통
@@ -303,7 +303,8 @@ exports.pgPaymentNice = async function(ctx){
 				status: 10,
 				payResultUid: payResult.uid,
 				email: ctx.user.email,
-				payOid: moid
+				payOid: moid,
+				payTid:  transactionID
 			}, {where: {uid: payLogUid}})
 		response.send(ctx, {
 			result: true,
@@ -328,12 +329,11 @@ exports.pgPaymentCancelNice = async function(ctx){
 	let {uid} = ctx.params
 	let payInfo = await models.payLog.getByUid(ctx, uid, models)
 	let ediDate = moment().format('YYYYMMDDHHmmss')
-	let ranNum = Math.floor(Math.random()*(9999-1000+1)) + 1000
-	let transactionID = merchantID + "0116" + ediDate.substr(2,12) + ranNum
+	let transactionID = payInfo.payTid
 
 	let amt = payInfo.totalPrice
 	let moid = payInfo.payOid
-	let userUid = _.userUid
+	let userUid = payInfo.userUid
 	let signData = getSignData(merchantID + amt + ediDate + merchantKey).toString()
 
 	let options = {
@@ -374,7 +374,7 @@ exports.pgPaymentCancelNice = async function(ctx){
 		cancelTime: result.CancelTime,
 		cancelNum: result.CancelNum,
 		remainAmt: result.RemainAmt,
-		userUid : payInfo.userUid
+		userUid : userUid
 	}
 	// 공통
 	await models.payCancelResult.create(convertResult)
