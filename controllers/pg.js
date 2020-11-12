@@ -6,14 +6,11 @@ const moment = require('moment')
 const env = process.env.NODE_ENV || 'development'
 const config = require('../configs/config.json')[env]
 const qs = require('qs')
-const iconv = require('iconv-lite')
 const crypto = require('crypto')
 const CryptoJS = require("crypto-js")
-const request = require("request-promise")
-const secret = config.secretKey
 
-const merchantKey = "b+zhZ4yOZ7FsH8pm5lhDfHZEb79tIwnjsdA0FBXh86yLc6BJeFVrZFXhAoJ3gEWgrWwN+lJMV0W4hvDdbe4Sjw==";
-const merchantID = "nictest04m";
+const merchantKey = config.nicePay.merchantKey
+const merchantID = config.nicePay.merchantID;
 
 exports.pgSave = async function (ctx) {
     let _ = ctx.request.body
@@ -34,7 +31,6 @@ exports.pgSave = async function (ctx) {
     ctx.redirect(`${config.clientUrl}redirect?success=${flg}&msg=${msg}`)
 
 }
-
 exports.pgPayment = async function (ctx) {
     let _ = ctx.request.body
     let payLogUid = _.payLogUid
@@ -123,14 +119,9 @@ exports.pgCancel = async function (ctx) {
 exports.pgBillNice = async function(ctx){
 	let _ = ctx.request.body
 	let data = _.data
-	console.log(data)
 	let hashKey = CryptoJS.SHA512(ctx.user.email).toString()
-	console.log('email',ctx.user.email)
 	let decryptedData = CryptoJS.AES.decrypt(data, hashKey)
 	let decryptData = JSON.parse(decryptedData.toString(CryptoJS.enc.Utf8))
-	//hmacHash
-	console.log(decryptData)
-	//let testDecrypt = CryptoJS.AES.decrypt(data, );
 	let ediDate = moment().format('YYYYMMDDHHmmss')
 	let moid = 'nice_bill_test_3.0';
 	//IDno : 생년월일(YYMMDD) or 사업자등록번호(법인카드 등록 시)
@@ -161,12 +152,12 @@ exports.pgBillNice = async function(ctx){
 	if (result.data.ResultCode === "F100") {
 		//성공
 		let cardData = {
-			cardNumber : decryptData.CardNo,
+			cardNumber : rabbitHash(decryptData.CardNo, config.cardSecretKey.cardNumber),
 			cardCode : result.data.CardCode,
-			expiryYear : rabbitHash(_.ExpYear),
-			expiryMonth : rabbitHash(_.ExpMonth),
-			cardPassword : rabbitHash(_.CardPw),
-			cardId : rabbitHash(_.IDNo),
+			expiryYear : rabbitHash(decryptData.ExpYear, config.cardSecretKey.expYY),
+			expiryMonth : rabbitHash(decryptData.ExpMonth, config.cardSecretKey.expMM),
+			cardPassword : rabbitHash(decryptData.CardPw, config.cardSecretKey.cardPass),
+			cardId : rabbitHash(decryptData.IDNo, config.cardSecretKey.idNo),
 			billKey : result.data.BID,
 			userUid : decryptData.userUid
 		}
@@ -379,6 +370,6 @@ function getAES(text, key) {
 	return ciphertext
 }
 
-function rabbitHash(str) {
-	return CryptoJS.Rabbit.encrypt(str, secret).toString()
+function rabbitHash(str, key) {
+	return CryptoJS.Rabbit.encrypt(str, key).toString()
 }

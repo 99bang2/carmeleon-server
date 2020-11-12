@@ -13,7 +13,18 @@
 		"clientUrl": "http://192.168.0.101:3000/",
 		"teslaUrl": "https://owner-api.teslamotors.com/",
 		"teslaId": "81527cff06843c8634fdc09e8ac0abefb46ac849f38fe1e431c2ef2106796384",
-		"teslaSecret": "c7257eb71a564034f9419ee651c7d0e5f7aa6bfbd18bafb5c5c033b093bb2fa3"
+		"teslaSecret": "c7257eb71a564034f9419ee651c7d0e5f7aa6bfbd18bafb5c5c033b093bb2fa3",
+		"nicePay": {
+			"merchantKey" : "b+zhZ4yOZ7FsH8pm5lhDfHZEb79tIwnjsdA0FBXh86yLc6BJeFVrZFXhAoJ3gEWgrWwN+lJMV0W4hvDdbe4Sjw==",
+			"merchantID" : "nictest04m"
+		},
+		"cardSecretKey": {
+			"cardNumber": "1b4470edaeccff339d18407dcab3e19b",
+			"expYY": "3c8cddbd6f846d17ee04b1f04f5fc659",
+			"expMM": "e7fcdb7606afba8d76023dad45f93960",
+			"idNo": "2a85a40a538229467eafa1370ce28218",
+			"cardPass": "50d931ca82df0153bdb1b065f42e5c05"
+		}
 	},
 	"production": {
 		"listenPort": 3000,
@@ -29,6 +40,17 @@
 		"clientUrl": "https://carmeleon.co.kr/",
 		"teslaUrl": "https://owner-api.teslamotors.com/",
 		"teslaId": "81527cff06843c8634fdc09e8ac0abefb46ac849f38fe1e431c2ef2106796384",
-		"teslaSecret": "c7257eb71a564034f9419ee651c7d0e5f7aa6bfbd18bafb5c5c033b093bb2fa3"
+		"teslaSecret": "c7257eb71a564034f9419ee651c7d0e5f7aa6bfbd18bafb5c5c033b093bb2fa3",
+		"nicePay": {
+			"merchantKey" : "b+zhZ4yOZ7FsH8pm5lhDfHZEb79tIwnjsdA0FBXh86yLc6BJeFVrZFXhAoJ3gEWgrWwN+lJMV0W4hvDdbe4Sjw==",
+			"merchantID" : "nictest04m"
+		},
+		"cardSecretKey": {
+			"cardNumber": "1b4470edaeccff339d18407dcab3e19b",
+			"expYY": "3c8cddbd6f846d17ee04b1f04f5fc659",
+			"expMM": "e7fcdb7606afba8d76023dad45f93960",
+			"idNo": "2a85a40a538229467eafa1370ce28218",
+			"cardPass": "50d931ca82df0153bdb1b065f42e5c05"
+		}
 	}
 }

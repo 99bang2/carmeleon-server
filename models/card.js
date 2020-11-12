@@ -1,6 +1,10 @@
 'use strict'
 const response = require('../libs/response')
 const Sequelize = require('sequelize')
+const env = process.env.NODE_ENV || 'development'
+const config = require('../configs/config.json')[env]
+const CryptoJS = require("crypto-js")
+
 const Op = Sequelize.Op
 module.exports = (sequelize, DataTypes) => {
 	const card = sequelize.define('card', {
@@ -45,7 +49,12 @@ module.exports = (sequelize, DataTypes) => {
 			type: DataTypes.VIRTUAL,
 			get: function () {
 				if (this.getDataValue('cardNumber') !== null) {
-					return this.getDataValue('cardNumber').replace(/\d(?=.{4})/gi, "*");
+					let cardDecrypt = CryptoJS.Rabbit.decrypt(this.getDataValue('cardNumber'), config.cardSecretKey.cardNumber).toString(CryptoJS.enc.Utf8);
+					if(cardDecrypt.length < 12){
+						return cardDecrypt.replace(/\d(?=.{3})/gi, "*");
+					}else{
+						return cardDecrypt.replace(/\d(?=.{4})/gi, "*");
+					}
 				}
 			}
 		}
