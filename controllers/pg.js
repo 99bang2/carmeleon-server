@@ -209,11 +209,15 @@ exports.pgPaymentNice = async function (ctx) {
 	let ediDate = moment().format('YYYYMMDDHHmmss')
 	let ranNum = Math.floor(Math.random() * (9999 - 1000 + 1)) + 1000
 	let transactionID = merchantID + "0116" + ediDate.substr(2, 12) + ranNum
-
-	let bid = _.billKey
+	let cardInfo = await models.card.findOne({
+		attributes: ['billKey'],
+		where: {
+			cardUid: _.cardUid
+		}
+	})
+	let bid = cardInfo.billKey
 	let amt = _.price
 	let moid = _.orderId
-	let userUid = _.userUid
 	let signData = getSignData(merchantID + ediDate + moid + amt + bid + merchantKey).toString()
 	//가맹점 분담 무이자 사용 여부 (0: 사용안함_이자 / 1: 사용_무이자)
 	// 가맹점 분담 무이자를 지칭하며, 가맹점관리자페이지에서 설정 후 사용 가능.
@@ -228,9 +232,6 @@ exports.pgPaymentNice = async function (ctx) {
 		'EdiDate': ediDate,
 		'Moid': moid,
 		'Amt': amt,
-		//iconv.encode(name, 'euc-kr');
-		//iconv.decode(strContents, 'euc-kr').toString()
-		//euckr
 		'GoodsName': _.goodName,
 		'SignData': signData,
 		'CardInterest': cardInterest,
@@ -240,7 +241,6 @@ exports.pgPaymentNice = async function (ctx) {
 		'BuyerTel': _.buyerTel,
 		'CharSet': 'utf-8',
 	}))
-	console.log(result)
 	let convertResult = {
 		resultCode : result.data.ResultCode,
 		resultMsg : result.data.ResultMsg,

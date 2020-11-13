@@ -68,21 +68,23 @@ module.exports = (sequelize, DataTypes) => {
 	}
 	card.getByUid = async function (ctx, uid) {
 		let data = await card.findByPk(uid,{
-			attributes: ['cardNumber', 'maskingCardNumber', 'cardCode', 'billKey', 'userUid', 'isMain']
+			attributes: ['cardNumber', 'maskingCardNumber', 'cardCode', 'cardUid', 'userUid', 'isMain']
 		})
 		if (!data) {
 			response.badRequest(ctx)
 		}
+		delete data.cardNumber
 		return data
 	}
 	card.getByUserUid = async function (ctx, uid) {
 		let data = await card.findAll({
-			attributes: ['cardNumber', 'maskingCardNumber', 'cardCode', 'billKey', 'userUid', 'isMain'],
+			attributes: ['cardNumber', 'maskingCardNumber', 'cardCode', 'cardUid', 'userUid', 'isMain'],
 			where: {userUid: uid}
 		})
 		if (!data) {
 			response.badRequest(ctx)
 		}
+		delete data.cardNumber
 		return data
 	}
 	card.search = async (params) => {
@@ -92,10 +94,11 @@ module.exports = (sequelize, DataTypes) => {
 			where.userUid = params.userUid
 		}
 		let result = await card.findAll({
-			attributes: ['cardNumber', 'maskingCardNumber', 'cardCode', 'billKey', 'userUid', 'isMain'],
+			attributes: ['cardNumber', 'maskingCardNumber', 'cardCode', 'cardUid', 'userUid', 'isMain'],
 			where: where,
 			order: order
 		})
+		delete result.cardNumber
 		return result
 	}
 	card.checkCard = async (params) => {
