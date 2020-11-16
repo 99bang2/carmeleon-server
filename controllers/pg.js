@@ -97,7 +97,7 @@ exports.pgBillRemoveNice = async function(cardUid){
 		'MID': merchantID,
 		'EdiDate': ediDate,
 		'Moid': moid,
-		'SignData': getSignData(merchantID + ediDate + moid + billKey + merchantKey).toString(),
+		'SignData': getSignData(merchantID + ediDate + moid + cardInfo.billKey + merchantKey).toString(),
 		'CharSet': 'utf-8',
 	}))
 	let convertResult = {
