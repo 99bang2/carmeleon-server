@@ -151,9 +151,6 @@ api.post('/searchList', commonController.searchList)
 api.post('/avgRate', commonController.avgRate)
 api.post('/codes', commonController.codes)
 
-api.post('/pg', pgController.pgSave)
-api.post('/pgPay', pgController.pgPayment)
-
 api.post('/pgBillNice', pgController.pgBillNice)
 api.post('/pgPaymentNice', pgController.pgPaymentNice)
 api.post('/pgPaymentCancelNice', pgController.pgPaymentCancelNice)

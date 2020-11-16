@@ -1,6 +1,5 @@
 const models = require('../models')
 const response = require('../libs/response')
-const os = require('os')
 const axios = require('axios')
 const moment = require('moment')
 const env = process.env.NODE_ENV || 'development'
@@ -8,114 +7,11 @@ const config = require('../configs/config.json')[env]
 const qs = require('qs')
 const crypto = require('crypto')
 const CryptoJS = require("crypto-js")
+const Op = require('sequelize').Op
 
 const merchantKey = config.nicePay.merchantKey
 const merchantID = config.nicePay.merchantID;
 
-exports.pgSave = async function (ctx) {
-    let _ = ctx.request.body
-    let flg = _.resultcode === '00'
-    let msg = _.resultmsg
-
-    if (flg) {
-        let insertData = {}
-        let data = {}
-        data.cardCode = _.cardcd
-        data.cardNumber = _.cardno
-        data.billKey = _.billkey
-        insertData.userUid = _.p_noti
-        insertData.cardInfo = data
-        await models.card.create(insertData)
-    }
-
-    ctx.redirect(`${config.clientUrl}redirect?success=${flg}&msg=${msg}`)
-
-}
-exports.pgPayment = async function (ctx) {
-    let _ = ctx.request.body
-    let payLogUid = _.payLogUid
-    let serverName = os.hostname()
-    let clientIP = ctx.ip
-    let beforeHash = "rKnPljRn5m6J9MzzBillingCard" + moment().format("YYYYMMDDHHiiss") +
-        _.clientIp + _.mid + _.orderId + _.price + _.billKey
-    let res = await axios.post('https://iniapi.inicis.com/api/v1/billing', qs.stringify({
-        type: 'Billing',
-        paymethod: 'Card',
-        timestamp: moment().format("YYYYMMDDHHiiss"),
-        clientIp: _.clientIp,
-        mid: _.mid,
-        url: serverName,
-        moid: _.orderId,
-        goodName: _.goodName,
-        buyerName: _.buyerName,
-        buyerEmail: _.buyerEmail,
-        buyerTel: _.buyerTel,
-        price: _.price,
-        billKey: _.billKey,
-        authentification: '00',
-        hashData: CryptoJS.SHA512(beforeHash).toString()
-    }),{
-        headers: {
-            'content-type': 'application/x-www-form-urlencoded;charset=utf-8'
-        }
-    })
-    let payInfo = {
-        orderId: _.orderId,
-        clientIP: _.clientIp,
-        tid: res.data.tid
-    }
-    if (res.data.resultCode === '00') {
-        models.payLog.update(
-            {
-                status: 10,
-                payInfo: payInfo,
-                email: ctx.user.email
-            }, {where: {uid: payLogUid}})
-        response.send(ctx, {
-            result: true,
-            msg: res.data.resultMsg
-        })
-    } else {
-        models.payLog.update(
-            {
-                status: -10,
-                payInfo: payInfo,
-                email: ctx.user.email
-            }, {where: {uid: payLogUid}})
-        response.send(ctx, {
-            result: false,
-            msg: res.data.resultMsg
-        })
-    }
-}
-exports.pgCancel = async function (ctx) {
-    let {uid} = ctx.params
-    let payInfo = await models.payLog.getByUid(ctx, uid, models)
-    let dataArr = []
-    let mid = 'INIBillTst'
-    let beforeHash = "rKnPljRn5m6J9MzzRefundCard" + moment().format("YYYYMMDDHHiiss") + payInfo.payInfo.clientIp + mid + payInfo.payInfo.tid
-    dataArr["type"] = "Refund"
-    dataArr["paymethod"] = "Card"
-    dataArr["timestamp"] = moment().format("YYYYMMDDHHiiss")
-    dataArr["clientIp"] = payInfo.payInfo.clientIp
-    dataArr["mid"] = mid
-    dataArr["tid"] = payInfo.payInfo.tid
-    dataArr["msg"] = "관리자 취소" // 취소 사유
-    dataArr["hashData"] = CryptoJS.SHA512(beforeHash).toString()
-    let queryString = generateQueryString(dataArr)
-    let res = await axios.post('https://iniapi.inicis.com/api/v1/refund?' + encodeURI(queryString))
-    if (res.data.resultCode === '00') {
-        payInfo.update({status: -20})
-        response.send(ctx, {
-            result: true
-        })
-    } else {
-        response.send(ctx, {
-            result: false,
-            msg: res.data.resultMsg
-        })
-    }
-}
 exports.pgBillNice = async function(ctx){
 	let _ = ctx.request.body
 	let data = _.data
@@ -144,7 +40,7 @@ exports.pgBillNice = async function(ctx){
 		cardCode: result.data.CardCode,
 		cardName: result.data.CardName,
 		tid: result.data.TID,
-		userUid: _.userUid
+		userUid: ctx.user.uid
 	}
 	// 공통
 	await models.billResult.create(convertResult)
@@ -159,7 +55,21 @@ exports.pgBillNice = async function(ctx){
 			cardPassword : rabbitHash(decryptData.CardPw, config.cardSecretKey.cardPass),
 			cardId : rabbitHash(decryptData.IDNo, config.cardSecretKey.idNo),
 			billKey : result.data.BID,
-			userUid : decryptData.userUid
+			userUid : ctx.user.uid
+		}
+		let count = await models.card.count(
+			{
+				where: {
+					userUid: cardData.userUid,
+					cardNumber: decryptData.CardNo
+				}
+			}
+		)
+		if(count > 0) {
+			ctx.throw({
+				code: 400,
+				message: '이미 등록 된 카드 입니다.'
+			})
 		}
 		await models.card.create(cardData)
 	} else {
@@ -206,18 +116,31 @@ exports.pgPaymentNice = async function (ctx) {
 	let _ = ctx.request.body
 	let payLogUid = _.payLogUid
 
+	let buyerName =  ctx.user.nickname || ctx.user.name || '사용자'
+	let buyerEmail = ctx.user.email || 'mobilx.carmeleon@gmail.com'
+	let buyerTel = ctx.user.phone || '01000000000'
+
 	let ediDate = moment().format('YYYYMMDDHHmmss')
 	let ranNum = Math.floor(Math.random() * (9999 - 1000 + 1)) + 1000
 	let transactionID = merchantID + "0116" + ediDate.substr(2, 12) + ranNum
 	let cardInfo = await models.card.findOne({
 		attributes: ['billKey'],
 		where: {
-			cardUid: _.cardUid
+			uid: _.cardUid,
+			userUid: ctx.user.uid
+		}
+	})
+	let payInfo = await models.payLog.findOne({
+		where: {
+			uid: _.payLogUid,
+			userUid: ctx.user.uid
 		}
 	})
 	let bid = cardInfo.billKey
-	let amt = _.price
-	let moid = _.orderId
+	let amt = payInfo.totalPrice
+	// ORDER ID 생성
+	// let moid = _.orderId
+	let moid  = 'pdc_'+moment().valueOf()
 	let signData = getSignData(merchantID + ediDate + moid + amt + bid + merchantKey).toString()
 	//가맹점 분담 무이자 사용 여부 (0: 사용안함_이자 / 1: 사용_무이자)
 	// 가맹점 분담 무이자를 지칭하며, 가맹점관리자페이지에서 설정 후 사용 가능.
@@ -225,22 +148,25 @@ exports.pgPaymentNice = async function (ctx) {
 	let cardInterest = "0"
 	//할부개월 (00: 일시불 / 02: 2개월 / 03: 3개월 … )
 	let cardQuota = "00"
-	let result = await axios.post("https://webapi.nicepay.co.kr/webapi/billing/billing_approve.jsp", qs.stringify({
+	let params = qs.stringify({
 		'TID': transactionID,
 		'BID': bid,
 		'MID': merchantID,
 		'EdiDate': ediDate,
 		'Moid': moid,
 		'Amt': amt,
-		'GoodsName': _.goodName,
+		'GoodsName': encodeURI(_.goodName),
 		'SignData': signData,
 		'CardInterest': cardInterest,
 		'CardQuota': cardQuota,
-		'BuyerName': _.buyerName,
-		'BuyerEmail': _.buyerEmail,
-		'BuyerTel': _.buyerTel,
+		'BuyerName': encodeURI(buyerName),
+		'BuyerEmail': buyerEmail,
+		'BuyerTel': buyerTel,
 		'CharSet': 'utf-8',
-	}))
+	}, {
+		encode: false
+	})
+	let result = await axios.post(`https://webapi.nicepay.co.kr/webapi/billing/billing_approve.jsp?${params}`)
 	let convertResult = {
 		resultCode : result.data.ResultCode,
 		resultMsg : result.data.ResultMsg,
@@ -256,11 +182,11 @@ exports.pgPaymentNice = async function (ctx) {
 		amt: result.data.Amt,
 		goodsName: result.data.GoodsName,
 		buyerName: result.data.BuyerName,
-		buyerEmail: _.buyerEmail,
-		buyerTel: _.buyerTel,
+		buyerEmail: buyerName,
+		buyerTel: buyerTel,
 		tid: result.data.TID,
 		cardNo: result.data.CardNo,
-		userUid : _.userUid
+		userUid : ctx.user.uid
 	}
 	// 공통
 	let payResult = await models.payResult.create(convertResult)
@@ -293,7 +219,7 @@ exports.pgPaymentNice = async function (ctx) {
 			msg: result.ResultMsg
 		})
 	}
-	response.send(ctx, true)
+	response.send(ctx, 'test')
 }
 exports.pgPaymentCancelNice = async function (ctx) {
 	let {uid} = ctx.params
@@ -305,21 +231,21 @@ exports.pgPaymentCancelNice = async function (ctx) {
 	let moid = payInfo.payOid
 	let userUid = payInfo.userUid
 	let signData = getSignData(merchantID + amt + ediDate + merchantKey).toString()
-
-	let result = await axios.post("https://webapi.nicepay.co.kr/webapi/cancel_process.jsp", qs.stringify(
-		{
-			'TID': transactionID,
-			'MID': merchantID,
-			'Moid': moid,
-			'CancelAmt': amt,
-			'CancelMsg': '결제 취소',
-			//부분 취소 여부 0:전체, 1:부분//
-			'PartialCancelCode': '0',
-			'EdiDate': ediDate,
-			'SignData': signData,
-			'CharSet': 'utf-8',
-		}
-	))
+	let params = qs.stringify({
+		'TID': transactionID,
+		'MID': merchantID,
+		'Moid': moid,
+		'CancelAmt': amt,
+		'CancelMsg': '관리자 결제 취소',
+		//부분 취소 여부 0:전체, 1:부분//
+		'PartialCancelCode': '0',
+		'EdiDate': ediDate,
+		'SignData': signData,
+		'CharSet': 'utf-8',
+	}, {
+		encode: false
+	})
+	let result = await axios.post(`https://webapi.nicepay.co.kr/webapi/cancel_process.jsp?${params}`)
 	//공통
 	let convertResult = {
 		resultCode: result.data.ResultCode,
@@ -352,10 +278,6 @@ exports.pgPaymentCancelNice = async function (ctx) {
 			msg: result.ResultMsg
 		})
 	}
-}
-
-function generateQueryString(object) {
-	return Object.keys(object).map(key => `${key}=${object[key]}`).join('&')
 }
 
 function getSignData(str) {
