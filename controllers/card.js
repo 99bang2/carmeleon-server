@@ -45,7 +45,7 @@ exports.update = async function (ctx) {
 exports.delete = async function (ctx) {
 	let {uid} = ctx.params
 	let card = await models.card.getByUid(ctx, uid)
-	let result = await pg.pgBillRemoveNice(card.billKey, card.userUid)
+	let result = await pg.pgBillRemoveNice(uid)
 	if(result === true){
 		await card.destroy()
 		response.send(ctx, card)

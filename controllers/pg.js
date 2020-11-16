@@ -61,7 +61,7 @@ exports.pgBillNice = async function(ctx){
 			{
 				where: {
 					userUid: cardData.userUid,
-					cardNumber: decryptData.CardNo
+					cardNumber: cardData.cardNumber
 				}
 			}
 		)
@@ -82,12 +82,18 @@ exports.pgBillNice = async function(ctx){
 	response.send(ctx, true)
 	// decrypted // CryptoJS.Rabbit.decrypt(encrypted, secret).toString(CryptoJS.enc.Utf8);
 }
-exports.pgBillRemoveNice = async function(billKey, userUid){
+exports.pgBillRemoveNice = async function(cardUid){
 	let ediDate = moment().format('YYYYMMDDHHmmss')
 	let moid = 'nice_bill_test_3.0'
-
+	//pg.pgBillRemoveNice(uid)
+	let cardInfo = await models.card.findOne({
+		attributes: ['billKey', 'userUid'],
+		where: {
+			uid: cardUid
+		}
+	})
 	let result = await axios.post("https://webapi.nicepay.co.kr/webapi/billing/billkey_remove.jsp", qs.stringify({
-		'BID': billKey,
+		'BID': cardInfo.billKey,
 		'MID': merchantID,
 		'EdiDate': ediDate,
 		'Moid': moid,
@@ -100,7 +106,7 @@ exports.pgBillRemoveNice = async function(billKey, userUid){
 		bid: result.data.BID,
 		authDate: result.data.AuthDate,
 		tid: result.data.TID,
-		userUid: userUid
+		userUid: cardInfo.userUid
 	}
 	await models.billResult.create(convertResult)
 	// 공통
