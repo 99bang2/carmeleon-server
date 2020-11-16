@@ -190,7 +190,7 @@ exports.pgPaymentNice = async function (ctx) {
 	}
 	// 공통
 	let payResult = await models.payResult.create(convertResult)
-	if(result.ResultCode === "3001"){
+	if(result.data.ResultCode === "3001"){
 		//성공
 		//payResultUid 포함 해서 업데이트//
 		//payResultUid = payResult.uid//
@@ -219,7 +219,7 @@ exports.pgPaymentNice = async function (ctx) {
 			msg: result.ResultMsg
 		})
 	}
-	response.send(ctx, 'test')
+	response.send(ctx, true)
 }
 exports.pgPaymentCancelNice = async function (ctx) {
 	let {uid} = ctx.params
