@@ -228,7 +228,7 @@ exports.pgPaymentCancelNice = async function (ctx) {
 		'MID': merchantID,
 		'Moid': moid,
 		'CancelAmt': amt,
-		'CancelMsg': '관리자 결제 취소',
+		'CancelMsg': encodeURI('관리자 결제 취소'),
 		//부분 취소 여부 0:전체, 1:부분//
 		'PartialCancelCode': '0',
 		'EdiDate': ediDate,
