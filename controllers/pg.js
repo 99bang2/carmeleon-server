@@ -57,20 +57,6 @@ exports.pgBillNice = async function(ctx){
 			billKey : result.data.BID,
 			userUid : ctx.user.uid
 		}
-		let count = await models.card.count(
-			{
-				where: {
-					userUid: cardData.userUid,
-					cardNumber: cardData.cardNumber
-				}
-			}
-		)
-		if(count > 0) {
-			ctx.throw({
-				code: 400,
-				message: '이미 등록 된 카드 입니다.'
-			})
-		}
 		await models.card.create(cardData)
 	} else {
 		//실패

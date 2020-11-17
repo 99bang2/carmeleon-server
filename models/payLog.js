@@ -81,6 +81,14 @@ module.exports = (sequelize, DataTypes) => {
 		},
 		payTid: {
 			type: DataTypes.STRING
+		},
+		activeStatus: {
+			type: DataTypes.BOOLEAN,
+			defaultValue: false
+		},
+		cancelStatus: {
+			type: DataTypes.BOOLEAN,
+			defaultValue: false
 		}
     }, {
         timestamps: true,
