@@ -246,7 +246,10 @@ module.exports = (sequelize, DataTypes) => {
 					//attribute: []//
 				}, {
 					model: models.discountTicket,
-				}
+				}, {
+					model: models.card,
+					attributes: ['maskingCardNumber', 'cardCode', 'uid', 'isMain']
+				},
 			],
 			where: {
 				userUid: ctx.user.uid,
