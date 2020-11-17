@@ -118,6 +118,7 @@ api.post('/payLogs', auth.isUserLoggedIn, payLogController.create)
 api.get('/payLogs', auth.isUserLoggedIn, payLogController.list)
 api.get('/payLogs/:uid', auth.isUserLoggedIn, payLogController.read)
 api.put('/payLogs/:uid', auth.isUserLoggedIn, payLogController.update)
+api.get('/ticketList', auth.isUserLoggedIn, payLogController.activeTicketList)
 
 api.get('/coupons', auth.isUserLoggedIn, couponController.list)
 api.get('/coupons/:uid', auth.isUserLoggedIn, couponController.read)

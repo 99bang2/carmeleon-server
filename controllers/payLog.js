@@ -72,3 +72,8 @@ exports.userList = async function (ctx) {
 	let payLog = await models.payLog.getByUserUid(ctx, userUid, models)
 	response.send(ctx, payLog)
 }
+
+exports.activeTicketList = async function (ctx) {
+	let ticketList = await models.payLog.activeTicketList(ctx, models)
+	response.send(ctx, ticketList)
+}

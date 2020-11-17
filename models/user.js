@@ -118,20 +118,19 @@ module.exports = (sequelize, DataTypes) => {
 		let data = await user.findOne({
 			attributes:
 				[
-					//'uid',
 					// TODO : payLogs Status에 따라 정리 필요 //
-					//주차권
-					[Sequelize.literal(`(SELECT count(uid) FROM pay_logs WHERE user_uid=user.uid AND status='10')`), 'ticket'],
-					//이용내역
-					[Sequelize.literal(`(SELECT count(uid) FROM pay_logs WHERE user_uid=user.uid)`), 'payLog'],
+					//주차권 (사용 가능한 주차권 모두)
+					[Sequelize.literal(`(SELECT count(uid) FROM pay_logs WHERE user_uid=user.uid AND status='10' AND active_status = false AND deleted_at IS NULL)`), 'ticket'],
+					//이용내역 (여태 이용한 리스트 모두)
+					[Sequelize.literal(`(SELECT count(uid) FROM pay_logs WHERE user_uid=user.uid AND active_status = true AND deleted_at IS NULL)`), 'payLog'],
 					// 알림 카운트 //
-					[Sequelize.literal(`(SELECT count(uid) FROM pushes WHERE send_date > (NOW() - INTERVAL 1 DAY))`), 'alarm'],
+					[Sequelize.literal(`(SELECT count(uid) FROM pushes WHERE send_date > (NOW() - INTERVAL 1 DAY) AND deleted_at IS NULL)`), 'alarm'],
 					//포인트
-					[Sequelize.literal(`(SELECT count(uid) FROM coupon_logs WHERE user_uid=user.uid)`), 'coupon'],
+					[Sequelize.literal(`(SELECT count(uid) FROM coupon_logs WHERE user_uid=user.uid AND deleted_at IS NULL)`), 'coupon'],
 					//공지
-					[Sequelize.literal(`(SELECT count(uid) FROM notices WHERE created_at > (NOW() - INTERVAL 3 DAY))`), 'notice'],
+					[Sequelize.literal(`(SELECT count(uid) FROM notices WHERE created_at > (NOW() - INTERVAL 3 DAY) AND deleted_at IS NULL)`), 'notice'],
 					//이벤트
-					[Sequelize.literal(`(SELECT count(uid) FROM events WHERE created_at > (NOW() - INTERVAL 3 DAY))`), 'event'],
+					[Sequelize.literal(`(SELECT count(uid) FROM events WHERE created_at > (NOW() - INTERVAL 3 DAY) AND deleted_at IS NULL)`), 'event'],
 				],
 			where: {
 				uid: uid

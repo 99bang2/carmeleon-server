@@ -237,5 +237,25 @@ module.exports = (sequelize, DataTypes) => {
         }
         return data
     }
+    payLog.activeTicketList = async function (ctx, models){
+    	let result = await models.payLog.findAll({
+			//TODO:필요한 항목만 Attribute 추가)
+			include: [
+				{
+					model: models.parkingSite,
+					//attribute: []//
+				}, {
+					model: models.discountTicket,
+				}
+			],
+			where: {
+				userUid: ctx.user.uid,
+				activeStatus: false,
+				status: 10,
+				cancelStatus: false
+			}
+		})
+		return result
+	}
     return payLog
 }
