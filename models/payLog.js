@@ -243,14 +243,16 @@ module.exports = (sequelize, DataTypes) => {
 			include: [
 				{
 					model: models.parkingSite,
-					//attribute: []//
+					attribute: ['name', 'address', 'lat', 'lon']
 				}, {
 					model: models.discountTicket,
+					attributes: ['siteUid', 'ticketDayType', 'ticketDayTypeName', 'ticketPrice', 'ticketPriceDiscount', 'ticketPriceDiscountPercent', 'ticketTime', 'ticketTitle', 'ticketType', 'ticketTypeName', 'uid']
 				}, {
 					model: models.card,
 					attributes: ['maskingCardNumber', 'cardCode', 'uid', 'isMain']
 				},
 			],
+			attributes: ['uid', 'carNumber', 'reserveTime', 'price', 'discountPrice', 'createdAt', 'totalPrice'],
 			where: {
 				userUid: ctx.user.uid,
 				activeStatus: false,
@@ -258,6 +260,7 @@ module.exports = (sequelize, DataTypes) => {
 				cancelStatus: false
 			}
 		})
+		delete result.card.cardNumber
 		return result
 	}
     return payLog
