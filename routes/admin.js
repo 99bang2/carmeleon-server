@@ -223,8 +223,7 @@ api.put('/pushes/:uid', pushController.update)
 api.delete('/pushes/:uid', pushController.delete)
 api.post('/pushes/bulkDelete', pushController.bulkDelete)
 //결제 취소 //
-api.get('/pg/:uid', pgController.pgPaymentCancelNice)
-// api.post('/pg', pgController.pgPaymentCancelNice)
+api.post('/pg', pgController.pgPaymentCancelNice)
 /**
  * 공통 컨트롤러
  */

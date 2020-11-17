@@ -228,7 +228,9 @@ exports.pgPaymentNice = async function (ctx) {
 	response.send(ctx, true)
 }
 exports.pgPaymentCancelNice = async function (ctx) {
-	let {uid} = ctx.params
+	let _ = ctx.request.body
+	let uid = _.uids
+	let reason = _.reason
 	let payInfo = await models.payLog.getByUid(ctx, uid, models)
 	let ediDate = moment().format('YYYYMMDDHHmmss')
 	let transactionID = payInfo.payTid
@@ -242,7 +244,7 @@ exports.pgPaymentCancelNice = async function (ctx) {
 		'MID': merchantID,
 		'Moid': moid,
 		'CancelAmt': amt,
-		'CancelMsg': encodeURI('관리자 결제 취소'),
+		'CancelMsg': encodeURI(reason),
 		//부분 취소 여부 0:전체, 1:부분//
 		'PartialCancelCode': '0',
 		'EdiDate': ediDate,
