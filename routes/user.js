@@ -19,7 +19,6 @@ const payLogController = require('../controllers/payLog')
 const discountTicketController = require('../controllers/discountTicket')
 const couponController = require('../controllers/coupon')
 const couponLogController = require('../controllers/couponLog')
-const reviewTemplateController = require('../controllers/reviewTemplate')
 const evChargeStationController = require('../controllers/evChargeStation')
 const questionController = require('../controllers/question')
 const pushController = require('../controllers/push')
@@ -69,8 +68,8 @@ api.get('/carWashes/:uid', carWashController.read)
 /**
  * 리뷰 관리
  */
-api.post('/rates/:targetType/:targetUid', [auth.isUserLoggedIn, commonController.isAvailableTarget], rateController.create)
-api.get('/rates/:targetType/:targetUid', rateController.targetList)
+api.post('/rates/:targetType/:targetUid', auth.isUserLoggedIn, commonController.isAvailableTarget, rateController.create)
+api.get('/rates/:targetType/:targetUid', auth.isUserLoggedIn, commonController.isAvailableTarget, rateController.targetList)
 api.get('/rates', rateController.list)
 api.get('/rates/:uid', rateController.userList)
 api.put('/rates/:uid', auth.isUserLoggedIn, rateController.update)
