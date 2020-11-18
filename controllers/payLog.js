@@ -19,8 +19,8 @@ exports.create = async function (ctx) {
 	let ticketStatus = await models.discountTicket.findByPk(_.discountTicketUid, {
 		attributes:
 			[
-				[Sequelize.literal(`case when ('` + currentDate + `' not between ticket_start_date AND ticket_end_date) AND (ticket_day_type !=` + dayType + `) then true else false end`), 'expire'],
-				[Sequelize.literal(`case when ((select count(uid) from pay_logs where discount_ticket_uid = uid) >= ticket_count) then true else false end`), 'sold_out']
+				[Sequelize.literal(`case when ('` + currentDate + `' not between ticket_start_date AND ticket_end_date) AND (ticket_day_type !=` + dayType + `)  AND deleted_at IS NULL then true else false end`), 'expire'],
+				[Sequelize.literal(`case when ((select count(uid) from pay_logs where discount_ticket_uid = uid AND deleted_at IS NULL) >= ticket_count) then true else false end`), 'sold_out']
 			]
 	})
 	if(Boolean(ticketStatus.dataValues.expire) === true){
@@ -76,4 +76,51 @@ exports.userList = async function (ctx) {
 exports.activeTicketList = async function (ctx) {
 	let ticketList = await models.payLog.activeTicketList(ctx, models)
 	response.send(ctx, ticketList)
+}
+
+exports.refundRequest = async function(ctx) {
+	let _ = ctx.request.body
+	let count = await models.payLog.count({
+		where:{
+			uid: _.uid,
+			userUid: ctx.user
+		}
+	})
+	if(count === 0){
+		ctx.throw({
+			code: 400,
+			message: '거래 내역이 존재하지 않습니다.'
+		})
+	}
+	await models.paylog.update({cancelStatus: 0, cancelReason: _.cancelReason},{
+		where: {
+			uid: _.uid
+		}
+	})
+	response.send(ctx, true)
+}
+
+exports.refundRequestCancel = async function(ctx) {
+	let _ = ctx.request.body
+	let count = await models.payLog.count({
+		where:{
+			uid: _.uid,
+			userUid: ctx.user,
+			cancelStatus: {
+				[Op.gt] : -1
+			}
+		}
+	})
+	if(count === 0){
+		ctx.throw({
+			code: 400,
+			message: '환불 요청 내역이 존재하지 않습니다.'
+		})
+	}
+	await models.paylog.update({cancelStatus: -1, cancelReason: ""},{
+		where: {
+			uid: _.uid
+		}
+	})
+	response.send(ctx, true)
 }
