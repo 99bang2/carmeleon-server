@@ -86,13 +86,45 @@ module.exports = (sequelize, DataTypes) => {
 			type: DataTypes.BOOLEAN,
 			defaultValue: false
 		},
+		expired: {
+			type: DataTypes.BOOLEAN,
+			defaultValue: false
+		},
 		cancelStatus: {
 			type: DataTypes.INTEGER,
 			defaultValue: -1
 		},
 		cancelReason: {
         	type: DataTypes.STRING
-		}
+		},
+        clientStatus: {
+            type: DataTypes.VIRTUAL,
+            get: function () {
+                let status = this.getDataValue('status')
+                let cancelStatus = this.getDataValue('cancelStatus')
+                let expired = this.getDataValue('expired')
+                let activeStatus = this.getDataValue('activeStatus')
+                if(status === 10 || status === -20) {
+                    if(activeStatus) {
+                        return 'used'
+                    }else {
+                        if(expired) {
+                            return 'expired'
+                        }else {
+                            if(cancelStatus === 0) {
+                                return 'refunding'
+                            }else if(cancelStatus === 10) {
+                                return 'refunded'
+                            }else {
+                                return 'paid'
+                            }
+                        }
+                    }
+                }else {
+                    return 'none'
+                }
+            }
+        },
     }, {
         timestamps: true,
         underscored: true,
@@ -129,10 +161,6 @@ module.exports = (sequelize, DataTypes) => {
         let offset = null
         let limit = null
         let order = [['createdAt', 'DESC']]
-		let currentDate = moment().format('YYYY-MM-DD')
-		let currentDay = parseInt(moment().format('E'))
-		let dayType
-		(currentDay === 0 || currentDay === 6) ? dayType = 2 : dayType = 1
         if (params.searchData) {
             let searchData = JSON.parse(params.searchData)
             if (searchData.searchKeyword) {
@@ -200,7 +228,6 @@ module.exports = (sequelize, DataTypes) => {
             attributes: {
                 include: [
                     [`(SELECT count(uid) FROM ratings WHERE ` + rateWhere, 'rate_count'],
-					[Sequelize.literal(`case when (SELECT count(*) FROM discount_tickets WHERE '` + currentDate + `' not between ticket_start_date AND ticket_end_date AND (ticket_day_type !=` + dayType + `) AND deleted_at IS NULL) then true else false end`), 'expireFlag'],
                 ]
             },
             include: [
@@ -228,27 +255,40 @@ module.exports = (sequelize, DataTypes) => {
             count: count
         }
     }
-    payLog.getByUserUid = async function (ctx, uid, models) {
-        let data = await payLog.findAll({
-            include: [
-				{
-					model: models.parkingSite,
-					attribute: ['name', 'address', 'lat', 'lon']
-				}, {
-					model: models.discountTicket,
-					attributes: ['siteUid', 'ticketDayType', 'ticketDayTypeName', 'ticketPrice', 'ticketPriceDiscount', 'ticketPriceDiscountPercent', 'ticketTime', 'ticketTitle', 'ticketType', 'ticketTypeName', 'uid']
-				},
-            ],
-            where: {
-                userUid: uid,
-                visible: true
+    payLog.getByUserUid = async function (ctx, params, models) {
+        let where = {
+            visible: true,
+            status: {
+                [Sequelize.Op.in]: [10, -20]
             },
-            order: [['createdAt', 'DESC']]
-        })
-        if (!data) {
-            response.badRequest(ctx)
+            userUid: ctx.user.uid,
         }
-        return data
+        let offset = null
+        let limit = null
+        let order = [['createdAt', 'DESC']]
+        if (params.page) {
+            limit = 10
+            offset = (Number(params.page) - 1) * limit
+        }
+        let result = await payLog.findAll({
+            include: [
+                {
+                    model: models.parkingSite,
+                    attribute: ['name', 'address', 'lat', 'lon']
+                }
+            ],
+            offset: offset,
+            limit: limit,
+            where: where,
+            order: order
+        })
+        let count = await payLog.count({
+            where: where
+        })
+        return {
+            rows: result,
+            count: count
+        }
     }
     payLog.activeTicketList = async function (ctx, models){
     	let result = await models.payLog.findAll({
@@ -257,23 +297,16 @@ module.exports = (sequelize, DataTypes) => {
 				{
 					model: models.parkingSite,
 					attribute: ['name', 'address', 'lat', 'lon']
-				}, {
-					model: models.discountTicket,
-					attributes: ['siteUid', 'ticketDayType', 'ticketDayTypeName', 'ticketPrice', 'ticketPriceDiscount', 'ticketPriceDiscountPercent', 'ticketTime', 'ticketTitle', 'ticketType', 'ticketTypeName', 'uid']
-				}, {
-					model: models.card,
-					attributes: ['cardNumber','maskingCardNumber', 'cardCode', 'uid', 'isMain']
-				},
+				}
 			],
 			attributes: ['uid', 'carNumber', 'reserveTime', 'price', 'discountPrice', 'createdAt', 'totalPrice'],
 			where: {
 				userUid: ctx.user.uid,
 				activeStatus: false,
 				status: 10,
-				cancelStatus: false
+				cancelStatus: -1
 			}
 		})
-		delete result.card.cardNumber
 		return result
 	}
     return payLog
