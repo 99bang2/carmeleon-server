@@ -114,7 +114,7 @@ api.get('/points/:uid', auth.isUserLoggedIn, pointLogController.read)
 api.get('/pointLogs/:userUid', auth.isUserLoggedIn, pointLogController.userList)
 
 api.post('/payLogs', auth.isUserLoggedIn, payLogController.create)
-api.get('/payLogs', auth.isUserLoggedIn, payLogController.list)
+api.get('/payLogs', auth.isUserLoggedIn, payLogController.userList)
 api.get('/payLogs/:uid', auth.isUserLoggedIn, payLogController.read)
 api.put('/payLogs/:uid', auth.isUserLoggedIn, payLogController.update)
 api.get('/ticketList', auth.isUserLoggedIn, payLogController.activeTicketList)
