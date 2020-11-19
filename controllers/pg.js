@@ -62,7 +62,7 @@ exports.pgBillNice = async function(ctx){
 		//실패
 		ctx.throw({
 			code: 300,
-			message: '카드 등록 실패'
+			message: result.data.ResultMsg
 		})
 	}
 	response.send(ctx, true)
