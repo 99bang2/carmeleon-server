@@ -155,7 +155,7 @@ api.get('/userCars/:userUid', auth.isAdminLoggedIn, carController.userList)
 api.get('/userCards/:userUid', auth.isAdminLoggedIn, cardController.userList)
 api.get('/userFavorites/:userUid', auth.isAdminLoggedIn, favoriteController.userList)
 api.get('/userPointLogs/:userUid', auth.isAdminLoggedIn, pointLogController.userList)
-api.get('/userPayLogs/:userUid', auth.isAdminLoggedIn, payLogController.userList)
+api.get('/userPayLogs/:userUid', auth.isAdminLoggedIn, payLogController.userListForAdmin)
 /**
  * 할인권 관리
  */

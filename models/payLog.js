@@ -261,7 +261,7 @@ module.exports = (sequelize, DataTypes) => {
             status: {
                 [Sequelize.Op.in]: [10, -20]
             },
-            userUid: ctx.user.uid,
+            userUid: ctx.user.uid
         }
         let offset = null
         let limit = null
@@ -292,6 +292,27 @@ module.exports = (sequelize, DataTypes) => {
             count: count
         }
     }
+
+    payLog.getByUserUidForAdmin = async function (ctx, userUid, models) {
+        let where = {
+            userUid: userUid,
+        }
+        let order = [['createdAt', 'DESC']]
+        let result = await payLog.findAll({
+            include: [
+                {
+                    model: models.parkingSite,
+                    attribute: ['name', 'address', 'lat', 'lon']
+                },{
+                    model: models.discountTicket
+                }
+            ],
+            where: where,
+            order: order
+        })
+        return result
+    }
+
     payLog.activeTicketList = async function (ctx, models){
     	let result = await models.payLog.findAll({
 			//TODO:필요한 항목만 Attribute 추가)

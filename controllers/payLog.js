@@ -73,6 +73,12 @@ exports.userList = async function (ctx) {
 	response.send(ctx, payLog)
 }
 
+exports.userListForAdmin = async function (ctx) {
+	let {userUid} = ctx.params
+	let payLog = await models.payLog.getByUserUidForAdmin(ctx, userUid, models)
+	response.send(ctx, payLog)
+}
+
 exports.activeTicketList = async function (ctx) {
 	let ticketList = await models.payLog.activeTicketList(ctx, models)
 	response.send(ctx, ticketList)
@@ -123,4 +129,26 @@ exports.refundRequestCancel = async function(ctx) {
 		}
 	})
 	response.send(ctx, true)
+}
+
+exports.priceCheck = async function (ctx){
+	let _ = ctx.request.body
+	let userPoint = ctx.user.point
+	let ticketPrice = await models.discountTicket.findOne({
+		attributes: ['totalPrice'],
+		where: {
+			uid : _.discountTicketUid
+		}
+	})
+	let discountPrice = ticketPrice.totalPrice
+	let data = {
+		price: discountPrice,
+		availablePoint: 0
+	}
+	if(userPoint > 10000){
+		/*TODO:감면 차량 관련 할인 추가 예정*/
+		data.availablePoint = discountPrice/10
+	}
+	/*TODO:쿠폰 관련 할인 추가 예정*/
+	response.send(ctx, data)
 }
