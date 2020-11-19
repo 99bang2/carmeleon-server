@@ -275,7 +275,9 @@ module.exports = (sequelize, DataTypes) => {
                 {
                     model: models.parkingSite,
                     attribute: ['name', 'address', 'lat', 'lon']
-                }
+                },{
+            		model: models.discountTicket
+				}
             ],
             offset: offset,
             limit: limit,

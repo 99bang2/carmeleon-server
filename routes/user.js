@@ -152,4 +152,7 @@ api.post('/pgBillNice', auth.isUserLoggedIn, pgController.pgBillNice)
 api.post('/pgPaymentNice', auth.isUserLoggedIn, pgController.pgPaymentNice)
 api.post('/pgPaymentCancelNice', auth.isUserLoggedIn, pgController.pgPaymentCancelNice)
 
+api.post('/pgPaymentRefund', auth.isUserLoggedIn, payLogController.refundRequest)
+api.post('/pgPaymentRefundCancel', auth.isUserLoggedIn, payLogController.refundRequestCancel)
+
 module.exports = api
