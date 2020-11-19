@@ -142,7 +142,8 @@ exports.priceCheck = async function (ctx){
 	})
 	let discountPrice = ticketPrice.totalPrice
 	let data = {
-		price: discountPrice
+		price: discountPrice,
+		availablePoint: 0
 	}
 	if(userPoint > 10000){
 		/*TODO:감면 차량 관련 할인 추가 예정*/
