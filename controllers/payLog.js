@@ -83,7 +83,7 @@ exports.refundRequest = async function(ctx) {
 	let count = await models.payLog.count({
 		where:{
 			uid: _.uid,
-			userUid: ctx.user
+			userUid: ctx.user.uid
 		}
 	})
 	if(count === 0){
