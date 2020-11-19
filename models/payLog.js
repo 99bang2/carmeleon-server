@@ -87,8 +87,11 @@ module.exports = (sequelize, DataTypes) => {
 			defaultValue: false
 		},
 		cancelStatus: {
-			type: DataTypes.BOOLEAN,
-			defaultValue: false
+			type: DataTypes.INTEGER,
+			defaultValue: -1
+		},
+		cancelReason: {
+        	type: DataTypes.STRING
 		}
     }, {
         timestamps: true,
@@ -126,6 +129,10 @@ module.exports = (sequelize, DataTypes) => {
         let offset = null
         let limit = null
         let order = [['createdAt', 'DESC']]
+		let currentDate = moment().format('YYYY-MM-DD')
+		let currentDay = parseInt(moment().format('E'))
+		let dayType
+		(currentDay === 0 || currentDay === 6) ? dayType = 2 : dayType = 1
         if (params.searchData) {
             let searchData = JSON.parse(params.searchData)
             if (searchData.searchKeyword) {
@@ -192,16 +199,20 @@ module.exports = (sequelize, DataTypes) => {
             //TODO:추후 필요한 사항만 attribute 넣어 놓을 것
             attributes: {
                 include: [
-                    [`(SELECT count(uid) FROM ratings WHERE ` + rateWhere, 'rate_count']
+                    [`(SELECT count(uid) FROM ratings WHERE ` + rateWhere, 'rate_count'],
+					[Sequelize.literal(`case when (SELECT count(*) FROM discount_tickets WHERE '` + currentDate + `' not between ticket_start_date AND ticket_end_date AND (ticket_day_type !=` + dayType + `) AND deleted_at IS NULL) then true else false end`), 'expireFlag'],
                 ]
             },
             include: [
-                {
-                    model: models.parkingSite,
-                }, {
-                    model: models.discountTicket,
-                }, {
+				{
+					model: models.parkingSite,
+					attribute: ['name', 'address', 'lat', 'lon']
+				}, {
+					model: models.discountTicket,
+					attributes: ['siteUid', 'ticketDayType', 'ticketDayTypeName', 'ticketPrice', 'ticketPriceDiscount', 'ticketPriceDiscountPercent', 'ticketTime', 'ticketTitle', 'ticketType', 'ticketTypeName', 'uid']
+				}, {
                     model: models.user,
+					attributes: ['uid', 'id', 'snsType', 'name', 'nickname', 'email', 'phone', 'profileImage', 'navigationType' ,'marketing']
                 },
             ],
             offset: offset,
@@ -220,11 +231,13 @@ module.exports = (sequelize, DataTypes) => {
     payLog.getByUserUid = async function (ctx, uid, models) {
         let data = await payLog.findAll({
             include: [
-                {
-                    model: models.parkingSite,
-                }, {
-                    model: models.discountTicket,
-                }
+				{
+					model: models.parkingSite,
+					attribute: ['name', 'address', 'lat', 'lon']
+				}, {
+					model: models.discountTicket,
+					attributes: ['siteUid', 'ticketDayType', 'ticketDayTypeName', 'ticketPrice', 'ticketPriceDiscount', 'ticketPriceDiscountPercent', 'ticketTime', 'ticketTitle', 'ticketType', 'ticketTypeName', 'uid']
+				},
             ],
             where: {
                 userUid: uid,
@@ -243,14 +256,16 @@ module.exports = (sequelize, DataTypes) => {
 			include: [
 				{
 					model: models.parkingSite,
-					//attribute: []//
+					attribute: ['name', 'address', 'lat', 'lon']
 				}, {
 					model: models.discountTicket,
+					attributes: ['siteUid', 'ticketDayType', 'ticketDayTypeName', 'ticketPrice', 'ticketPriceDiscount', 'ticketPriceDiscountPercent', 'ticketTime', 'ticketTitle', 'ticketType', 'ticketTypeName', 'uid']
 				}, {
 					model: models.card,
 					attributes: ['cardNumber','maskingCardNumber', 'cardCode', 'uid', 'isMain']
 				},
 			],
+			attributes: ['uid', 'carNumber', 'reserveTime', 'price', 'discountPrice', 'createdAt', 'totalPrice'],
 			where: {
 				userUid: ctx.user.uid,
 				activeStatus: false,
@@ -258,6 +273,7 @@ module.exports = (sequelize, DataTypes) => {
 				cancelStatus: false
 			}
 		})
+		delete result.card.cardNumber
 		return result
 	}
     return payLog

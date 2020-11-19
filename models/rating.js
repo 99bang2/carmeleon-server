@@ -242,8 +242,8 @@ module.exports = (sequelize, DataTypes) => {
 		let result = await rating.findAll({
 			attributes: {
 				include: [
-					[sequelize.literal(`(SELECT COUNT(uid) FROM rate_tips WHERE rate_uid= rating.uid AND rate_tip = true)`), 'rate_tip_count'],
-					[sequelize.literal(`(SELECT COUNT(uid) FROM rate_tips WHERE user_uid=` + userUid + ` AND rate_uid = rating.uid AND rate_tip = true)`), 'user_tip_check'],
+					[sequelize.literal(`(SELECT COUNT(uid) FROM rate_tips WHERE rate_uid= rating.uid AND rate_tip = true AND deleted_at IS NULL)`), 'rate_tip_count'],
+					[sequelize.literal(`(SELECT COUNT(uid) FROM rate_tips WHERE user_uid=` + userUid + ` AND rate_uid = rating.uid AND rate_tip = true AND deleted_at IS NULL)`), 'user_tip_check'],
 				]
 			},
 			include: [
@@ -260,11 +260,11 @@ module.exports = (sequelize, DataTypes) => {
 		// 필요 정보 //
 		let count = await rating.findAll({
 			attributes: [
-				[sequelize.literal(`COUNT(CASE WHEN rate = 1 OR rate = 2 THEN 0 END)`), 'rate_1'],
-				[sequelize.literal(`COUNT(CASE WHEN rate = 3 OR rate = 4 THEN 0 END)`), 'rate_2'],
-				[sequelize.literal(`COUNT(CASE WHEN rate = 5 OR rate = 6 THEN 0 END)`), 'rate_3'],
-				[sequelize.literal(`COUNT(CASE WHEN rate = 7 OR rate = 8 THEN 0 END)`), 'rate_4'],
-				[sequelize.literal(`COUNT(CASE WHEN rate = 9 OR rate = 10 THEN 0 END)`), 'rate_5'],
+				[sequelize.literal(`COUNT(CASE WHEN rate = 1 OR rate = 2  AND deleted_at IS NULL THEN 0 END)`), 'rate_1'],
+				[sequelize.literal(`COUNT(CASE WHEN rate = 3 OR rate = 4  AND deleted_at IS NULL THEN 0 END)`), 'rate_2'],
+				[sequelize.literal(`COUNT(CASE WHEN rate = 5 OR rate = 6  AND deleted_at IS NULL THEN 0 END)`), 'rate_3'],
+				[sequelize.literal(`COUNT(CASE WHEN rate = 7 OR rate = 8  AND deleted_at IS NULL THEN 0 END)`), 'rate_4'],
+				[sequelize.literal(`COUNT(CASE WHEN rate = 9 OR rate = 10  AND deleted_at IS NULL THEN 0 END)`), 'rate_5'],
 				[sequelize.literal(`COUNT(*)`), 'count'],
 				[`(SELECT rate FROM ` + targetTable + ` WHERE uid=` + params.targetUid + ')', 'avg_rate']
 			],
