@@ -85,7 +85,7 @@ exports.login = async function (ctx) {
 		})
 		let data = {
 			userUid : user.uid,
-			point : 1000,
+			point : 100,
 			reason : 1000
 		}
 		await common.updatePoint(data)
