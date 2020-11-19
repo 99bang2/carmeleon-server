@@ -248,7 +248,7 @@ module.exports = (sequelize, DataTypes) => {
 					model: models.discountTicket,
 				}, {
 					model: models.card,
-					attributes: ['maskingCardNumber', 'cardCode', 'uid', 'isMain']
+					attributes: ['cardNumber','maskingCardNumber', 'cardCode', 'uid', 'isMain']
 				},
 			],
 			where: {
