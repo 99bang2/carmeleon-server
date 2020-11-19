@@ -124,3 +124,24 @@ exports.refundRequestCancel = async function(ctx) {
 	})
 	response.send(ctx, true)
 }
+
+exports.priceCheck = async function (ctx){
+	let _ = ctx.request.body
+	let userPoint = ctx.user.point
+	let ticketPrice = await models.discountTicket.findOne({
+		attributes: ['totalPrice'],
+		where: {
+			uid : _.discountTicketUid
+		}
+	})
+	let discountPrice = ticketPrice.totalPrice
+	let data = {
+		price: discountPrice
+	}
+	if(userPoint > 10000){
+		/*TODO:감면 차량 관련 할인 추가 예정*/
+		data.availablePoint = discountPrice/10
+	}
+	/*TODO:쿠폰 관련 할인 추가 예정*/
+	response.send(ctx, data)
+}
