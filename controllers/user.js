@@ -4,6 +4,7 @@ const jwt = require('jsonwebtoken')
 const env = process.env.NODE_ENV || 'development'
 const config = require('../configs/config.json')[env]
 const secret = config.secretKey
+const common = require('../controllers/common')
 
 exports.create = async function (ctx) {
     let _ = ctx.request.body
@@ -82,6 +83,12 @@ exports.login = async function (ctx) {
 			push: true,
 			marketing: _.user.marketing
 		})
+		let data = {
+			userUid : user.uid,
+			point : 1000,
+			reason : 1000
+		}
+		await common.updatePoint(data)
 	}else{
 		user.marketing = _.user.marketing
 		user.token = _.user.token

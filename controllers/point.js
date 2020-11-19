@@ -1,9 +1,14 @@
 const models = require('../models')
 const response = require('../libs/response')
-
+const Sequelize = require('sequelize')
 exports.create = async function (ctx) {
     let _ = ctx.request.body
     let point = await models.pointLog.create(_)
+	await models.user.update({point: Sequelize.literal(`point+${point}`)},{
+		where: {
+			uid: _.userUid
+		}
+	})
     response.send(ctx, point)
 }
 

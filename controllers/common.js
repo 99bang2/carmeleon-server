@@ -1,13 +1,13 @@
 'use strict'
 const models = require('../models')
 const response = require('../libs/response')
-const jwt = require('jsonwebtoken')
 const env = process.env.NODE_ENV || 'development'
 const config = require('../configs/config.json')[env]
 const imageUpload = require('../libs/imageUpload')
 const axios = require('axios')
 const codes = require('../configs/codes.json')
 const availableTargetTypes = ["0", "1", "2", "3"]
+const Sequelize = require('sequelize')
 
 exports.fileUpload = async function (ctx) {
 	let _ = ctx.request.body
@@ -100,3 +100,43 @@ exports.pushMessage = async function (data) {
 	let push = await models.push.create(data)
 	return push
 }
+
+
+exports.updatePoint = async function (params) {
+	let userUid = params.userUid
+	let point = params.point
+	let reason = params.reason
+	let currentDate = moment().format('YYYY-MM-DD')
+	//TODO:Return Point
+	if(reason > 1000){
+		let checkPointCount = await models.pointLog.count({
+			where: {
+				userUid: userUid,
+				reason: reason,
+				createdAt: {[Sequelize.Op.like]: `%${currentDate}%`}
+			}
+		})
+		if(checkPointCount > 5){
+			return 0
+		}
+	}
+
+	//let pointInfo =
+	await models.pointLog.create(params)
+	//let result =
+	await models.user.update({point: Sequelize.literal(`point+${point}`)},{
+		where: {
+			uid: _.userUid
+		}
+	})
+	let userPoint = await models.user.findOne({
+		attributes: ['point'],
+		where:{
+			uid: _.userUid
+		}
+	})
+	if (!userPoint) {
+		return 0
+	}
+	return userPoint.point
+s}
