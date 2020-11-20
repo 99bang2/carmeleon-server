@@ -126,7 +126,7 @@ exports.updatePoint = async function (params) {
 	//let result =
 	await models.user.update({point: Sequelize.literal(`point+${point}`)},{
 		where: {
-			uid: _.userUid
+			uid: userUid
 		}
 	})
 	return point
