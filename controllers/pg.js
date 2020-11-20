@@ -192,7 +192,8 @@ exports.pgPaymentNice = async function (ctx) {
 				payResultUid: payResult.uid,
 				email: ctx.user.email,
 				payOid: moid,
-				payTid:  transactionID
+				payTid:  transactionID,
+				payType: "card"
 			}, {where: {uid: payLogUid}})
 		response.send(ctx, {
 			result: true,
