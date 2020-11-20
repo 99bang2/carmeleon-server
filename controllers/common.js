@@ -8,6 +8,7 @@ const axios = require('axios')
 const codes = require('../configs/codes.json')
 const availableTargetTypes = ["0", "1", "2", "3"]
 const Sequelize = require('sequelize')
+const moment = require('moment')
 
 exports.fileUpload = async function (ctx) {
 	let _ = ctx.request.body
@@ -120,23 +121,13 @@ exports.updatePoint = async function (params) {
 			return 0
 		}
 	}
-
 	//let pointInfo =
 	await models.pointLog.create(params)
 	//let result =
 	await models.user.update({point: Sequelize.literal(`point+${point}`)},{
 		where: {
-			uid: _.userUid
+			uid: userUid
 		}
 	})
-	let userPoint = await models.user.findOne({
-		attributes: ['point'],
-		where:{
-			uid: _.userUid
-		}
-	})
-	if (!userPoint) {
-		return 0
-	}
-	return userPoint.point
+	return point
 s}
