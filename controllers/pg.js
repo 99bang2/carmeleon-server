@@ -262,7 +262,7 @@ exports.pgPaymentCancelNice = async function (ctx) {
 	await models.payCancelResult.create(convertResult)
 	if (result.data.ResultCode === "2001") {
 		//성공
-		payInfo.update({status: -20, cancelRequestData: Sequelize.fn('NOW')})
+		payInfo.update({status: -20, cancelCompleteTime: Sequelize.fn('NOW')})
 		response.send(ctx, {
 			result: true
 		})
