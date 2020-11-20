@@ -157,7 +157,7 @@ exports.priceCheck = async function (ctx) {
 		price: originPrice,
 		availablePoint: 0
 	}
-	if (user.point > 10000) {
+	if (user.point > 10000 && originPrice > 10000) {
 		/*TODO:감면 차량 관련 할인 추가 예정*/
 		data.availablePoint = originPrice / 10
 	}
