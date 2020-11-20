@@ -135,7 +135,7 @@ exports.priceCheck = async function (ctx){
 	let _ = ctx.request.body
 	let userPoint = ctx.user.point
 	let ticketPrice = await models.discountTicket.findOne({
-		attributes: ['ticketPriceDiscountPercent', 'totalPrice'],
+		attributes: ['ticketPriceDiscountPercent', 'ticketPrice'],
 		where: {
 			uid : _.discountTicketUid
 		}
