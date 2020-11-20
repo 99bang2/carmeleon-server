@@ -137,7 +137,7 @@ exports.priceCheck = async function (ctx) {
 		{
 			attributes: ['point'],
 			where: {
-				user: ctx.user.uid
+				uid: ctx.user.uid
 			}
 		}
 	)
