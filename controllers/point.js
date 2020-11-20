@@ -59,8 +59,8 @@ exports.userList = async function (ctx) {
         limit = 10
         offset = (Number(_.page) - 1) * limit
     }
-    let result = await pointLog.findAll({ offset, limit, where, order})
-    let count = await pointLog.count({ where: where})
+    let result = await models.pointLog.findAll({ offset, limit, where, order})
+    let count = await models.pointLog.count({ where: where})
     console.log(result)
 	response.send(ctx, {
         rows: result,
