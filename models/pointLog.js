@@ -1,7 +1,6 @@
 'use strict'
-const Promise = require('bluebird')
 const response = require('../libs/response')
-
+const codes = require('../configs/codes.json')
 module.exports = (sequelize, DataTypes) => {
     const pointLog = sequelize.define('pointLog', {
         uid: {
@@ -20,7 +19,15 @@ module.exports = (sequelize, DataTypes) => {
         },
         reason: {
             type: DataTypes.STRING
-        }
+        },
+        reasonText: {
+            type: DataTypes.VIRTUAL,
+            get: function () {
+                if (this.getDataValue('reason') !== null) {
+                    return codes.pointCode[this.getDataValue('reason')]
+                }
+            }
+        },
     }, {
         indexes: [
             {

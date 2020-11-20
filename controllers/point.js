@@ -40,9 +40,30 @@ exports.delete = async function (ctx) {
     response.send(ctx, point)
 }
 
-exports.userList = async function (ctx) {
+exports.userListForAdmin = async function (ctx) {
 	let {userUid} = ctx.params
 	let _ = ctx.request.query
-	let point = await models.pointLog.getByUserUid(ctx, _, userUid)
+	let point = await models.pointLog.getByUserUid(ctx, userUid, _)
 	response.send(ctx, point)
+}
+
+exports.userList = async function (ctx) {
+	let _ = ctx.request.query
+    let where = {
+        userUid: ctx.user.uid
+    }
+    let offset = null
+    let limit = null
+    let order = [['createdAt', 'DESC']]
+    if (_.page) {
+        limit = 10
+        offset = (Number(_.page) - 1) * limit
+    }
+    let result = await pointLog.findAll({ offset, limit, where, order})
+    let count = await pointLog.count({ where: where})
+    console.log(result)
+	response.send(ctx, {
+        rows: result,
+        count: count
+    })
 }
