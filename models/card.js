@@ -49,7 +49,7 @@ module.exports = (sequelize, DataTypes) => {
 			type: DataTypes.VIRTUAL,
 			get: function () {
 				if (this.getDataValue('cardNumber') !== null) {
-					let cardDecrypt = CryptoJS.Rabbit.decrypt(this.getDataValue('cardNumber'), config.cardSecretKey.cardNumber).toString(CryptoJS.enc.Utf8);
+					let cardDecrypt = CryptoJS.Rabbit.decrypt(this.getDataValue('cardNumber'), config.cardSecretKey.cardNumber+this.getDataValue('userUid')).toString(CryptoJS.enc.Utf8);
 					if(cardDecrypt.length < 12){
 						return cardDecrypt.replace(/\d(?=.{3})/gi, "*");
 					}else{

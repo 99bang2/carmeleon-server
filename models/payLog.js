@@ -125,6 +125,12 @@ module.exports = (sequelize, DataTypes) => {
                 }
             }
         },
+		cancelRequestTime: {
+			type: DataTypes.DATE
+		},
+		cancelCompleteTime: {
+			type: DataTypes.DATE
+		},
     }, {
         timestamps: true,
         underscored: true,

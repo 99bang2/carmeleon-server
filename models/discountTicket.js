@@ -73,6 +73,9 @@ module.exports = (sequelize, DataTypes) => {
 		ticketCount: {
 			type: DataTypes.INTEGER,
 		},
+		fee: {
+			type: DataTypes.INTEGER
+		}
 		//Todo: Macro 컬럼 JSON 추가 (수동 작업 예정)
 	}, {
 		timestamps: true,
