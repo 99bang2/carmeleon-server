@@ -23,13 +23,13 @@ exports.create = async function (ctx) {
 				[Sequelize.literal(`case when ((select count(uid) from pay_logs where discount_ticket_uid = uid AND deleted_at IS NULL) >= ticket_count) then true else false end`), 'sold_out']
 			]
 	})
-	if(Boolean(ticketStatus.dataValues.expire) === true){
+	if (Boolean(ticketStatus.dataValues.expire) === true) {
 		ctx.throw({
 			code: 400,
 			message: '유효기간이 지난 할인권 입니다.'
 		})
 	}
-	if(Boolean(ticketStatus.dataValues.sold_out)=== true){
+	if (Boolean(ticketStatus.dataValues.sold_out) === true) {
 		ctx.throw({
 			code: 400,
 			message: '매진 된 할인권 입니다.'
@@ -84,21 +84,21 @@ exports.activeTicketList = async function (ctx) {
 	response.send(ctx, ticketList)
 }
 
-exports.refundRequest = async function(ctx) {
+exports.refundRequest = async function (ctx) {
 	let _ = ctx.request.body
 	let count = await models.payLog.count({
-		where:{
+		where: {
 			uid: _.uid,
 			userUid: ctx.user.uid
 		}
 	})
-	if(count === 0){
+	if (count === 0) {
 		ctx.throw({
 			code: 400,
 			message: '거래 내역이 존재하지 않습니다.'
 		})
 	}
-	await models.payLog.update({cancelStatus: 0, cancelReason: _.cancelReason},{
+	await models.payLog.update({cancelStatus: 0, cancelReason: _.cancelReason}, {
 		where: {
 			uid: _.uid
 		}
@@ -106,24 +106,24 @@ exports.refundRequest = async function(ctx) {
 	response.send(ctx, true)
 }
 
-exports.refundRequestCancel = async function(ctx) {
+exports.refundRequestCancel = async function (ctx) {
 	let _ = ctx.request.body
 	let count = await models.payLog.count({
-		where:{
+		where: {
 			uid: _.uid,
 			userUid: ctx.user,
 			cancelStatus: {
-				[Op.gt] : -1
+				[Op.gt]: -1
 			}
 		}
 	})
-	if(count === 0){
+	if (count === 0) {
 		ctx.throw({
 			code: 400,
 			message: '환불 요청 내역이 존재하지 않습니다.'
 		})
 	}
-	await models.paylog.update({cancelStatus: -1, cancelReason: "", cancelRequestData: Sequelize.fn('NOW')},{
+	await models.paylog.update({cancelStatus: -1, cancelReason: "", cancelRequestData: Sequelize.fn('NOW')}, {
 		where: {
 			uid: _.uid
 		}
@@ -131,18 +131,25 @@ exports.refundRequestCancel = async function(ctx) {
 	response.send(ctx, true)
 }
 
-exports.priceCheck = async function (ctx){
+exports.priceCheck = async function (ctx) {
 	let _ = ctx.request.body
-	let userPoint = ctx.user.point
+	let user = await models.user.findOne(
+		{
+			attributes: ['point'],
+			where: {
+				user: ctx.user.uid
+			}
+		}
+	)
 	let ticketPrice = await models.discountTicket.findOne({
 		attributes: ['ticketPriceDiscountPercent', 'ticketPrice'],
 		where: {
-			uid : _.discountTicketUid
+			uid: _.discountTicketUid
 		}
 	})
 	let originPrice = ticketPrice.ticketPrice
 	let discountPrice = ticketPrice.ticketPriceDiscount
-	if(discountPrice){
+	if (discountPrice) {
 		originPrice = originPrice - discountPrice
 	}
 
@@ -150,9 +157,9 @@ exports.priceCheck = async function (ctx){
 		price: originPrice,
 		availablePoint: 0
 	}
-	if(userPoint > 10000){
+	if (user.point > 10000) {
 		/*TODO:감면 차량 관련 할인 추가 예정*/
-		data.availablePoint = originPrice/10
+		data.availablePoint = originPrice / 10
 	}
 	/*TODO:쿠폰 관련 할인 추가 예정*/
 	response.send(ctx, data)
