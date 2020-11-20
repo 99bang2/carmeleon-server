@@ -7,7 +7,7 @@ const config = require('../configs/config.json')[env]
 const qs = require('qs')
 const crypto = require('crypto')
 const CryptoJS = require("crypto-js")
-const Op = require('sequelize').Op
+const Sequelize = require('sequelize')
 
 const merchantKey = config.nicePay.merchantKey
 const merchantID = config.nicePay.merchantID;
@@ -19,7 +19,7 @@ exports.pgBillNice = async function(ctx){
 	let decryptedData = CryptoJS.AES.decrypt(data, hashKey)
 	let decryptData = JSON.parse(decryptedData.toString(CryptoJS.enc.Utf8))
 	let ediDate = moment().format('YYYYMMDDHHmmss')
-	let moid = 'nice_bill_test_3.0';
+	let moid = 'carmeleon_billKey';
 	//IDno : 생년월일(YYMMDD) or 사업자등록번호(법인카드 등록 시)
 	//CardPw : 카드 비밀번호 앞 2자리
 	let aesString = "CardNo=" + decryptData.CardNo + "&ExpYear=" + decryptData.ExpYear + "&ExpMonth=" + decryptData.ExpMonth + "&IDNo=" + decryptData.IDNo + "&CardPw=" + decryptData.CardPw
@@ -48,12 +48,12 @@ exports.pgBillNice = async function(ctx){
 	if (result.data.ResultCode === "F100") {
 		//성공
 		let cardData = {
-			cardNumber : rabbitHash(decryptData.CardNo, config.cardSecretKey.cardNumber),
+			cardNumber : rabbitHash(decryptData.CardNo, config.cardSecretKey.cardNumber+ctx.user.uid),
 			cardCode : result.data.CardCode,
-			expiryYear : rabbitHash(decryptData.ExpYear, config.cardSecretKey.expYY),
-			expiryMonth : rabbitHash(decryptData.ExpMonth, config.cardSecretKey.expMM),
-			cardPassword : rabbitHash(decryptData.CardPw, config.cardSecretKey.cardPass),
-			cardId : rabbitHash(decryptData.IDNo, config.cardSecretKey.idNo),
+			expiryYear : rabbitHash(decryptData.ExpYear, config.cardSecretKey.expYY+ctx.user.uid),
+			expiryMonth : rabbitHash(decryptData.ExpMonth, config.cardSecretKey.expMM+ctx.user.uid),
+			cardPassword : rabbitHash(decryptData.CardPw, config.cardSecretKey.cardPass+ctx.user.uid),
+			cardId : rabbitHash(decryptData.IDNo, config.cardSecretKey.idNo+ctx.user.uid),
 			billKey : result.data.BID,
 			userUid : ctx.user.uid
 		}
@@ -70,7 +70,7 @@ exports.pgBillNice = async function(ctx){
 }
 exports.pgBillRemoveNice = async function(cardUid){
 	let ediDate = moment().format('YYYYMMDDHHmmss')
-	let moid = 'nice_bill_test_3.0'
+	let moid = 'carmeleon_billKey';
 	//pg.pgBillRemoveNice(uid)
 	let cardInfo = await models.card.findOne({
 		attributes: ['billKey', 'userUid'],
@@ -261,7 +261,7 @@ exports.pgPaymentCancelNice = async function (ctx) {
 	await models.payCancelResult.create(convertResult)
 	if (result.data.ResultCode === "2001") {
 		//성공
-		payInfo.update({status: -20})
+		payInfo.update({status: -20, cancelRequestData: Sequelize.fn('NOW')})
 		response.send(ctx, {
 			result: true
 		})

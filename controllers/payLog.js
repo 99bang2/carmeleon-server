@@ -123,7 +123,7 @@ exports.refundRequestCancel = async function(ctx) {
 			message: '환불 요청 내역이 존재하지 않습니다.'
 		})
 	}
-	await models.paylog.update({cancelStatus: -1, cancelReason: ""},{
+	await models.paylog.update({cancelStatus: -1, cancelReason: "", cancelRequestData: Sequelize.fn('NOW')},{
 		where: {
 			uid: _.uid
 		}
@@ -135,19 +135,21 @@ exports.priceCheck = async function (ctx){
 	let _ = ctx.request.body
 	let userPoint = ctx.user.point
 	let ticketPrice = await models.discountTicket.findOne({
-		attributes: ['totalPrice'],
+		attributes: ['fee', 'totalPrice'],
 		where: {
 			uid : _.discountTicketUid
 		}
 	})
-	let discountPrice = ticketPrice.totalPrice
+	let discountPrice = parseInt(ticketPrice.ticketPrice)
+	let feePrice = parseInt(ticketPrice.ticketPrice) * (parseInt(ticketPrice.fee)/100)
+	let totalPrice = discountPrice+feePrice
 	let data = {
-		price: discountPrice,
+		price: totalPrice,
 		availablePoint: 0
 	}
 	if(userPoint > 10000){
 		/*TODO:감면 차량 관련 할인 추가 예정*/
-		data.availablePoint = discountPrice/10
+		data.availablePoint = totalPrice/10
 	}
 	/*TODO:쿠폰 관련 할인 추가 예정*/
 	response.send(ctx, data)
