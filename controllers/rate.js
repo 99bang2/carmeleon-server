@@ -50,7 +50,6 @@ exports.create = async function (ctx) {
 			message: `평가를 할 수 없는 ${targetName} 입니다.`
 		})
 	}
-	///////////////////////////
 	let rate = await models.rating.create(_)
 	let reasonCode
 	let point
@@ -66,7 +65,7 @@ exports.create = async function (ctx) {
 		point: point,
 		reason: reasonCode
 	}
-	await commonController.updatePoint(data)
+	rate.dataValues.point = await commonController.updatePoint(data)
 	await commonController.avgRate(ctx, targetType, targetUid)
 	response.send(ctx, rate)
 }
