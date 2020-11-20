@@ -135,21 +135,24 @@ exports.priceCheck = async function (ctx){
 	let _ = ctx.request.body
 	let userPoint = ctx.user.point
 	let ticketPrice = await models.discountTicket.findOne({
-		attributes: ['fee', 'totalPrice'],
+		attributes: ['ticketPriceDiscountPercent', 'totalPrice'],
 		where: {
 			uid : _.discountTicketUid
 		}
 	})
-	let discountPrice = parseInt(ticketPrice.ticketPrice)
-	let feePrice = parseInt(ticketPrice.ticketPrice) * (parseInt(ticketPrice.fee)/100)
-	let totalPrice = discountPrice+feePrice
+	let originPrice = ticketPrice.ticketPrice
+	let discountPrice = ticketPrice.ticketPriceDiscount
+	if(discountPrice){
+		originPrice = originPrice - discountPrice
+	}
+
 	let data = {
-		price: totalPrice,
+		price: originPrice,
 		availablePoint: 0
 	}
 	if(userPoint > 10000){
 		/*TODO:감면 차량 관련 할인 추가 예정*/
-		data.availablePoint = totalPrice/10
+		data.availablePoint = originPrice/10
 	}
 	/*TODO:쿠폰 관련 할인 추가 예정*/
 	response.send(ctx, data)
