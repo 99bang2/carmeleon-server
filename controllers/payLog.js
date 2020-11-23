@@ -147,7 +147,7 @@ exports.refundRequest = async function (ctx) {
 			message: '거래 내역이 존재하지 않습니다.'
 		})
 	}
-	await models.payLog.update({cancelStatus: 0, cancelReason: _.cancelReason}, {
+	await models.payLog.update({cancelStatus: 0, cancelReason: _.cancelReason, cancelRequestTime: Sequelize.fn('NOW')}, {
 		where: {
 			uid: _.uid
 		}
