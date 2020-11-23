@@ -111,7 +111,7 @@ exports.pgPaymentNice = async function (ctx) {
 	let payLogUid = _.payLogUid
 	let payInfo = await models.payLog.findByPk(payLogUid)
 	let discountTicket = await models.discountTicket.findByPk(payInfo.discountTicketUid)
-	let cardInfo = await models.discountTicket.findByPk(payInfo.cardUid)
+	let cardInfo = await models.card.findByPk(payInfo.cardUid)
 
 	let buyerName =  ctx.user.nickname || ctx.user.name || '사용자'
 	let buyerEmail = payInfo.email
