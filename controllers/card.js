@@ -73,13 +73,20 @@ exports.cardList = async function (ctx) {
 
 exports.isMain = async function (ctx) {
 	let _ = ctx.request.body
-	await models.card.update(
-		{ isMain: false },
-		{ where: { userUid: _.userUid }}
-	);
-	let card = await models.card.update(
-		{ isMain: true },
-		{ where: { uid: _.uid }}
-	);
+	let cards = await models.card.findAll({
+		where: {
+			userUid: ctx.user.uid
+		}
+	})
+	let card
+	for(let tempCard of cards) {
+		if(tempCard.uid === _.uid) {
+			tempCard.isMain = true
+			card = tempCard
+		}else {
+			tempCard.isMain = false
+		}
+		await tempCard.save()
+	}
 	response.send(ctx, card)
 }
