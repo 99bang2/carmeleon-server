@@ -55,10 +55,10 @@ exports.read = async function (ctx) {
             where: {
                 discountTicketUid: discountTicket.uid,
                 createdAt: {
-                    [Op.gte]: currentDate.format('YYYY-MM-DD')
+                    [models.Sequelize.Op.gte]: currentDate.format('YYYY-MM-DD')
                 },
                 status: {
-                    [Op.in]: [0, 10]
+                    [models.Sequelize.Op.in]: [0, 10]
                 }
             }
         })
