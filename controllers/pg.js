@@ -8,6 +8,8 @@ const qs = require('qs')
 const crypto = require('crypto')
 const CryptoJS = require("crypto-js")
 const Sequelize = require('sequelize')
+const common = require('../controllers/common')
+const pointCodes = require('../configs/pointCodes')
 
 const merchantKey = config.nicePay.merchantKey
 const merchantID = config.nicePay.merchantID;
@@ -107,27 +109,16 @@ exports.pgBillRemoveNice = async function(cardUid){
 exports.pgPaymentNice = async function (ctx) {
 	let _ = ctx.request.body
 	let payLogUid = _.payLogUid
+	let payInfo = await models.payLog.findByPk(payLogUid)
+	let discountTicket = await models.discountTicket.findByPk(payInfo.discountTicketUid)
+	let cardInfo = await models.discountTicket.findByPk(payInfo.cardUid)
 
 	let buyerName =  ctx.user.nickname || ctx.user.name || '사용자'
-	let buyerEmail = ctx.user.email || 'mobilx.carmeleon@gmail.com'
-	let buyerTel = ctx.user.phone || '01000000000'
-
+	let buyerEmail = payInfo.email
+	let buyerTel = payInfo.phoneNumber
 	let ediDate = moment().format('YYYYMMDDHHmmss')
 	let ranNum = Math.floor(Math.random() * (9999 - 1000 + 1)) + 1000
 	let transactionID = merchantID + "0116" + ediDate.substr(2, 12) + ranNum
-	let cardInfo = await models.card.findOne({
-		attributes: ['billKey'],
-		where: {
-			uid: _.cardUid,
-			userUid: ctx.user.uid
-		}
-	})
-	let payInfo = await models.payLog.findOne({
-		where: {
-			uid: _.payLogUid,
-			userUid: ctx.user.uid
-		}
-	})
 	let bid = cardInfo.billKey
 	let amt = payInfo.totalPrice
 	// ORDER ID 생성
@@ -147,7 +138,7 @@ exports.pgPaymentNice = async function (ctx) {
 		'EdiDate': ediDate,
 		'Moid': moid,
 		'Amt': amt,
-		'GoodsName': encodeURI(_.goodName),
+		'GoodsName': encodeURI(discountTicket.ticketTitle),
 		'SignData': signData,
 		'CardInterest': cardInterest,
 		'CardQuota': cardQuota,
@@ -183,36 +174,32 @@ exports.pgPaymentNice = async function (ctx) {
 	// 공통
 	let payResult = await models.payResult.create(convertResult)
 	if(result.data.ResultCode === "3001"){
-		//성공
-		//payResultUid 포함 해서 업데이트//
-		//payResultUid = payResult.uid//
-		models.payLog.update(
+		await models.payLog.update(
 			{
 				status: 10,
 				payResultUid: payResult.uid,
-				email: ctx.user.email,
 				payOid: moid,
 				payTid:  transactionID,
 				payType: "card"
 			}, {where: {uid: payLogUid}})
-		response.send(ctx, {
-			result: true,
-			msg: result.ResultMsg
-		})
+
+		//포인트 사용
+		if(payInfo.point > 0){
+			await common.updatePoint(ctx.user.uid, pointCodes.USE_FOR_PARKING_TICKET, payInfo.point)
+		}
 	}else{
 		//실패
 		models.payLog.update(
 			{
 				status: -10,
-				payResultUid: payResult.uid,
-				email: ctx.user.email
+				payResultUid: payResult.uid
 			}, {where: {uid: payLogUid}})
-		response.send(ctx, {
-			result: false,
-			msg: result.ResultMsg
-		})
 	}
-	response.send(ctx, true)
+
+	response.send(ctx, {
+		result: result.data.ResultCode === "3001",
+		msg: result.ResultMsg
+	})
 }
 exports.pgPaymentCancelNice = async function (ctx) {
 	let _ = ctx.request.body

@@ -6,36 +6,85 @@ const moment = require('moment')
 
 exports.create = async function (ctx) {
 	let _ = ctx.request.body
-	if (_.totalPrice <= 0) {
-		ctx.throw({
-			code: 400,
-			message: '주문 금액이 0원 이하는 구매가 불가능 합니다.'
-		})
-	}
-	let currentDate = moment().format('YYYY-MM-DD')
+	let currentDate = moment(moment().format('YYYY-MM-DD'))
 	let currentDay = parseInt(moment().format('E'))
-	let dayType
-	(currentDay === 0 || currentDay === 6) ? dayType = 2 : dayType = 1
-	let ticketStatus = await models.discountTicket.findByPk(_.discountTicketUid, {
-		attributes:
-			[
-				[Sequelize.literal(`case when ('` + currentDate + `' not between ticket_start_date AND ticket_end_date) AND (ticket_day_type !=` + dayType + `)  AND deleted_at IS NULL then true else false end`), 'expire'],
-				[Sequelize.literal(`case when ((select count(uid) from pay_logs where discount_ticket_uid = uid AND deleted_at IS NULL) >= ticket_count) then true else false end`), 'sold_out']
-			]
+	let currentDayType = (currentDay === 0 || currentDay === 6) ? 2 : 1
+	let discountTicket = await models.discountTicket.findByPk(_.discountTicketUid)
+	//구매/사용가능 요일 체크
+	if(discountTicket.ticketDayType < 3) {
+		if(currentDayType !== discountTicket.ticketDayType) {
+			response.customError(ctx, '현재 구매 불가능한 상품입니다.')
+		}
+	}
+	//판매기간 체크
+	let startDate = moment(moment(discountTicket.ticketStartDate).format('YYYY-MM-DD'))
+	let endDate = moment(moment(discountTicket.ticketEndDate).format('YYYY-MM-DD'))
+	if(currentDate.isBefore(startDate) || currentDate.isAfter(endDate)) {
+		response.customError(ctx, '현재 구매 불가능한 상품입니다.')
+	}
+	//매진체크
+	let todayCount = await models.payLog.count({
+		where: {
+			discountTicketUid: _.discountTicketUid,
+			createdAt: {
+				[Op.gte]: currentDate.format('YYYY-MM-DD')
+			},
+			status: {
+				[Op.in]: [0, 10]
+			}
+		}
 	})
-	if (Boolean(ticketStatus.dataValues.expire) === true) {
-		ctx.throw({
-			code: 400,
-			message: '유효기간이 지난 할인권 입니다.'
-		})
+	if(todayCount >= discountTicket.ticketCount) {
+		response.customError(ctx, '매진된 상품입니다.')
 	}
-	if (Boolean(ticketStatus.dataValues.sold_out) === true) {
-		ctx.throw({
-			code: 400,
-			message: '매진 된 할인권 입니다.'
-		})
+
+	let user = await models.user.findByPk(ctx.user.uid)
+	let sellingPrice = discountTicket.ticketPrice - discountTicket.ticketPriceDiscount // 판매가
+	let discountPrice = 0 // 경감차량 할인금액 todo:경감차량 할인
+	let discountType = 0 //경감차량 할인유형 todo:경감차량 할인
+	let price = sellingPrice - discountPrice // 경감차량할인된 가격
+	let point = Number(_.point) // 유저가 사용할 포인트
+	let fee = price * Number(discountTicket.fee) / 100 //수수료
+	let totalPrice = price - point
+	if(totalPrice !== Number(_.totalPrice)) {
+		response.customError(ctx, '잘못된 요금입니다.')
 	}
-	let payLog = await models.payLog.create(_)
+	if(point > 0 && (price < 10000 || user.point < 10000)) {
+		response.customError(ctx, '포인트를 사용할 수 없습니다.')
+	}
+	//카드 유효성 체크
+	let card = await models.card.findOne({
+		where: {
+			uid: _.cardUid,
+			userUid: user.uid
+		}
+	})
+	if(!card) {
+		response.customError(ctx, '잘못된 카드 정보입니다.')
+	}
+
+	let payLog = await models.payLog.create({
+		carNumber: _.carNumber,
+		phoneNumber: user.phone || '01000000000',
+		reserveTime: _.reserveTime,
+		payType: _.payType,
+		status: 0,
+		sellingPrice: sellingPrice,
+		discountPrice: discountPrice,
+		discountType: discountType,
+		price: price,
+		point: point,
+		fee: fee,
+		totalPrice: totalPrice,
+		userUid: user.uid,
+		siteUid: _.siteUid,
+		discountTicketUid: discountTicket.uid,
+		cardUid: card.uid,
+		email: user.email || 'mobilx.carmeleon@gmail.com',
+		activeStatus: false,
+		cancelStatus: -1,
+		expired: false,
+	})
 	response.send(ctx, payLog)
 }
 
@@ -157,7 +206,7 @@ exports.priceCheck = async function (ctx) {
 		price: originPrice,
 		availablePoint: 0
 	}
-	if (user.point > 10000 && originPrice > 10000) {
+	if (user.point >= 10000 && originPrice >= 10000) {
 		/*TODO:감면 차량 관련 할인 추가 예정*/
 		data.availablePoint = originPrice / 10
 	}

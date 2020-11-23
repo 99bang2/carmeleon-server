@@ -17,17 +17,12 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.INTEGER,
             allowNull: false,
         },
+        codeId: {
+            type: DataTypes.INTEGER,
+        },
         reason: {
             type: DataTypes.STRING
-        },
-        reasonText: {
-            type: DataTypes.VIRTUAL,
-            get: function () {
-                if (this.getDataValue('reason') !== null) {
-                    return codes.pointCode[this.getDataValue('reason')]
-                }
-            }
-        },
+        }
     }, {
         indexes: [
             {

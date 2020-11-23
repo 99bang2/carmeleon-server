@@ -5,6 +5,7 @@ const env = process.env.NODE_ENV || 'development'
 const config = require('../configs/config.json')[env]
 const secret = config.secretKey
 const common = require('../controllers/common')
+const pointCodes = require('../configs/pointCodes')
 
 exports.create = async function (ctx) {
     let _ = ctx.request.body
@@ -83,12 +84,7 @@ exports.login = async function (ctx) {
 			push: true,
 			marketing: _.user.marketing
 		})
-		let data = {
-			userUid : user.uid,
-			point : 100,
-			reason : 1000
-		}
-		await common.updatePoint(data)
+		await common.updatePoint(user.uid, pointCodes.WELCOME)
 	}else{
 		user.marketing = _.user.marketing
 		user.token = _.user.token

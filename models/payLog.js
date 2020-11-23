@@ -44,11 +44,30 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.INTEGER,
             defaultValue: 0
         },
+        sellingPrice: {
+            type: DataTypes.INTEGER
+        },
         price: {
             type: DataTypes.INTEGER
         },
         discountPrice: {
             type: DataTypes.INTEGER
+        },
+        discountType: {
+            type: DataTypes.INTEGER,
+            defaultValue: 0
+        },
+        discountTypeName: {
+            type: DataTypes.VIRTUAL,
+            get: function () {
+                if (this.getDataValue('discountType') !== null) {
+                    return codes.discountType[this.getDataValue('discountType')]
+                }
+            }
+        },
+        point: {
+            type: DataTypes.INTEGER,
+            defaultValue: 0
         },
         totalPrice: {
             type: DataTypes.INTEGER

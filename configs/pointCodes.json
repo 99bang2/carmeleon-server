@@ -1,0 +1,26 @@
+{
+  "WELCOME": {
+    "id": 1000,
+    "amount": 100,
+    "isPlus": true,
+    "reason": "회원가입"
+  },
+  "REVIEW_TEXT": {
+    "id": 2000,
+    "amount": 10,
+    "isPlus": true,
+    "reason": "리뷰작성(텍스트)"
+  },
+  "REVIEW_IMAGE": {
+    "id": 2100,
+    "amount": 30,
+    "isPlus": true,
+    "reason": "리뷰작성(텍스트+이미지)"
+  },
+  "USE_FOR_PARKING_TICKET": {
+    "id": 5000,
+    "amount": null,
+    "isPlus": false,
+    "reason": "주차권 구매시 사용"
+  }
+}

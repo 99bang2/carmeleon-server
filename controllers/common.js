@@ -103,31 +103,37 @@ exports.pushMessage = async function (data) {
 }
 
 
-exports.updatePoint = async function (params) {
-	let userUid = params.userUid
-	let point = params.point
-	let reason = params.reason
-	let currentDate = moment().format('YYYY-MM-DD')
-	//TODO:Return Point
-	if(reason > 1000){
+exports.updatePoint = async function (userUid, pointCode, point = 0) {
+	let user = await models.user.findByPk(userUid)
+	point = point > 0 ? point : pointCode.amount
+
+	// 리뷰 중복 체크
+	if(pointCode.id === 2000 || pointCode.id === 2100){
 		let checkPointCount = await models.pointLog.count({
 			where: {
 				userUid: userUid,
-				reason: reason,
-				createdAt: {[Sequelize.Op.like]: `%${currentDate}%`}
+				codeId: {
+					[models.Sequelize.Op.in]: [2000, 2100]
+				},
+				createdAt: {
+					[Sequelize.Op.gte]: moment().format('YYYY-MM-DD')
+				}
 			}
 		})
-		if(checkPointCount > 5){
-			return 0
+		if(checkPointCount >= 5){
+			point = 0
 		}
 	}
-	//let pointInfo =
-	await models.pointLog.create(params)
-	//let result =
-	await models.user.update({point: Sequelize.literal(`point+${point}`)},{
-		where: {
-			uid: userUid
-		}
-	})
+	if(point > 0) {
+		await models.pointLog.create({
+			userUid: userUid,
+			point: pointCode.isPlus ? point : (point * -1),
+			codeId: pointCode.id,
+			reason: pointCode.reason
+		})
+		user.point = pointCode.isPlus ? user.point + point : user.point - point
+		await user.save()
+	}
+
 	return point
 s}

@@ -2,6 +2,7 @@
 const models = require('../models')
 const response = require('../libs/response')
 const commonController = require('../controllers/common')
+const pointCodes = require('../configs/pointCodes')
 
 exports.create = async function (ctx) {
 	let { targetUid, targetType } = ctx.params
@@ -51,21 +52,7 @@ exports.create = async function (ctx) {
 		})
 	}
 	let rate = await models.rating.create(_)
-	let reasonCode
-	let point
-	if (_.picture){
-		reasonCode = 3000
-		point = 10
-	}else{
-		reasonCode = 2000
-		point = 30
-	}
-	let data = {
-		userUid: ctx.user.uid,
-		point: point,
-		reason: reasonCode
-	}
-	rate.dataValues.point = await commonController.updatePoint(data)
+	rate.dataValues.point = await commonController.updatePoint(ctx.user.uid, _.picture.length > 0 ? pointCodes.REVIEW_IMAGE : pointCodes.REVIEW_TEXT)
 	await commonController.avgRate(ctx, targetType, targetUid)
 	response.send(ctx, rate)
 }
