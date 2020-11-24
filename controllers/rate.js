@@ -52,6 +52,7 @@ exports.create = async function (ctx) {
 		})
 	}
 	_.point = await commonController.updatePoint(ctx.user.uid, _.picture.length > 0 ? pointCodes.REVIEW_IMAGE : pointCodes.REVIEW_TEXT)
+	_.userUid = ctx.user.uid
 	let rate = await models.rating.create(_)
 	await commonController.avgRate(ctx, targetType, targetUid)
 	response.send(ctx, rate)
