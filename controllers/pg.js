@@ -290,7 +290,7 @@ exports.refundReject = async function (ctx) {
 			uid: uid
 		}
 	})
-	await payInfo.update({
+	let result = await payInfo.update({
 			cancelReason: reason,
 			cancelStatus: -10,
 			cancelCompleteTime: Sequelize.fn('NOW')
@@ -300,8 +300,9 @@ exports.refundReject = async function (ctx) {
 		let userToken = await models.user.findOne({
 			attributes: ['token'],
 			where : {
-				uid: userUid
-			}
+				uid: userUid,
+			},
+			raw: true
 		}).token
 		let data = {
 			pushType : 1,
