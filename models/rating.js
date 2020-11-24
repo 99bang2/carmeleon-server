@@ -210,17 +210,18 @@ module.exports = (sequelize, DataTypes) => {
 		let targetTable = ''
 		if (params.targetType) {
 			where.targetType = params.targetType
-			switch (params.targetType) {
-				case '0' :
+			let targetType = Number(params.targetType)
+			switch (targetType) {
+				case 0 :
 					targetTable = 'parking_sites'
 					break
-				case '1' :
+				case 1 :
 					targetTable = 'gas_stations'
 					break
-				case '2' :
+				case 2 :
 					targetTable = 'car_washes'
 					break
-				case '3' :
+				case 3 :
 					targetTable = 'ev_charges'
 					break
 				default :
