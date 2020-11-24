@@ -215,7 +215,8 @@ api.put('/pushes/:uid', auth.isAdminLoggedIn, pushController.update)
 api.delete('/pushes/:uid', auth.isAdminLoggedIn, pushController.delete)
 api.post('/pushes/bulkDelete', auth.isAdminLoggedIn, pushController.bulkDelete)
 //결제 취소 //
-api.post('/pg', auth.isAdminLoggedIn, pgController.pgPaymentCancelNice)
+api.post('/refundApprove', auth.isAdminLoggedIn, pgController.pgPaymentCancelNice)
+api.post('/refundReject', auth.isAdminLoggedIn, pgController.refundReject)
 /**
  * 공통 컨트롤러
  */
