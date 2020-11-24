@@ -255,7 +255,7 @@ exports.pgPaymentCancelNice = async function (ctx) {
 			let user = await models.user.getByUid(ctx, userUid)
 			let data = {
 				pushType : 1,
-				title: '환불이 완료 되었습니다.',
+				title: '환불이 거부 되었습니다.',
 				body: `${payInfo.cancelRequestTime}에 요청하신 취소건이 환불 완료되었습니다.`,
 				userToken: user.token,
 				sendDate: Sequelize.fn('NOW')
