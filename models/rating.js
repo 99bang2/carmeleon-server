@@ -36,6 +36,10 @@ module.exports = (sequelize, DataTypes) => {
 		},
 		picture: {
 			type: DataTypes.JSON,
+		},
+		point: {
+			type: DataTypes.INTEGER,
+			defaultValue: 0
 		}
 	}, {
 		timestamps: true,
@@ -236,8 +240,16 @@ module.exports = (sequelize, DataTypes) => {
 			offset = (Number(params.page) - 1) * limit
 		}
 		let order = [['createdAt', 'DESC']]
-		if (params.order) {
-			order = sequelize.literal(`CHARACTER_LENGTH(review_content) DESC, \`rating\`.\`rate\` DESC, \`rating\`.\`created_at\` DESC`)
+		if(params.order) {
+			if (Number(params.order) === 0) {
+				order = sequelize.literal(`rate_tip_count desc`)
+			}else if (Number(params.order) === 1) {
+				order = [['createdAt', 'DESC']]
+			}else if (Number(params.order) === 2) {
+				order = [['rate', 'DESC']]
+			}else if (Number(params.order) === 3) {
+				order = [['rate', 'ASC']]
+			}
 		}
 		let result = await rating.findAll({
 			attributes: {

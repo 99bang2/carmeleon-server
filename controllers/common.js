@@ -112,9 +112,7 @@ exports.updatePoint = async function (userUid, pointCode, point = 0) {
 		let checkPointCount = await models.pointLog.count({
 			where: {
 				userUid: userUid,
-				codeId: {
-					[models.Sequelize.Op.in]: [2000, 2100]
-				},
+				codeId: pointCode.id,
 				createdAt: {
 					[Sequelize.Op.gte]: moment().format('YYYY-MM-DD')
 				}
@@ -124,6 +122,7 @@ exports.updatePoint = async function (userUid, pointCode, point = 0) {
 			point = 0
 		}
 	}
+
 	if(point > 0) {
 		await models.pointLog.create({
 			userUid: userUid,

@@ -51,8 +51,8 @@ exports.create = async function (ctx) {
 			message: `평가를 할 수 없는 ${targetName} 입니다.`
 		})
 	}
+	_.point = await commonController.updatePoint(ctx.user.uid, _.picture.length > 0 ? pointCodes.REVIEW_IMAGE : pointCodes.REVIEW_TEXT)
 	let rate = await models.rating.create(_)
-	rate.dataValues.point = await commonController.updatePoint(ctx.user.uid, _.picture.length > 0 ? pointCodes.REVIEW_IMAGE : pointCodes.REVIEW_TEXT)
 	await commonController.avgRate(ctx, targetType, targetUid)
 	response.send(ctx, rate)
 }
@@ -82,6 +82,9 @@ exports.update = async function (ctx) {
 exports.delete = async function (ctx) {
 	let {uid} = ctx.params
 	let rate = await models.rating.getByUid(ctx, uid, models)
+	if(rate.point > 0) {
+		await commonController.updatePoint(ctx.user.uid, pointCodes.REVIEW_DELETE, rate.point)
+	}
 	await commonController.avgRate(ctx, rate.targetType, rate.targetUid)
 	await rate.destroy()
 	response.send(ctx, rate)
