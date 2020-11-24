@@ -41,7 +41,7 @@ module.exports = (sequelize, DataTypes) => {
 		let data = await rateTip.findOne({
 			where:{
 				userUid: params.userUid,
-				uid: params.rateUid
+				rateUid: params.rateUid
 			}
 		})
 		if (!data) {
