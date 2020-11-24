@@ -252,17 +252,12 @@ exports.pgPaymentCancelNice = async function (ctx) {
 		let userUid = payInfo.userUid
 		let cancelStatus = payInfo.cancelStatus
 		if(cancelStatus === 0){
-			let userToken = await models.user.findOne({
-				attributes: ['token'],
-				where : {
-					uid: userUid
-				}
-			}).token
+			let user = await models.user.getByUid(ctx, userUid)
 			let data = {
 				pushType : 1,
 				title: '환불 승인 타이틀',
 				body: '환불 승인 바디',
-				userToken: userToken,
+				userToken: user.token,
 				sendDate: Sequelize.fn('NOW')
 			}
 			await common.pushMessage(data)
@@ -285,11 +280,7 @@ exports.refundReject = async function (ctx) {
 	let _ = ctx.request.body
 	let uid = _.uids
 	let reason = _.reason
-	let payInfo = await models.payLog.findOne({
-		where: {
-			uid: uid
-		}
-	})
+	let payInfo = await models.payLog.getByUid(ctx, uid, models)
 	let result = await payInfo.update({
 			cancelReason: reason,
 			cancelStatus: -10,
@@ -297,18 +288,12 @@ exports.refundReject = async function (ctx) {
 		})
 	let userUid = payInfo.userUid
 	if(result[0] === 1){
-		let userToken = await models.user.findOne({
-			attributes: ['token'],
-			where : {
-				uid: userUid,
-			},
-			raw: true
-		}).token
+		let user = await models.user.getByUid(ctx, userUid)
 		let data = {
 			pushType : 1,
 			title: '환불 거절 타이틀',
 			body: '환불 거절 바디',
-			userToken: userToken,
+			userToken: user.token,
 			sendDate: Sequelize.fn('NOW')
 		}
 		await common.pushMessage(data)
