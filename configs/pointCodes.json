@@ -22,5 +22,11 @@
     "amount": null,
     "isPlus": false,
     "reason": "주차권 구매시 사용"
+  },
+  "REVIEW_DELETE": {
+    "id": 9100,
+    "amount": null,
+    "isPlus": false,
+    "reason": "리뷰삭제 회수"
   }
 }
