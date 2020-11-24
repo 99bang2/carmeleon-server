@@ -169,8 +169,10 @@ module.exports = (sequelize, DataTypes) => {
                     model: models.parkingSite,
                 }, {
                     model: models.discountTicket,
+                    paranoid: false
                 }, {
                     model: models.card,
+                    paranoid: false
                 }, {
                     model: models.user,
                 },
@@ -246,6 +248,9 @@ module.exports = (sequelize, DataTypes) => {
             //offset, limit 처리//
             limit = 10
             offset = (Number(params.page) - 1) * limit
+        }else{
+            limit = params.limit ? Number(params.limit) : null
+            offset = params.offset ? Number(params.offset) : null
         }
         let rateWhere = 'target_type = 0 AND target_uid = payLog.site_uid AND user_uid = payLog.user_uid)'
         let result = await payLog.findAll({
