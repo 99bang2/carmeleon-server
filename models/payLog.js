@@ -169,8 +169,10 @@ module.exports = (sequelize, DataTypes) => {
                     model: models.parkingSite,
                 }, {
                     model: models.discountTicket,
+                    paranoid: false
                 }, {
                     model: models.card,
+                    paranoid: false
                 }, {
                     model: models.user,
                 },
