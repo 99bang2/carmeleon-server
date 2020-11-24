@@ -36,6 +36,9 @@ module.exports = (sequelize, DataTypes) => {
 		},
 		userToken: {
 			type: DataTypes.STRING
+		},
+		userUid: {
+			type: DataTypes.INTEGER
 		}
 	}, {
 		timestamps: true,

@@ -124,7 +124,7 @@ module.exports = (sequelize, DataTypes) => {
 					//이용내역 (여태 이용한 리스트 모두)
 					[Sequelize.literal(`(SELECT count(uid) FROM pay_logs WHERE user_uid=user.uid AND deleted_at IS NULL)`), 'payLog'],
 					// 알림 카운트 //
-					[Sequelize.literal(`(SELECT count(uid) FROM pushes WHERE send_date > (NOW() - INTERVAL 1 DAY) AND deleted_at IS NULL)`), 'alarm'],
+					[Sequelize.literal(`(SELECT count(uid) FROM pushes WHERE send_date > (NOW() - INTERVAL 1 DAY) AND (user_uid = ${ctx.user.uid} OR user_uid IS NULL) AND deleted_at IS NULL)`), 'alarm'],
 					//포인트
 					[Sequelize.literal(`(SELECT count(uid) FROM coupon_logs WHERE user_uid=user.uid AND deleted_at IS NULL)`), 'coupon'],
 					//공지
