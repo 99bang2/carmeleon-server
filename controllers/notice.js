@@ -6,12 +6,6 @@ const moment = require('moment')
 exports.create = async function (ctx) {
 	let _ = ctx.request.body
 	let notice = await models.notice.create(_)
-	//add Push Default Data
-	_.pushType = 2
-	_.sendDate = moment().format('YYYY-MM-DD HH:mm:ss')
-	_.status = 0
-	_.body = _.content
-	await commonController.pushMessage(_)
 	response.send(ctx, notice)
 }
 
