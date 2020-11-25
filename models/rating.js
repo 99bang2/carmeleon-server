@@ -216,13 +216,13 @@ module.exports = (sequelize, DataTypes) => {
 					targetTable = 'parking_sites'
 					break
 				case 1 :
-					targetTable = 'gas_stations'
+					targetTable = 'ev_charge_stations'
 					break
 				case 2 :
-					targetTable = 'car_washes'
+					targetTable = 'gas_stations'
 					break
 				case 3 :
-					targetTable = 'ev_charges'
+					targetTable = 'car_washes'
 					break
 				default :
 					targetTable = 'parking_sites'
@@ -270,6 +270,8 @@ module.exports = (sequelize, DataTypes) => {
 			where: where,
 			order: order
 		})
+		console.log(targetTable)
+		console.log(params.targetUid)
 		// 필요 정보 //
 		let count = await rating.findAll({
 			attributes: [
