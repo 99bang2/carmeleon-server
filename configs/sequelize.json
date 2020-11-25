@@ -2,9 +2,9 @@
   "development": {
     "username": "carmeleon",
     "password": "thwlsWkd123",
-    "database": "carmeleon",
-    "host": "61.97.190.131",
-    "port": "23306",
+    "database": "carmeleon-db",
+    "host": "127.0.0.1",
+    "port": "3306",
     "dialect": "mysql",
     "timezone": "+09:00",
     "logging": true
