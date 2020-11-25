@@ -350,7 +350,10 @@ module.exports = (sequelize, DataTypes) => {
 				{
 					model: models.parkingSite,
 					attribute: ['name', 'address', 'lat', 'lon']
-				}
+				},
+                {
+                    model: models.discountTicket
+                }
 			],
 			attributes: ['uid', 'carNumber', 'reserveTime', 'price', 'discountPrice', 'createdAt', 'totalPrice'],
 			where: {
