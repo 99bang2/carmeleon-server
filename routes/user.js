@@ -156,4 +156,8 @@ api.post('/pgPaymentRefund', auth.isUserLoggedIn, payLogController.refundRequest
 api.post('/pgPaymentRefundCancel', auth.isUserLoggedIn, payLogController.refundRequestCancel)
 
 api.post('/priceCheck', auth.isUserLoggedIn, payLogController.priceCheck)
+
+
+api.get('/versions', commonController.getVersions)
+
 module.exports = api

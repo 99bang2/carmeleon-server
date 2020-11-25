@@ -135,4 +135,61 @@ exports.updatePoint = async function (userUid, pointCode, point = 0) {
 	}
 
 	return point
-s}
+}
+
+exports.getVersions = async function (ctx) {
+	let _ = ctx.request.query
+	let os = _.os
+	let version = _.version
+	if(!os || !version) {
+		response.badRequest()
+	}
+	let currentVersionArray = version.split('.')
+	if(currentVersionArray.length !== 3) {
+		response.badRequest()
+	}
+
+	let result = {
+		latestVersion: '0.0.0',
+		requireForceUpdate: false
+	}
+
+	let appLatestVersionKey = os + '-latest-version'
+	let appLatestVersionConfig = await models.config.findOne({
+		where: {
+			key : appLatestVersionKey
+		}
+	})
+	if(appLatestVersionConfig) {
+		result.latestVersion = appLatestVersionConfig.value
+	}
+
+	let appMinimumVersionKey = os + '-minimum-version'
+	let appMinimumVersionConfig = await models.config.findOne({
+		where: {
+			key : appMinimumVersionKey
+		}
+	})
+
+	if(appMinimumVersionConfig) {
+		let minimumVersionArray = appLatestVersionConfig.value.split('.')
+		let currentMajor = Number(currentVersionArray[0])
+		let minimumMajor = Number(minimumVersionArray[0])
+		let currentMiddle = Number(currentVersionArray[1])
+		let minimumMiddle = Number(minimumVersionArray[2])
+		let currentMinor = Number(currentVersionArray[2])
+		let minimumMinor = Number(minimumVersionArray[2])
+		if(minimumMajor > currentMajor) {
+			result.requireForceUpdate = true
+		}else {
+			if(minimumMiddle > currentMiddle) {
+				result.requireForceUpdate = true
+			}else {
+				if(minimumMinor > currentMinor) {
+					result.requireForceUpdate = true
+				}
+			}
+		}
+	}
+	response.send(ctx, result)
+}
