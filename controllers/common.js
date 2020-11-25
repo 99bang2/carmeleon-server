@@ -176,7 +176,7 @@ exports.getVersions = async function (ctx) {
 		let currentMajor = Number(currentVersionArray[0])
 		let minimumMajor = Number(minimumVersionArray[0])
 		let currentMiddle = Number(currentVersionArray[1])
-		let minimumMiddle = Number(minimumVersionArray[2])
+		let minimumMiddle = Number(minimumVersionArray[1])
 		let currentMinor = Number(currentVersionArray[2])
 		let minimumMinor = Number(minimumVersionArray[2])
 		if(minimumMajor > currentMajor) {
