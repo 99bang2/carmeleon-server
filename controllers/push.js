@@ -44,7 +44,14 @@ exports.userList = async function (ctx) {
 		where: where,
 		order: [['sendDate','DESC']]
 	})
-
+	if(!user.newMessage) {
+		for(let push of result) {
+			push.dataValues.flag = false
+		}
+	}else {
+		user.newMessage = false
+		await user.save()
+	}
 	response.send(ctx, result)
 }
 

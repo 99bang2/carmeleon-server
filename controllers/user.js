@@ -199,20 +199,24 @@ exports.getBadge = async function (ctx) {
 		}
 	})
 
-	//이벤트
-	result.alarm = await models.push.count({
-		where: {
-			status: 1,
-			[models.Sequelize.Op.or]: [{
-				userUid: ctx.user.uid
-			},{
-				pushType: 2
-			}],
-			sendDate: {
-				[models.Sequelize.Op.gte]: today,
-				[models.Sequelize.Op.gt]: user.createdAt,
+	//푸시
+
+	if(user.newMessage) {
+		result.alarm = await models.push.count({
+			where: {
+				status: 1,
+				[models.Sequelize.Op.or]: [{
+					userUid: ctx.user.uid
+				},{
+					pushType: 2
+				}],
+				sendDate: {
+					[models.Sequelize.Op.gte]: today,
+					[models.Sequelize.Op.gt]: user.createdAt,
+				}
 			}
-		}
-	})
+		})
+	}
+
 	response.send(ctx, result)
 }
