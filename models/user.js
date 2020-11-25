@@ -114,6 +114,7 @@ module.exports = (sequelize, DataTypes) => {
 		return result
 	}
 
+	//사용안함
 	user.getBadge = async function (ctx, uid) {
 		let data = await user.findOne({
 			attributes:

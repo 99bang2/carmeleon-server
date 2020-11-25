@@ -357,7 +357,8 @@ module.exports = (sequelize, DataTypes) => {
 				userUid: ctx.user.uid,
 				activeStatus: false,
 				status: 10,
-				cancelStatus: -1
+				cancelStatus: -1,
+                expired: false
 			}
 		})
 		return result

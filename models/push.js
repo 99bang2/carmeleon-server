@@ -62,16 +62,21 @@ module.exports = (sequelize, DataTypes) => {
 		})
 		return result
 	}
-	push.userList = async () => {
+	push.userList = async (userUid) => {
 		let currentDate = moment().format('YYYY-MM-DD HH:mm:ss')
-		let where = {}
-		where.status = 1
-		where.userToken = null
-		where.sendDate = {
-			[Op.between]: [
-				moment().add(-4, 'weeks').format('YYYY-MM-DD'),
-				currentDate
-			]
+		let where = {
+			status: 1,
+			[Op.or]: [{
+				userUid: userUid
+			},{
+				pushType: 2
+			}],
+			sendDate: {
+				[Op.between]: [
+					moment().add(-4, 'weeks').format('YYYY-MM-DD'),
+					currentDate
+				]
+			}
 		}
 		let result = await push.findAll({
 			attributes: {
