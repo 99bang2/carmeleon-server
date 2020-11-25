@@ -22,7 +22,7 @@ exports.userList = async function (ctx) {
 	let currentDate = moment().format('YYYY-MM-DD HH:mm:ss')
 	let where = {
 		status: 1,
-		[Op.or]: [{
+		[models.Sequelize.Op.or]: [{
 			userUid: ctx.user.uid
 		},{
 			pushType: 2

@@ -199,7 +199,7 @@ exports.getBadge = async function (ctx) {
 	})
 
 	//이벤트
-	result.alert = await models.push.count({
+	result.alarm = await models.push.count({
 		where: {
 			status: 1,
 			[models.Sequelize.Op.or]: [{
