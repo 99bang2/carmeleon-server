@@ -243,7 +243,7 @@ module.exports = (sequelize, DataTypes) => {
 		let order = [['createdAt', 'DESC']]
 		if(params.order) {
 			if (Number(params.order) === 0) {
-				order = sequelize.literal(`rate_tip_count desc createdAt desc`)
+				order = sequelize.literal(`rate_tip_count desc, createdAt desc`)
 			}else if (Number(params.order) === 1) {
 				order = [['createdAt', 'DESC']]
 			}else if (Number(params.order) === 2) {
