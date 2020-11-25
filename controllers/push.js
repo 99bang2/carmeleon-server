@@ -18,9 +18,34 @@ exports.list = async function (ctx) {
 }
 
 exports.userList = async function (ctx) {
-	let _ = ctx.request.query
-	let pushes = await models.push.userList(ctx.user.uid)
-	response.send(ctx, pushes)
+	let user = await models.user.findByPk(ctx.user.uid)
+	let currentDate = moment().format('YYYY-MM-DD HH:mm:ss')
+	let where = {
+		status: 1,
+		[Op.or]: [{
+			userUid: ctx.user.uid
+		},{
+			pushType: 2
+		}],
+		sendDate: {
+			[models.Sequelize.Op.gte]: user.createdAt,
+			[models.Sequelize.Op.between]: [
+				moment().add(-4, 'weeks').format('YYYY-MM-DD'),
+				currentDate
+			]
+		}
+	}
+	let result = await models.push.findAll({
+		attributes: {
+			include: [
+				[models.sequelize.literal(`case when DATE(send_date) = DATE(NOW()) THEN true ELSE false END`), 'flag']
+			]
+		},
+		where: where,
+		order: [['sendDate','DESC']]
+	})
+
+	response.send(ctx, result)
 }
 
 exports.read = async function (ctx) {

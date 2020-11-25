@@ -62,6 +62,7 @@ module.exports = (sequelize, DataTypes) => {
 		})
 		return result
 	}
+	//사용안함.
 	push.userList = async (userUid) => {
 		let currentDate = moment().format('YYYY-MM-DD HH:mm:ss')
 		let where = {
