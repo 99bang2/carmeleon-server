@@ -151,6 +151,7 @@ exports.bulkDelete = async function (ctx) {
 }
 
 exports.getBadge = async function (ctx) {
+	let user = await models.user.findByPk(ctx.user.uid)
 	let today = moment().format('YYYY-MM-DD')
 	let result = {
 		ticket: 0,
@@ -208,7 +209,8 @@ exports.getBadge = async function (ctx) {
 				pushType: 2
 			}],
 			sendDate: {
-				[models.Sequelize.Op.gte]: today
+				[models.Sequelize.Op.gte]: today,
+				[models.Sequelize.Op.gt]: user.createdAt,
 			}
 		}
 	})
