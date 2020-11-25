@@ -112,7 +112,9 @@ exports.updatePoint = async function (userUid, pointCode, point = 0) {
 		let checkPointCount = await models.pointLog.count({
 			where: {
 				userUid: userUid,
-				codeId: pointCode.id,
+				codeId: {
+					[Sequelize.Op.in]: [2000, 2100]
+				},
 				createdAt: {
 					[Sequelize.Op.gte]: moment().format('YYYY-MM-DD')
 				}

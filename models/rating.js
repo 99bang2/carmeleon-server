@@ -243,13 +243,13 @@ module.exports = (sequelize, DataTypes) => {
 		let order = [['createdAt', 'DESC']]
 		if(params.order) {
 			if (Number(params.order) === 0) {
-				order = sequelize.literal(`rate_tip_count desc`)
+				order = sequelize.literal(`rate_tip_count desc createdAt desc`)
 			}else if (Number(params.order) === 1) {
 				order = [['createdAt', 'DESC']]
 			}else if (Number(params.order) === 2) {
-				order = [['rate', 'DESC']]
+				order = [['rate', 'DESC'],['createdAt', 'DESC']]
 			}else if (Number(params.order) === 3) {
-				order = [['rate', 'ASC']]
+				order = [['rate', 'ASC'],['createdAt', 'DESC']]
 			}
 		}
 		let result = await rating.findAll({
@@ -270,8 +270,6 @@ module.exports = (sequelize, DataTypes) => {
 			where: where,
 			order: order
 		})
-		console.log(targetTable)
-		console.log(params.targetUid)
 		// 필요 정보 //
 		let count = await rating.findAll({
 			attributes: [
