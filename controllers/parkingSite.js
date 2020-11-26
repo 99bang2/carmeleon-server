@@ -27,6 +27,8 @@ exports.read = async function (ctx) {
             }
         })
         parkingSite.dataValues.favoriteFlag = favorite > 0
+    }else {
+        parkingSite.dataValues.favoriteFlag = false
     }
     let discountTickets = await models.discountTicket.findAll({
         where: {
