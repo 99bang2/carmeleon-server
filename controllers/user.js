@@ -175,6 +175,7 @@ exports.getBadge = async function (ctx) {
 	//이용내역
 	result.payLog = await models.payLog.count({
 		where: {
+			visible: true,
 			userUid: ctx.user.uid,
 			updatedAt: {
 				[models.Sequelize.Op.gte]: today
@@ -211,8 +212,7 @@ exports.getBadge = async function (ctx) {
 					pushType: 2
 				}],
 				sendDate: {
-					[models.Sequelize.Op.gte]: today,
-					[models.Sequelize.Op.gt]: user.createdAt,
+					[models.Sequelize.Op.gte]: user.newMessage
 				}
 			}
 		})

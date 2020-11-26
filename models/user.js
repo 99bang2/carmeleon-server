@@ -46,8 +46,8 @@ module.exports = (sequelize, DataTypes) => {
 			type: DataTypes.BOOLEAN
 		},
 		newMessage: {
-			type: DataTypes.BOOLEAN,
-			defaultValue: false
+			type: DataTypes.DATE,
+			defaultValue: null
 		},
 		marketing: {
 			type: DataTypes.BOOLEAN

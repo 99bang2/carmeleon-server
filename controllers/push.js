@@ -36,11 +36,6 @@ exports.userList = async function (ctx) {
 		}
 	}
 	let result = await models.push.findAll({
-		attributes: {
-			include: [
-				[models.sequelize.literal(`case when DATE(send_date) = DATE(NOW()) THEN true ELSE false END`), 'flag']
-			]
-		},
 		where: where,
 		order: [['sendDate','DESC']]
 	})
@@ -49,7 +44,14 @@ exports.userList = async function (ctx) {
 			push.dataValues.flag = false
 		}
 	}else {
-		user.newMessage = false
+		for(let push of result) {
+			if(moment(user.newMessage).isAfter(moment(push.sendDate))) {
+				push.dataValues.flag = false
+			}else {
+				push.dataValues.flag = true
+			}
+		}
+		user.newMessage = null
 		await user.save()
 	}
 	response.send(ctx, result)
