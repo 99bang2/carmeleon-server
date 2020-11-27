@@ -284,6 +284,7 @@ module.exports = (sequelize, DataTypes) => {
 		let latitude = params.lat ? parseFloat(params.lat) : null
 		let radius = params.radius
 		let where = {}
+		let order= [['isRecommend', 'asc'], ['price', 'desc']]
 		if(radius) {
 			let distanceQuery = sequelize.where(sequelize.literal(`(6371 * acos(cos(radians(${latitude})) * cos(radians(lat)) * cos(radians(lon) - radians(${longitude})) + sin(radians(${latitude})) * sin(radians(lat))))`), '<=', radius)
 			where = [distanceQuery]

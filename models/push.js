@@ -58,7 +58,8 @@ module.exports = (sequelize, DataTypes) => {
 			where.status = params.status
 		}
 		let result = await push.findAll({
-			where: where
+			where: where,
+			order: ['createdAt', 'desc']
 		})
 		return result
 	}
