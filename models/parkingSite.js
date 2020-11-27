@@ -290,7 +290,7 @@ module.exports = (sequelize, DataTypes) => {
 			where = [distanceQuery]
 		}
 		let attributes = ['uid', 'name', 'isBuy', 'rate', 'optionTag', 'valetType', 'isRecommend', 'price', 'lat', 'lon']
-		let result = await parkingSite.findAll({ attributes, where })
+		let result = await parkingSite.findAll({ attributes, where, order })
 		return result
 	}
 
