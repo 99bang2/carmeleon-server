@@ -59,7 +59,7 @@ module.exports = (sequelize, DataTypes) => {
 		}
 		let result = await push.findAll({
 			where: where,
-			order: ['createdAt', 'desc']
+			order: [['createdAt', 'desc']]
 		})
 		return result
 	}
