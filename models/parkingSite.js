@@ -172,7 +172,13 @@ module.exports = (sequelize, DataTypes) => {
 		},
 		message: {
 			type: DataTypes.TEXT
-		}
+		},
+		targetType: {
+			type: DataTypes.VIRTUAL,
+			get: function () {
+				return 0
+			}
+		},
 	}, {
 		timestamps: true,
 		paranoid: true,
@@ -277,21 +283,6 @@ module.exports = (sequelize, DataTypes) => {
 			rows: result,
 			count: count
 		}
-	}
-
-	parkingSite.userSearch = async (params, models) => {
-		let longitude = params.lon ? parseFloat(params.lon) : null
-		let latitude = params.lat ? parseFloat(params.lat) : null
-		let radius = params.radius
-		let where = {}
-		let order= [['isRecommend', 'asc'], ['price', 'desc']]
-		if(radius) {
-			let distanceQuery = sequelize.where(sequelize.literal(`(6371 * acos(cos(radians(${latitude})) * cos(radians(lat)) * cos(radians(lon) - radians(${longitude})) + sin(radians(${latitude})) * sin(radians(lat))))`), '<=', radius)
-			where = [distanceQuery]
-		}
-		let attributes = ['uid', 'name', 'isBuy', 'rate', 'optionTag', 'valetType', 'isRecommend', 'price', 'lat', 'lon']
-		let result = await parkingSite.findAll({ attributes, where, order })
-		return result
 	}
 
 	return parkingSite

@@ -2,18 +2,6 @@ const models = require('../models')
 const response = require('../libs/response')
 const moment = require('moment')
 
-exports.create = async function (ctx) {
-    let _ = ctx.request.body
-    let parkingSite = await models.parkingSite.create(_)
-    response.send(ctx, parkingSite)
-}
-
-exports.list = async function (ctx) {
-    let _ = ctx.request.query
-    let parkingSite = await models.parkingSite.search(_, models)
-	response.send(ctx, parkingSite)
-}
-
 exports.read = async function (ctx) {
     let {uid} = ctx.params
 	let _ = ctx.request.query
@@ -72,35 +60,20 @@ exports.read = async function (ctx) {
     response.send(ctx, parkingSite)
 }
 
-exports.update = async function (ctx) {
-    let {uid} = ctx.params
-	let _ = ctx.request.body
-    let parkingSite = await models.parkingSite.getByUid(ctx, uid, _, models)
-    Object.assign(parkingSite, _)
-    await parkingSite.save()
-    response.send(ctx, parkingSite)
-}
-
-exports.delete = async function (ctx) {
-    let {uid} = ctx.params
+exports.list = async function (ctx) {
 	let _ = ctx.request.query
-    let parkingSite = await models.parkingSite.getByUid(ctx, uid, _, models)
-    await parkingSite.destroy()
-    response.send(ctx, parkingSite)
-}
-
-exports.bulkDelete = async function (ctx) {
-    let _ = ctx.request.body
-    let deleteResult = await models.parkingSite.destroy({
-        where: {
-            uid: _.uids
-        }
-    })
-    response.send(ctx, deleteResult)
-}
-
-exports.userList = async function (ctx) {
-	let _ = ctx.request.query
-	let parkingSite = await models.parkingSite.userSearch(_, models)
-	response.send(ctx, parkingSite)
+    let longitude = _.lon ? parseFloat(_.lon) : null
+    let latitude = _.lat ? parseFloat(_.lat) : null
+    let radius = _.radius
+    let where = [{
+	    isActive: true
+    }]
+    let order= [['isRecommend', 'asc'], ['price', 'desc']]
+    if(radius) {
+        let distanceQuery = models.sequelize.where(models.sequelize.literal(`(6371 * acos(cos(radians(${latitude})) * cos(radians(lat)) * cos(radians(lon) - radians(${longitude})) + sin(radians(${latitude})) * sin(radians(lat))))`), '<=', radius)
+        where.push(distanceQuery)
+    }
+    let attributes = ['uid', 'name', 'isBuy', 'rate', 'optionTag', 'valetType', 'isRecommend', 'price', 'lat', 'lon', 'targetType']
+    let parkingSites = await models.parkingSite.findAll({ attributes, where, order })
+	response.send(ctx, parkingSites)
 }

@@ -109,6 +109,12 @@ module.exports = (sequelize, DataTypes) => {
 				}
 			}
 		},
+		targetType: {
+			type: DataTypes.VIRTUAL,
+			get: function () {
+				return 3
+			}
+		},
 	}, {
 		timestamps: true,
 		paranoid: true,

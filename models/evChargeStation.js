@@ -93,7 +93,13 @@ module.exports = (sequelize, DataTypes) => {
 		},
 		compareName: {
 			type: DataTypes.STRING
-		}
+		},
+		targetType: {
+			type: DataTypes.VIRTUAL,
+			get: function () {
+				return 1
+			}
+		},
 	}, {
 		timestamps: true,
 		paranoid: true,

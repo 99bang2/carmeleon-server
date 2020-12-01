@@ -100,7 +100,13 @@ module.exports = (sequelize, DataTypes) => {
 		},
 		lpg: {
 			type: DataTypes.INTEGER
-		}
+		},
+		targetType: {
+			type: DataTypes.VIRTUAL,
+			get: function () {
+				return 2
+			}
+		},
 	}, {
 		timestamps: true,
 		paranoid: true,

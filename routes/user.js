@@ -36,23 +36,17 @@ api.get('/users/logout', auth.isUserLoggedIn, userController.logout)
 api.get('/users/check', userController.check)
 
 
-/**
- * 공지사항 관리
- */
+// 공지사항
 api.get('/notices', noticeController.list)
 
-
-/**
- * 이벤트 관리
- */
+// 이벤트
 api.get('/events', eventController.list)
 api.get('/events/:uid', eventController.read)
 
-/**
- * 주차장 관리
- */
-api.get('/parkings', parkingController.userList)
+// 주차장
+api.get('/parkings', parkingController.list)
 api.get('/parkings/:uid', parkingController.read)
+
 /**
  * 전기차 충전소 관리(Main)
  */
