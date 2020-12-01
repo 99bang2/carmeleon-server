@@ -6,7 +6,7 @@ const commonController = require('../controllers/common')
 const accountController = require('../controllers/account')
 const userController = require('../controllers/user')
 const noticeController = require('../controllers/admin/notice')
-const eventController = require('../controllers/event')
+const eventController = require('../controllers/admin/event')
 
 const parkingController = require('../controllers/parkingSite')
 const carWashController = require('../controllers/carWash')
@@ -71,13 +71,11 @@ api.post('/questions/bulkDelete', auth.isAdminLoggedIn, questionController.bulkD
  * 이벤트 관리
  */
 api.post('/events', auth.isAdminLoggedIn, eventController.create)
-//api.post('/events', auth.isEitherLoggedIn, eventController.create)
 api.get('/events', auth.isAdminLoggedIn, eventController.list)
 api.get('/events/:uid', auth.isAdminLoggedIn, eventController.read)
 api.put('/events/:uid', auth.isAdminLoggedIn, eventController.update)
 api.delete('/events/:uid', auth.isAdminLoggedIn, eventController.delete)
 api.post('/events/bulkDelete', auth.isAdminLoggedIn, eventController.bulkDelete) //복수삭제
-api.get('/userEvents', auth.isAdminLoggedIn, eventController.userList)
 /**
  * 주차장 관리
  */

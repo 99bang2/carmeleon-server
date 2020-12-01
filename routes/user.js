@@ -45,8 +45,9 @@ api.get('/notices', noticeController.list)
 /**
  * 이벤트 관리
  */
-api.get('/events', eventController.userList)
+api.get('/events', eventController.list)
 api.get('/events/:uid', eventController.read)
+
 /**
  * 주차장 관리
  */

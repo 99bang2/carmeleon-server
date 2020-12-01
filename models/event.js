@@ -73,18 +73,5 @@ module.exports = (sequelize, DataTypes) => {
 		return result
 	}
 
-	event.userSearch = async (params, models) => {
-		let where = {}
-		where.isOpen = 1
-		let order = [['createdAt', 'DESC']]
-		let result = await event.findAll({
-			include: [{
-				model: models.account
-			}],
-			where: where,
-			order: order
-		})
-		return result
-	}
 	return event
 }
