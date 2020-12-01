@@ -35,11 +35,13 @@ api.post('/users/login', userController.login)
 api.get('/users/logout', auth.isUserLoggedIn, userController.logout)
 api.get('/users/check', userController.check)
 
+
 /**
  * 공지사항 관리
  */
-api.get('/notices', noticeController.userList)
-api.get('/notices/:uid', noticeController.read)
+api.get('/notices', noticeController.list)
+
+
 /**
  * 이벤트 관리
  */

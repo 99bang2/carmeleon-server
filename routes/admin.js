@@ -5,7 +5,7 @@ const api = new Router()
 const commonController = require('../controllers/common')
 const accountController = require('../controllers/account')
 const userController = require('../controllers/user')
-const noticeController = require('../controllers/notice')
+const noticeController = require('../controllers/admin/notice')
 const eventController = require('../controllers/event')
 
 const parkingController = require('../controllers/parkingSite')
@@ -58,7 +58,7 @@ api.get('/notices/:uid', auth.isAdminLoggedIn, noticeController.read)
 api.put('/notices/:uid', auth.isAdminLoggedIn, noticeController.update)
 api.delete('/notices/:uid', auth.isAdminLoggedIn, noticeController.delete)
 api.post('/notices/bulkDelete', auth.isAdminLoggedIn, noticeController.bulkDelete) //복수삭제
-api.get('/userNotices', auth.isAdminLoggedIn, noticeController.userList)
+
 /**
  * 문의사항 관리
  */
