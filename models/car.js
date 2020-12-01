@@ -1,5 +1,6 @@
 'use strict'
 const response = require('../libs/response')
+const codes = require('../configs/codes.json')
 module.exports = (sequelize, DataTypes) => {
 	const car = sequelize.define('car', {
 		uid: {
@@ -26,7 +27,49 @@ module.exports = (sequelize, DataTypes) => {
 		isMain: {
 			type: DataTypes.BOOLEAN,
 			defaultValue: false
-		}
+		},
+		discountType: {
+			type: DataTypes.INTEGER
+		},
+		discountTypeName: {
+			type: DataTypes.VIRTUAL,
+			get: function () {
+				if (this.getDataValue('discountType') !== null && this.getDataValue('discountType') !== 0) {
+					return codes.discountType[this.getDataValue('discountType')]
+				} else {
+					return null
+				}
+			}
+		},
+		discountContent: {
+			type: DataTypes.VIRTUAL,
+			get: function () {
+				if (this.getDataValue('discountType') !== null && this.getDataValue('discountType') !== 0) {
+					return codes.discountContent[this.getDataValue('discountType')]
+				} else {
+					return null
+				}
+			}
+		},
+		discountPictures: {
+			type: DataTypes.JSON
+		},
+		discountDay: {
+			type: DataTypes.STRING
+		},
+		discountStatus: {
+			type: DataTypes.INTEGER
+		},
+		discountStatusName: {
+			type: DataTypes.VIRTUAL,
+			get: function () {
+				if (this.getDataValue('discountStatus') !== null && this.getDataValue('discountStatus') !== 0) {
+					return codes.discountStatus[this.getDataValue('discountStatus')]
+				} else {
+					return null
+				}
+			}
+		},
 	}, {
 		timestamps: true,
 		underscored: true,
