@@ -51,12 +51,10 @@ api.get('/parkings/:uid', parkingController.read)
 api.get('/evChargeStations', evChargeStationController.list)
 api.get('/evChargeStations/:uid', evChargeStationController.read)
 
-
-/**
- * 주유소 관리
- */
-api.get('/gasStations', gasStationController.userList)
+// 주유소
+api.get('/gasStations', gasStationController.list)
 api.get('/gasStations/:uid', gasStationController.read)
+
 /**
  * 세차장 관리
  */

@@ -1,54 +1,36 @@
 const models = require('../models')
 const response = require('../libs/response')
 
-exports.create = async function (ctx) {
-    let _ = ctx.request.body
-    let gasStation = await models.gasStation.create(_)
+exports.read = async function (ctx) {
+    let {uid} = ctx.params
+    let gasStation = await models.gasStation.findByPk(uid)
+    if(ctx.user) {
+        let favorite = await models.favorite.count({
+            where: {
+                targetType: 2,
+                targetUid: uid,
+                userUid: ctx.user.uid
+            }
+        })
+        gasStation.dataValues.favoriteFlag = favorite > 0
+    }else {
+        gasStation.dataValues.favoriteFlag = false
+    }
     response.send(ctx, gasStation)
 }
 
 exports.list = async function (ctx) {
-    let _ = ctx.request.query
-    let gasStation = await models.gasStation.search(_, models)
-	response.send(ctx, gasStation)
-}
-
-exports.read = async function (ctx) {
-    let {uid} = ctx.params
 	let _ = ctx.request.query
-    let gasStation = await models.gasStation.getByUid(ctx, uid, _)
-    response.send(ctx, gasStation)
-}
+    let longitude = _.lon ? parseFloat(_.lon) : null
+    let latitude = _.lat ? parseFloat(_.lat) : null
+    let radius = _.radius
+    let where = {}
+    if (radius) {
+        let distanceQuery = models.sequelize.where(models.sequelize.literal(`(6371 * acos(cos(radians(${latitude})) * cos(radians(lat)) * cos(radians(lon) - radians(${longitude})) + sin(radians(${latitude})) * sin(radians(lat))))`), '<=', radius)
+        where = [distanceQuery]
+    }
+    let attributes = ['uid', 'gasStationName', 'brandCode', 'lat', 'lon','rate', 'isRecommend', 'tag', 'Gasoline', 'Diesel', 'PremiumGasoline', 'lpg', 'targetType']
+    let gasStations = await models.gasStation.findAll({ attributes, where })
 
-exports.update = async function (ctx) {
-    let {uid} = ctx.params
-    let _ = ctx.request.body
-	let gasStation = await models.gasStation.getByUid(ctx, uid, _)
-    Object.assign(gasStation, _)
-    await gasStation.save()
-    response.send(ctx, gasStation)
-}
-
-exports.delete = async function (ctx) {
-    let {uid} = ctx.params
-	let _ = ctx.request.query
-    let gasStation = await models.gasStation.getByUid(ctx, uid, _)
-    await gasStation.destroy()
-    response.send(ctx, gasStation)
-}
-
-exports.bulkDelete = async function (ctx) {
-    let _ = ctx.request.body
-    let deleteResult = await models.gasStation.destroy({
-        where: {
-            uid: _.uids
-        }
-    })
-    response.send(ctx, deleteResult)
-}
-
-exports.userList = async function (ctx) {
-	let _ = ctx.request.query
-	let gasStation = await models.gasStation.userSearch(_, models)
-	response.send(ctx, gasStation)
+	response.send(ctx, gasStations)
 }

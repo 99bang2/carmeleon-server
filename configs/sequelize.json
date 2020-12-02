@@ -4,7 +4,7 @@
     "password": "thwlsWkd123",
     "database": "carmeleon-db",
     "host": "127.0.0.1",
-    "port": "3306",
+    "port": "63306",
     "dialect": "mysql",
     "timezone": "+09:00",
     "logging": true
