@@ -54,17 +54,17 @@ exports.avgRate = async function (ctx, targetType, targetUid) {
 			await parkingSite.save()
 			break
 		case '1' :
-			let evChargeStation = await models.evChargeStation.getByUid(ctx, targetUid, null, models)
+			let evChargeStation = await models.evChargeStation.findByPk(targetUid)
 			Object.assign(evChargeStation, {rate: ratingAvg})
 			await evChargeStation.save()
 			break
 		case '2' :
-			let gasStation = await models.gasStation.getByUid(ctx, targetUid, null, models)
+			let gasStation = await models.gasStation.findByPk(targetUid)
 			Object.assign(gasStation, {rate: ratingAvg})
 			await gasStation.save()
 			break
 		case '3' :
-			let carWash = await models.carWash.getByUid(ctx, targetUid, null, models)
+			let carWash = await models.carWash.findByPk(targetUid)
 			Object.assign(carWash, {rate: ratingAvg})
 			await carWash.save()
 			break

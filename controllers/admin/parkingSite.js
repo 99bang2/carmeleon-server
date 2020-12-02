@@ -23,7 +23,7 @@ exports.read = async function (ctx) {
 exports.update = async function (ctx) {
     let {uid} = ctx.params
 	let _ = ctx.request.body
-    let parkingSite = await models.parkingSite.getByUid(ctx, uid, _, models)
+    let parkingSite = await models.parkingSite.findByPk(uid)
     Object.assign(parkingSite, _)
     await parkingSite.save()
     response.send(ctx, parkingSite)
@@ -32,7 +32,7 @@ exports.update = async function (ctx) {
 exports.delete = async function (ctx) {
     let {uid} = ctx.params
 	let _ = ctx.request.query
-    let parkingSite = await models.parkingSite.getByUid(ctx, uid, _, models)
+    let parkingSite = await models.parkingSite.findByPk(uid)
     await parkingSite.destroy()
     response.send(ctx, parkingSite)
 }

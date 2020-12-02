@@ -205,43 +205,8 @@ module.exports = (sequelize, DataTypes) => {
 			sourceKey: 'uid'
 		})
 	}
-	parkingSite.getByUid = async function (ctx, uid, params, models) {
-		let currentDate = moment().format('YYYY-MM-DD')
-		let currentDay = parseInt(moment().format('E'))
-		let dayType
-		(currentDay === 0 || currentDay === 6) ? dayType = 2 : dayType = 1
-		let userUid = null
-		let rateCheck = null
-		if(params !== null) {
-			if (params.userUid) {
-				userUid = params.userUid
-			}
-		}
-		let favoriteCheck = 'target_type = 0 AND target_uid = ' + uid + ' AND user_uid = ' + userUid + ' AND deleted_at IS NULL)'
-		let data = await parkingSite.findByPk(uid, {
-			//TODO: Attribute 필요 항목만//
-			include: [{
-				model: models.discountTicket,
-				attributes: {
-					include: [
-						[sequelize.literal(`case when ('` + currentDate + `' not between ticket_start_date AND ticket_end_date) AND (ticket_day_type !=` + dayType + `) then true else false end`), 'expire'],
-						[sequelize.literal(`case when ((select count(uid) from pay_logs where discount_ticket_uid = uid) >= ticket_count) then true else false end`), 'sold_out']
-					]
-				},
-			}],
-			attributes: {
-				include: [
-					[Sequelize.literal(`(SELECT count(uid) FROM favorites WHERE ` + favoriteCheck), 'favoriteFlag']
-				]
-			}
-		})
-		if (!data) {
-			response.badRequest(ctx)
-		}
-		data.dataValues.rateFlag = rateCheck
-		return data
-	}
-
+	
+	//어드민 검색용
 	parkingSite.search = async (params, models) => {
 		let where = {}
 		let order = [['createdAt', 'DESC']]
@@ -255,8 +220,17 @@ module.exports = (sequelize, DataTypes) => {
 		if (params.searchRating) {
 			let start = parseInt(params.searchRating.split(";")[0])
 			let end = parseInt(params.searchRating.split(";")[1])
-			//where.rate = params.searchRating
-			where.rate = {[Sequelize.Op.between]: [start, end]}
+			if(start === 0) {
+				where.rate = {
+					[Sequelize.Op.or]: [{
+						[Sequelize.Op.is]: null
+					},{
+						[Sequelize.Op.between]: [start, end]
+					}]
+				}
+			}else {
+				where.rate = {[Sequelize.Op.between]: [start, end]}
+			}
 		}
 		if (params.searchKeyword) {
 			let searchObj = {

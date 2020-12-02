@@ -1,54 +1,44 @@
 const models = require('../models')
 const response = require('../libs/response')
 
-exports.create = async function (ctx) {
-    let _ = ctx.request.body
-    let evChargeStation = await models.evChargeStation.create(_)
-    response.send(ctx, evChargeStation)
-}
 
 exports.list = async function (ctx) {
     let _ = ctx.request.query
-    let evChargeStation = await models.evChargeStation.search(_, models)
-	response.send(ctx, evChargeStation)
-}
-
-exports.listAdmin = async function (ctx) {
-	let _ = ctx.request.query
-	let evChargeStation = await models.evChargeStation.searchAdmin(_, models)
-	response.send(ctx, evChargeStation)
+    let longitude = _.lon ? parseFloat(_.lon) : null
+    let latitude = _.lat ? parseFloat(_.lat) : null
+    let radius = _.radius
+    let where = {}
+    if(radius) {
+        let distanceQuery = models.sequelize.where(models.sequelize.literal(`(6371 * acos(cos(radians(${latitude})) * cos(radians(lat)) * cos(radians(lon) - radians(${longitude})) + sin(radians(${latitude})) * sin(radians(lat))))`), '<=', radius)
+        where = [distanceQuery]
+    }
+    let attributes = ['uid', 'statNm', 'evType', 'rate', 'tag', 'availableStall', 'isRecommend', 'updateTime', 'lat', 'lon', 'stall', 'targetType']
+    let include = [{
+        model: models.evCharger,
+        attributes: ['stat']
+    }]
+    let evChargeStations = await models.evChargeStation.findAll({include, attributes, where})
+	response.send(ctx, evChargeStations)
 }
 
 exports.read = async function (ctx) {
     let {uid} = ctx.params
-	let _ = ctx.request.query
-    let evChargeStation = await models.evChargeStation.getByUid(ctx, uid, _, models)
-    response.send(ctx, evChargeStation)
-}
-
-exports.update = async function (ctx) {
-    let {uid} = ctx.params
-	let _ = ctx.request.body
-    let evChargeStation = await models.evChargeStation.getByUid(ctx, uid, _, models)
-    Object.assign(evChargeStation, _)
-    await evChargeStation.save()
-    response.send(ctx, evChargeStation)
-}
-
-exports.delete = async function (ctx) {
-    let {uid} = ctx.params
-	let _ = ctx.request.query
-    let evChargeStation = await models.evChargeStation.getByUid(ctx, uid, _, models)
-    await evChargeStation.destroy()
-    response.send(ctx, evChargeStation)
-}
-
-exports.bulkDelete = async function (ctx) {
-    let _ = ctx.request.body
-    let deleteResult = await models.evChargeStation.destroy({
-        where: {
-            uid: _.uids
-        }
+    let evChargeStation = await models.evChargeStation.findByPk(uid, {
+        include: [{
+            model: models.evCharger
+        }]
     })
-    response.send(ctx, deleteResult)
+    if(ctx.user) {
+        let favorite = await models.favorite.count({
+            where: {
+                targetType: 1,
+                targetUid: uid,
+                userUid: ctx.user.uid
+            }
+        })
+        evChargeStation.dataValues.favoriteFlag = favorite > 0
+    }else {
+        evChargeStation.dataValues.favoriteFlag = false
+    }
+    response.send(ctx, evChargeStation)
 }

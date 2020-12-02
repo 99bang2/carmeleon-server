@@ -47,11 +47,11 @@ api.get('/events/:uid', eventController.read)
 api.get('/parkings', parkingController.list)
 api.get('/parkings/:uid', parkingController.read)
 
-/**
- * 전기차 충전소 관리(Main)
- */
+// 전기충전소
 api.get('/evChargeStations', evChargeStationController.list)
 api.get('/evChargeStations/:uid', evChargeStationController.read)
+
+
 /**
  * 주유소 관리
  */

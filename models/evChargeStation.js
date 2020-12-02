@@ -126,49 +126,9 @@ module.exports = (sequelize, DataTypes) => {
 			sourceKey: 'statId'
 		})
 	}
-	evChargeStation.getByUid = async function (ctx, uid, params, models) {
-		let userUid = null
-		if(params !== null) {
-			if (params.userUid) {
-				userUid = params.userUid
-			}
-		}
-		let favoriteCheck = 'target_type = 1 AND target_uid = ' + uid + ' AND user_uid = ' + userUid + ' AND deleted_at IS NULL)'
-		let data = await evChargeStation.findByPk(uid, {
-			include: [{
-				model: models.evCharger
-			}],
-			attributes: {
-				include: [
-					[Sequelize.literal(`(SELECT count(uid) FROM favorites WHERE ` + favoriteCheck), 'favoriteFlag']
-				]
-			},
-		})
-		if (!data) {
-			response.badRequest(ctx)
-		}
-		return data
-	}
 
+	//어드민용
 	evChargeStation.search = async (params, models) => {
-		let longitude = params.lon ? parseFloat(params.lon) : null
-		let latitude = params.lat ? parseFloat(params.lat) : null
-		let radius = params.radius
-		let where = {}
-		if(radius) {
-			let distanceQuery = sequelize.where(sequelize.literal(`(6371 * acos(cos(radians(${latitude})) * cos(radians(lat)) * cos(radians(lon) - radians(${longitude})) + sin(radians(${latitude})) * sin(radians(lat))))`), '<=', radius)
-			where = [distanceQuery]
-		}
-		let attributes = ['uid', 'statNm', 'evType', 'rate', 'tag', 'availableStall', 'isRecommend', 'updateTime', 'lat', 'lon', 'stall', 'targetType']
-		let include = [{
-			model: models.evCharger,
-			attributes: ['stat']
-		}]
-		let result = await evChargeStation.findAll({include, attributes, where})
-		return result
-	}
-
-	evChargeStation.searchAdmin = async (params, models) => {
 		let where = {}
 		let order = [['createdAt', 'DESC']]
 		let rateWhere = 'target_type = 1 AND target_uid = evChargeStation.uid)'
@@ -183,7 +143,6 @@ module.exports = (sequelize, DataTypes) => {
 				]
 			}
 		}
-
 		let result = await evChargeStation.findAll({
 			include: [{
 				model: models.evCharger
