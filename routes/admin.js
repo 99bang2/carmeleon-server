@@ -11,7 +11,8 @@ const eventController = require('../controllers/admin/event')
 const parkingController = require('../controllers/admin/parkingSite')
 const evChargeStationController = require('../controllers/admin/evChargeStation')
 const gasStationController = require('../controllers/admin/gasStation')
-const carWashController = require('../controllers/carWash')
+const carWashController = require('../controllers/admin/carWash')
+
 const evChargeController = require('../controllers/evCharge')
 
 const rateController = require('../controllers/rate')

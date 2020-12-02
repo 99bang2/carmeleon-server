@@ -137,27 +137,8 @@ module.exports = (sequelize, DataTypes) => {
 			}
 		})
 	}
-	carWash.getByUid = async function (ctx, uid, params) {
-		let userUid = null
-		if (params !== null) {
-			if (params.userUid) {
-				userUid = params.userUid
-			}
-		}
-		let favoriteCheck = 'target_type = 3 AND target_uid = ' + uid + ' AND user_uid = ' + userUid + ' AND deleted_at IS NULL)'
-		let data = await carWash.findByPk(uid, {
-			attributes: {
-				include: [
-					[Sequelize.literal(`(SELECT count(uid) FROM favorites WHERE ` + favoriteCheck), 'favoriteFlag']
-				]
-			},
-		})
-		if (!data) {
-			response.badRequest(ctx)
-		}
-		return data
-	}
-
+	
+	// 어드민용
 	carWash.search = async (params, models) => {
 		let where = {}
 		let order = [['createdAt', 'DESC']]
@@ -245,20 +226,6 @@ module.exports = (sequelize, DataTypes) => {
 			rows: result,
 			count: count
 		}
-	}
-
-	carWash.userSearch = async (params, models) => {
-		let longitude = params.lon ? parseFloat(params.lon) : null
-		let latitude = params.lat ? parseFloat(params.lat) : null
-		let radius = params.radius
-		let where = {}
-		if(radius) {
-			let distanceQuery = sequelize.where(sequelize.literal(`(6371 * acos(cos(radians(${latitude})) * cos(radians(lat)) * cos(radians(lon) - radians(${longitude})) + sin(radians(${latitude})) * sin(radians(lat))))`), '<=', radius)
-			where = [distanceQuery]
-		}
-		let attributes = ['uid', 'carWashName', 'carWashType', 'rate', 'typeTag', 'timeTag', 'isRecommend', 'lat', 'lon', 'bookingCode', 'targetType']
-		let result = await carWash.findAll({ attributes, where })
-		return result
 	}
 
 	return carWash

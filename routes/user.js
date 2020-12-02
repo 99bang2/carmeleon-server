@@ -55,11 +55,10 @@ api.get('/evChargeStations/:uid', evChargeStationController.read)
 api.get('/gasStations', gasStationController.list)
 api.get('/gasStations/:uid', gasStationController.read)
 
-/**
- * 세차장 관리
- */
-api.get('/carWashes', carWashController.userList)
+// 세차장
+api.get('/carWashes', carWashController.list)
 api.get('/carWashes/:uid', carWashController.read)
+
 /**
  * 리뷰 관리
  */
