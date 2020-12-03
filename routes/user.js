@@ -59,18 +59,33 @@ api.get('/gasStations/:uid', gasStationController.read)
 api.get('/carWashes', carWashController.list)
 api.get('/carWashes/:uid', carWashController.read)
 
-/**
- * 리뷰 관리
- */
+// 리뷰
+// 리뷰쓰기
 api.post('/rates/:targetType/:targetUid', auth.isUserLoggedIn, commonController.isAvailableTarget, rateController.create)
+
+
 api.get('/rates/:targetType/:targetUid', auth.isUserLoggedIn, commonController.isAvailableTarget, rateController.targetList)
+
+// 리뷰목록(타겟, 페이징)
 api.get('/rates', rateController.list)
+
+// 리뷰목록(사용자)
 api.get('/rates/:uid', rateController.userList)
+
+
 api.put('/rates/:uid', auth.isUserLoggedIn, rateController.update)
+
+// 리뷰 삭제
 api.delete('/rates/:uid', auth.isUserLoggedIn, rateController.delete)
+
+
 api.get('/rateChecks', auth.isUserLoggedIn, rateController.checkAvailable)
-/* 리뷰 꿀팁 */
+
+// 꿀팁 ON/OFF
 api.post('/rateTips', auth.isUserLoggedIn, rateTipController.create)
+
+
+
 /**
  * 즐겨찾기 관리
  */

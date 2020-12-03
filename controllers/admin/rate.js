@@ -1,62 +1,60 @@
-const models = require('../models')
-const response = require('../libs/response')
-const commonController = require('../controllers/common')
-const pointLib = require('../libs/point')
-const pointCodes = require('../configs/pointCodes')
-const targetsMap = {
-	"0": "parkingSite",
-	"1": "evChargeStation",
-	"2": "gasStation",
-	"3": "carWash"
-}
+
+const models = require('../../models')
+const response = require('../../libs/response')
+const commonController = require('../../controllers/common')
+const pointCodes = require('../../configs/pointCodes')
 
 exports.create = async function (ctx) {
 	let { targetUid, targetType } = ctx.params
 	let _ = ctx.request.body
-	let target = await models[targetsMap[targetType]].findOne({
-		where:{
-			uid: targetUid,
-			isRate: true
-		}
-	})
-
-	if(!target) {
+	_.targetType = targetType
+	_.targetUid = targetUid
+	let isRate = false
+	let targetName = ''
+	switch(targetType){
+		case '0':
+			let parkingData = await models.parkingSite.findByPk(targetUid, {
+				attributes: ['isRate'],
+				raw: true
+			})
+			isRate = parkingData.isRate
+			targetName = '주차장'
+			break;
+		case '1':
+			let evChargeStationData = await models.evChargeStation.findByPk(targetUid, {
+				attributes: ['isRate'],
+				raw: true
+			})
+			isRate = evChargeStationData.isRate
+			targetName = '충전소'
+			break;
+		case '2':
+			let gasStationData = await models.gasStation.findByPk(targetUid, {
+				attributes: ['isRate'],
+				raw: true
+			})
+			isRate = gasStationData.isRate
+			targetName = '주유소'
+			break;
+		case '3':
+			let carWashData = await models.carWash.findByPk(targetUid, {
+				attributes: ['isRate'],
+				raw: true
+			})
+			isRate = carWashData.isRate
+			targetName = '세차장'
+			break;
+	}
+	if (isRate === false){
 		ctx.throw({
 			code: 400,
-			message: `리뷰를 쓸 수 없는 장소입니다.`
+			message: `평가를 할 수 없는 ${targetName} 입니다.`
 		})
 	}
-	let point = await pointLib.updatePoint(ctx.user.uid, _.picture.length > 0 ? pointCodes.REVIEW_IMAGE : pointCodes.REVIEW_TEXT)
-	let rate = await models.rating.create({
-		targetType: targetType,
-		targetUid: targetUid,
-		userUid: ctx.user.uid,
-		rate: _.rate,
-		reviewContent: _.reviewContent,
-		picture: _.picture,
-		point: point
-	})
-	
-	// 평점 업데이트
-	let avg = 0
-	let total = await models.rating.count({
-		where: {
-			targetUid: targetUid,
-			targetType: targetType
-		}
-	})
-	if(total > 0) {
-		let sum = await models.rating.sum('rate', {
-			where: {
-				targetUid: targetUid,
-				targetType: targetType
-			}
-		})
-		avg = (sum / total).toFixed(3)
-	}
-	target.rate = avg
-	await target.save()
-	
+	_.point = await commonController.updatePoint(ctx.user.uid, _.picture.length > 0 ? pointCodes.REVIEW_IMAGE : pointCodes.REVIEW_TEXT)
+	_.userUid = ctx.user.uid
+	let rate = await models.rating.create(_)
+	await commonController.avgRate(ctx, targetType, targetUid)
 	response.send(ctx, rate)
 }
 

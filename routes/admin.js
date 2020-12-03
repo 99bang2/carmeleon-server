@@ -12,10 +12,11 @@ const parkingController = require('../controllers/admin/parkingSite')
 const evChargeStationController = require('../controllers/admin/evChargeStation')
 const gasStationController = require('../controllers/admin/gasStation')
 const carWashController = require('../controllers/admin/carWash')
+const rateController = require('../controllers/admin/rate')
 
 const evChargeController = require('../controllers/evCharge')
 
-const rateController = require('../controllers/rate')
+
 const reviewTemplateController = require('../controllers/reviewTemplate')
 const pointProductController = require('../controllers/pointProduct')
 const carController = require('../controllers/car')
