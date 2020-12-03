@@ -324,5 +324,26 @@ module.exports = (sequelize, DataTypes) => {
 		})
 		return data
 	}
+
+	rating.getTargetRateAvg = async (targetType, targetUid) => {
+		let avg = 0
+		let total = await rating.count({
+			where: {
+				targetUid: targetUid,
+				targetType: targetType
+			}
+		})
+		if(total > 0) {
+			let sum = await rating.sum('rate', {
+				where: {
+					targetUid: targetUid,
+					targetType: targetType
+				}
+			})
+			avg = (sum / total).toFixed(3)
+		}
+		return avg
+	}
+
 	return rating
 }

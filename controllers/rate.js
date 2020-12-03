@@ -1,6 +1,5 @@
 const models = require('../models')
 const response = require('../libs/response')
-const commonController = require('../controllers/common')
 const pointLib = require('../libs/point')
 const pointCodes = require('../configs/pointCodes')
 const targetsMap = {
@@ -26,7 +25,10 @@ exports.create = async function (ctx) {
 			message: `리뷰를 쓸 수 없는 장소입니다.`
 		})
 	}
+
+	// 포인트 지급
 	let point = await pointLib.updatePoint(ctx.user.uid, _.picture.length > 0 ? pointCodes.REVIEW_IMAGE : pointCodes.REVIEW_TEXT)
+
 	let rate = await models.rating.create({
 		targetType: targetType,
 		targetUid: targetUid,
@@ -37,77 +39,41 @@ exports.create = async function (ctx) {
 		point: point
 	})
 	
-	// 평점 업데이트
-	let avg = 0
-	let total = await models.rating.count({
-		where: {
-			targetUid: targetUid,
-			targetType: targetType
-		}
-	})
-	if(total > 0) {
-		let sum = await models.rating.sum('rate', {
-			where: {
-				targetUid: targetUid,
-				targetType: targetType
-			}
-		})
-		avg = (sum / total).toFixed(3)
-	}
-	target.rate = avg
+	//평점 업데이트
+	target.rate = await models.rating.getTargetRateAvg(targetType, targetUid)
 	await target.save()
 	
 	response.send(ctx, rate)
+}
+exports.delete = async function (ctx) {
+	let {uid} = ctx.params
+	let rating = await models.rating.findByPk(uid)
+	if(rating.userUid !== ctx.user.uid) {
+		response.unauthorized(ctx)
+	}
+	if(rating.point > 0) {
+		await pointLib.updatePoint(ctx.user.uid, pointCodes.REVIEW_DELETE, rating.point)
+	}
+	let target = await models[targetsMap[rating.targetType]].findOne({
+		where:{
+			uid: rating.targetUid
+		}
+	})
+
+	//삭제처리
+	await rating.destroy()
+
+	//평점 업데이트
+	target.rate = await models.rating.getTargetRateAvg(rating.targetType, rating.targetUid)
+	await target.save()
+
+	response.send(ctx, rating)
 }
 
 exports.list = async function (ctx) {
 	let _ = ctx.request.query
 	let rates = await models.rating.search(_, models)
 	response.send(ctx, rates)
-}
-
-exports.read = async function (ctx) {
-	let {uid} = ctx.params
-	let rate = await models.rating.getByUid(ctx, uid)
-	response.send(ctx, rate)
-}
-
-exports.update = async function (ctx) {
-	let { uid } = ctx.params
-	let _ = ctx.request.body
-	let rate = await models.rating.getByUid(ctx, uid, models)
-	Object.assign(rate, _)
-	await rate.save()
-	await commonController.avgRate(ctx, rate.targetType, rate.targetUid)
-	response.send(ctx, rate)
-}
-
-exports.delete = async function (ctx) {
-	let {uid} = ctx.params
-	let rate = await models.rating.getByUid(ctx, uid, models)
-	if(rate.point > 0) {
-		await commonController.updatePoint(ctx.user.uid, pointCodes.REVIEW_DELETE, rate.point)
-	}
-	await commonController.avgRate(ctx, rate.targetType, rate.targetUid)
-	await rate.destroy()
-	response.send(ctx, rate)
-}
-
-exports.bulkDelete = async function (ctx) {
-	let _ = ctx.request.body
-	let deleteResult = await models.rating.destroy({
-		where: {
-			uid: _.uids
-		}
-	})
-	response.send(ctx, deleteResult)
-}
-
-//targetUid로 조회
-exports.targetList = async function (ctx) {
-	let {targetType, targetUid} = ctx.params
-	let rate = await models.rating.getByTargetUid(ctx, targetType, targetUid)
-	response.send(ctx, rate)
 }
 
 exports.userList = async function (ctx) {
@@ -117,26 +83,3 @@ exports.userList = async function (ctx) {
 	response.send(ctx, rating)
 }
 
-exports.checkAvailable = async function (ctx) {
-	let _ = ctx.request.query
-	let checkCount = 0
-	_.rateType = true
-	if(_.targetType === 0){
-		let checkCount = await models.rating.checkPay(_, models)
-		_.rateType = checkCount === 0;
-	}
-	let checkRate = await models.rating.checkRate(_)
-	if(_.rateType === false && (checkRate >= checkCount)){
-		ctx.throw({
-			code: 400,
-			message: '이미 평가를 완료 했습니다.'
-		})
-	}
-	if(_.rateType === true && checkRate > 0){
-		ctx.throw({
-			code: 400,
-			message: '이미 평가를 완료 했습니다.'
-		})
-	}
-	response.send(ctx, true)
-}

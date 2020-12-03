@@ -60,31 +60,11 @@ api.get('/carWashes', carWashController.list)
 api.get('/carWashes/:uid', carWashController.read)
 
 // 리뷰
-// 리뷰쓰기
-api.post('/rates/:targetType/:targetUid', auth.isUserLoggedIn, commonController.isAvailableTarget, rateController.create)
-
-
-api.get('/rates/:targetType/:targetUid', auth.isUserLoggedIn, commonController.isAvailableTarget, rateController.targetList)
-
-// 리뷰목록(타겟, 페이징)
-api.get('/rates', rateController.list)
-
-// 리뷰목록(사용자)
-api.get('/rates/:uid', rateController.userList)
-
-
-api.put('/rates/:uid', auth.isUserLoggedIn, rateController.update)
-
-// 리뷰 삭제
-api.delete('/rates/:uid', auth.isUserLoggedIn, rateController.delete)
-
-
-api.get('/rateChecks', auth.isUserLoggedIn, rateController.checkAvailable)
-
-// 꿀팁 ON/OFF
-api.post('/rateTips', auth.isUserLoggedIn, rateTipController.create)
-
-
+api.post('/rates/:targetType/:targetUid', auth.isUserLoggedIn, commonController.isAvailableTarget, rateController.create) //리뷰쓰기
+api.delete('/rates/:uid', auth.isUserLoggedIn, rateController.delete) //리뷰삭제
+api.get('/rates', rateController.list) //리뷰목록(타겟, 페이징)
+api.get('/rates/:uid', rateController.userList) //리뷰목록(사용자)
+api.post('/rateTips', auth.isUserLoggedIn, rateTipController.create) //꿀팁 ON/OFF
 
 /**
  * 즐겨찾기 관리
