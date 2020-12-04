@@ -26,6 +26,18 @@ module.exports = (sequelize, DataTypes) => {
 				}
 			}
 		},
+		ticketCategory: {
+			type: DataTypes.INTEGER,
+			defaultValue: 1
+		},
+		ticketCategoryName: {
+			type: DataTypes.VIRTUAL,
+			get: function () {
+				if (this.getDataValue('ticketCategory') !== null) {
+					return codes.ticketCategories[this.getDataValue('ticketCategory')]
+				}
+			}
+		},
 		ticketType: {
 			type: DataTypes.INTEGER,
 		},
@@ -75,8 +87,103 @@ module.exports = (sequelize, DataTypes) => {
 		},
 		fee: {
 			type: DataTypes.INTEGER
-		}
-		//Todo: Macro 컬럼 JSON 추가 (수동 작업 예정)
+		},
+		includeValet: {
+			type: DataTypes.BOOLEAN,
+			defaultValue: false
+		},
+		parkingStartTime: {
+			type: DataTypes.STRING
+		},
+		parkingStartTimeHour: {
+			type: DataTypes.VIRTUAL,
+			get: function () {
+				if (this.getDataValue('parkingStartTime') !== null) {
+					this.getDataValue('parkingStartTime').substr(0, 2)
+				}else {
+					return null
+				}
+			}
+		},
+		parkingStartTimeMinute: {
+			type: DataTypes.VIRTUAL,
+			get: function () {
+				if (this.getDataValue('parkingStartTime') !== null) {
+					this.getDataValue('parkingStartTime').substr(2, 2)
+				}else {
+					return null
+				}
+			}
+		},
+		parkingEndTime: {
+			type: DataTypes.STRING
+		},
+		parkingEndTimeHour: {
+			type: DataTypes.VIRTUAL,
+			get: function () {
+				if (this.getDataValue('parkingEndTime') !== null) {
+					this.getDataValue('parkingEndTime').substr(0, 2)
+				}else {
+					return null
+				}
+			}
+		},
+		parkingEndTimeMinute: {
+			type: DataTypes.VIRTUAL,
+			get: function () {
+				if (this.getDataValue('parkingEndTime') !== null) {
+					this.getDataValue('parkingEndTime').substr(2, 2)
+				}else {
+					return null
+				}
+			}
+		},
+		sellingStartTime: {
+			type: DataTypes.STRING
+		},
+		sellingStartTimeHour: {
+			type: DataTypes.VIRTUAL,
+			get: function () {
+				if (this.getDataValue('sellingStartTime') !== null) {
+					this.getDataValue('sellingStartTime').substr(0, 2)
+				}else {
+					return null
+				}
+			}
+		},
+		sellingStartTimeMinute: {
+			type: DataTypes.VIRTUAL,
+			get: function () {
+				if (this.getDataValue('sellingStartTime') !== null) {
+					this.getDataValue('sellingStartTime').substr(2, 2)
+				}else {
+					return null
+				}
+			}
+		},
+		sellingEndTime: {
+			type: DataTypes.STRING
+		},
+		sellingEndTimeHour: {
+			type: DataTypes.VIRTUAL,
+			get: function () {
+				if (this.getDataValue('sellingEndTime') !== null) {
+					this.getDataValue('sellingEndTime').substr(0, 2)
+				}else {
+					return null
+				}
+			}
+		},
+		sellingEndTimeMinute: {
+			type: DataTypes.VIRTUAL,
+			get: function () {
+				if (this.getDataValue('sellingEndTime') !== null) {
+					this.getDataValue('sellingEndTime').substr(2, 2)
+				}else {
+					return null
+				}
+			}
+		},
 	}, {
 		timestamps: true,
 		underscored: true,
