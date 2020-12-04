@@ -99,7 +99,7 @@ module.exports = (sequelize, DataTypes) => {
 			type: DataTypes.VIRTUAL,
 			get: function () {
 				if (this.getDataValue('parkingStartTime') !== null) {
-					this.getDataValue('parkingStartTime').substr(0, 2)
+					return this.getDataValue('parkingStartTime').substr(0, 2)
 				}else {
 					return null
 				}
@@ -109,7 +109,7 @@ module.exports = (sequelize, DataTypes) => {
 			type: DataTypes.VIRTUAL,
 			get: function () {
 				if (this.getDataValue('parkingStartTime') !== null) {
-					this.getDataValue('parkingStartTime').substr(2, 2)
+					return this.getDataValue('parkingStartTime').substr(2, 2)
 				}else {
 					return null
 				}
@@ -122,7 +122,7 @@ module.exports = (sequelize, DataTypes) => {
 			type: DataTypes.VIRTUAL,
 			get: function () {
 				if (this.getDataValue('parkingEndTime') !== null) {
-					this.getDataValue('parkingEndTime').substr(0, 2)
+					return this.getDataValue('parkingEndTime').substr(0, 2)
 				}else {
 					return null
 				}
@@ -132,7 +132,7 @@ module.exports = (sequelize, DataTypes) => {
 			type: DataTypes.VIRTUAL,
 			get: function () {
 				if (this.getDataValue('parkingEndTime') !== null) {
-					this.getDataValue('parkingEndTime').substr(2, 2)
+					return this.getDataValue('parkingEndTime').substr(2, 2)
 				}else {
 					return null
 				}
@@ -145,7 +145,7 @@ module.exports = (sequelize, DataTypes) => {
 			type: DataTypes.VIRTUAL,
 			get: function () {
 				if (this.getDataValue('sellingStartTime') !== null) {
-					this.getDataValue('sellingStartTime').substr(0, 2)
+					return this.getDataValue('sellingStartTime').substr(0, 2)
 				}else {
 					return null
 				}
@@ -155,7 +155,7 @@ module.exports = (sequelize, DataTypes) => {
 			type: DataTypes.VIRTUAL,
 			get: function () {
 				if (this.getDataValue('sellingStartTime') !== null) {
-					this.getDataValue('sellingStartTime').substr(2, 2)
+					return this.getDataValue('sellingStartTime').substr(2, 2)
 				}else {
 					return null
 				}
@@ -168,7 +168,7 @@ module.exports = (sequelize, DataTypes) => {
 			type: DataTypes.VIRTUAL,
 			get: function () {
 				if (this.getDataValue('sellingEndTime') !== null) {
-					this.getDataValue('sellingEndTime').substr(0, 2)
+					return this.getDataValue('sellingEndTime').substr(0, 2)
 				}else {
 					return null
 				}
@@ -178,7 +178,7 @@ module.exports = (sequelize, DataTypes) => {
 			type: DataTypes.VIRTUAL,
 			get: function () {
 				if (this.getDataValue('sellingEndTime') !== null) {
-					this.getDataValue('sellingEndTime').substr(2, 2)
+					return this.getDataValue('sellingEndTime').substr(2, 2)
 				}else {
 					return null
 				}
