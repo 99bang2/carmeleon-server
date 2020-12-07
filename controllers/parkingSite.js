@@ -39,7 +39,7 @@ exports.read = async function (ctx) {
         discountTicket.dataValues.expire = !!openTime
         discountTicket.dataValues.openTime = openTime
         discountTicket.dataValues.sold_out = false
-        if(openTime) {
+        if(!openTime) {
             let todayCount = await models.payLog.count({
                 where: {
                     discountTicketUid: discountTicket.uid,

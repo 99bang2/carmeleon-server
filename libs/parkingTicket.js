@@ -9,12 +9,13 @@ exports.getOpenTime = async function (discountTicket) {
 	let currentHHmm =  parseInt(moment().format('HHmm'))
 	let isWeekend = (currentDay === 0 || currentDay === 6)
 	let sellingStartTime = discountTicket.sellingStartTime ? parseInt(discountTicket.sellingStartTime) : null
-	let sellingEndTime = discountTicket.sellingEndTime ? parseInt(discountTicket.sellingEndTime) : null
 
 	// 요일 제한 체크
 	let isRightDay = true
 	let addDay = 0
+
 	if(discountTicket.ticketDayType === 1) {
+
 		if(isWeekend) {
 			isRightDay = false
 			addDay = ( 7 - currentDay + 1 ) % 7
@@ -42,15 +43,15 @@ exports.getOpenTime = async function (discountTicket) {
 	}
 
 	if(isRightDay) {
-		if(sellingStartTime && sellingEndTime) {
-			if(currentHHmm < sellingStartTime || currentHHmm > sellingEndTime) {
+		if(sellingStartTime) {
+			if(currentHHmm < sellingStartTime) {
 				openDate = currentHHmm < sellingStartTime ? moment() : moment().add(1, 'd')
 				openTime = `${openDate.format('M/D(ddd)')} ${discountTicket.sellingStartTimeHour}:${discountTicket.sellingStartTimeMinute}`
 			}
 		}
 	}else {
 		openDate = moment().add(addDay, 'd')
-		if(sellingStartTime && sellingEndTime) {
+		if(sellingStartTime) {
 			openTime = `${openDate.format('M/D(ddd)')} ${discountTicket.sellingStartTimeHour}:${discountTicket.sellingStartTimeMinute}`
 		}else {
 			openTime = `${openDate.format('M/D(ddd)')} 00:00`
