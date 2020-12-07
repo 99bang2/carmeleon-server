@@ -1,6 +1,7 @@
 const models = require('../models')
 const response = require('../libs/response')
 const moment = require('moment')
+const parkingTicketLib = require('../libs/parkingTicket')
 
 exports.read = async function (ctx) {
     let {uid} = ctx.params
@@ -27,33 +28,32 @@ exports.read = async function (ctx) {
             ticketEndDate: {
                 [models.Sequelize.Op.gte]: moment().format('YYYY-MM-DD 09:00')
             },
-            isActive: true
+            isActive: true,
+            ticketCategory: 1
         }
     })
+
     let currentDate = moment(moment().format('YYYY-MM-DD'))
-    let currentDay = parseInt(moment().format('E'))
-    let currentDayType = (currentDay === 0 || currentDay === 6) ? 2 : 1
     for(let discountTicket of discountTickets) {
-        discountTicket.dataValues.expire = false
+        let openTime = await parkingTicketLib.getOpenTime(discountTicket)
+        discountTicket.dataValues.expire = !!openTime
+        discountTicket.dataValues.openTime = openTime
         discountTicket.dataValues.sold_out = false
-        if(discountTicket.ticketDayType < 3) {
-            if(currentDayType !== discountTicket.ticketDayType) {
-                discountTicket.dataValues.expire = true
-            }
-        }
-        let todayCount = await models.payLog.count({
-            where: {
-                discountTicketUid: discountTicket.uid,
-                createdAt: {
-                    [models.Sequelize.Op.gte]: currentDate.format('YYYY-MM-DD')
-                },
-                status: {
-                    [models.Sequelize.Op.in]: [0, 10]
+        if(openTime) {
+            let todayCount = await models.payLog.count({
+                where: {
+                    discountTicketUid: discountTicket.uid,
+                    createdAt: {
+                        [models.Sequelize.Op.gte]: currentDate.format('YYYY-MM-DD')
+                    },
+                    status: {
+                        [models.Sequelize.Op.in]: [0, 10]
+                    }
                 }
+            })
+            if(todayCount >= discountTicket.ticketCount) {
+                discountTicket.dataValues.sold_out = true
             }
-        })
-        if(todayCount >= discountTicket.ticketCount) {
-            discountTicket.dataValues.sold_out = true
         }
     }
     parkingSite.dataValues.discountTickets = discountTickets
