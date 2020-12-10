@@ -7,6 +7,7 @@ const accountController = require('../controllers/account')
 const userController = require('../controllers/user')
 const noticeController = require('../controllers/admin/notice')
 const eventController = require('../controllers/admin/event')
+const popupController = require('../controllers/admin/popup')
 
 const parkingController = require('../controllers/admin/parkingSite')
 const evChargeStationController = require('../controllers/admin/evChargeStation')
@@ -15,8 +16,6 @@ const carWashController = require('../controllers/admin/carWash')
 const rateController = require('../controllers/admin/rate')
 
 const evChargeController = require('../controllers/evCharge')
-
-
 const reviewTemplateController = require('../controllers/reviewTemplate')
 const pointProductController = require('../controllers/pointProduct')
 const carController = require('../controllers/car')
@@ -78,6 +77,17 @@ api.get('/events/:uid', auth.isAdminLoggedIn, eventController.read)
 api.put('/events/:uid', auth.isAdminLoggedIn, eventController.update)
 api.delete('/events/:uid', auth.isAdminLoggedIn, eventController.delete)
 api.post('/events/bulkDelete', auth.isAdminLoggedIn, eventController.bulkDelete) //복수삭제
+
+/**
+ * 팝업 관리
+ */
+api.post('/popups', auth.isAdminLoggedIn, popupController.create)
+api.get('/popups', auth.isAdminLoggedIn, popupController.list)
+api.get('/popups/:uid', auth.isAdminLoggedIn, popupController.read)
+api.put('/popups/:uid', auth.isAdminLoggedIn, popupController.update)
+api.delete('/popups/:uid', auth.isAdminLoggedIn, popupController.delete)
+api.post('/popups/bulkDelete', auth.isAdminLoggedIn, popupController.bulkDelete) //복수삭제
+
 /**
  * 주차장 관리
  */

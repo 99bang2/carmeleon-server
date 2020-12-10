@@ -6,6 +6,7 @@ const auth = require('../libs/auth')
 const userController = require('../controllers/user')
 const noticeController = require('../controllers/notice')
 const eventController = require('../controllers/event')
+const popupController = require('../controllers/popup')
 const parkingController = require('../controllers/parkingSite')
 const carWashController = require('../controllers/carWash')
 const gasStationController = require('../controllers/gasStation')
@@ -42,6 +43,9 @@ api.get('/notices', noticeController.list)
 // 이벤트
 api.get('/events', eventController.list)
 api.get('/events/:uid', eventController.read)
+
+//팝업
+api.get('/popups', popupController.list)
 
 // 주차장
 api.get('/parkings', parkingController.list)
