@@ -1,5 +1,5 @@
-const models = require('../models')
-const response = require('../libs/response')
+const models = require('../../models')
+const response = require('../../libs/response')
 
 exports.create = async function (ctx) {
     let _ = ctx.request.body
@@ -43,15 +43,4 @@ exports.bulkDelete = async function (ctx) {
         }
     })
     response.send(ctx, deleteResult)
-}
-
-exports.addPoint = async function (ctx) {
-    let _ = await ctx.request.body
-    for (let i = 0; i<_.uids.length; i++){
-        let pointProduct = await models.pointProduct.getByUid(ctx, _.uids[i], models)
-        pointProduct.addPointPercent = _.addPoint
-        pointProduct.addPoint = pointProduct.point * (_.addPoint * 1/100)
-        pointProduct.save()
-    }
-    response.send(ctx)
 }

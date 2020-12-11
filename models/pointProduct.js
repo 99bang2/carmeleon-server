@@ -1,5 +1,6 @@
 'use strict'
 const response = require('../libs/response')
+const codes = require('../configs/codes')
 module.exports = (sequelize, DataTypes) => {
     const pointProduct = sequelize.define('pointProduct', {
         uid: {
@@ -8,17 +9,41 @@ module.exports = (sequelize, DataTypes) => {
             autoIncrement: true,
             primaryKey: true,
         },
-        point: {
+        productType: {
             type: DataTypes.INTEGER
+        },
+        productTypeName: {
+            type: DataTypes.VIRTUAL,
+            get: function () {
+                if (this.getDataValue('productType') !== null) {
+                    return codes.pointProductType[this.getDataValue('productType')]
+                } else {
+                    return null
+                }
+            }
+        },
+        category: {
+            type: DataTypes.STRING
+        },
+        title: {
+            type: DataTypes.STRING
+        },
+        listImage: {
+            type: DataTypes.STRING
+        },
+        detailImage: {
+            type: DataTypes.STRING
+        },
+        isActive: {
+            type: DataTypes.BOOLEAN,
+            defaultValue: false
+        },
+        isSoldOut: {
+            type: DataTypes.BOOLEAN,
+            defaultValue: false
         },
         price: {
             type: DataTypes.INTEGER
-        },
-        addPoint: {
-            type:DataTypes.INTEGER
-        },
-        addPointPercent: {
-            type:DataTypes.INTEGER
         }
     }, {
         timestamps: true,

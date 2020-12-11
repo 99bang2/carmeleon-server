@@ -8,6 +8,8 @@ const userController = require('../controllers/user')
 const noticeController = require('../controllers/admin/notice')
 const eventController = require('../controllers/admin/event')
 const popupController = require('../controllers/admin/popup')
+const pointProductController = require('../controllers/admin/pointProduct')
+const pointOrderController = require('../controllers/admin/pointOrder')
 
 const parkingController = require('../controllers/admin/parkingSite')
 const evChargeStationController = require('../controllers/admin/evChargeStation')
@@ -17,7 +19,6 @@ const rateController = require('../controllers/admin/rate')
 
 const evChargeController = require('../controllers/evCharge')
 const reviewTemplateController = require('../controllers/reviewTemplate')
-const pointProductController = require('../controllers/pointProduct')
 const carController = require('../controllers/car')
 const cardController = require('../controllers/card')
 const favoriteController = require('../controllers/favorite')
@@ -147,10 +148,11 @@ api.post('/pointProducts', auth.isAdminLoggedIn, pointProductController.create)
 api.get('/pointProducts', auth.isAdminLoggedIn, pointProductController.list)
 api.get('/pointProducts/:uid', auth.isAdminLoggedIn, pointProductController.read)
 api.put('/pointProducts/:uid', auth.isAdminLoggedIn, pointProductController.update)
-api.post('/pointProducts/addPoint',auth.isAdminLoggedIn,  pointProductController.addPoint)
 api.delete('/pointProducts/:uid', auth.isAdminLoggedIn, pointProductController.delete)
 api.post('/pointProducts/bulkDelete', auth.isAdminLoggedIn, pointProductController.bulkDelete)
 
+api.get('/pointOrders', auth.isAdminLoggedIn, pointOrderController.list)
+api.put('/pointOrders/:uid', auth.isAdminLoggedIn, pointOrderController.update)
 /**
  * 유저 관련 컨트롤러
  */

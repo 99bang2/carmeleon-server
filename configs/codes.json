@@ -235,5 +235,14 @@
   "eventCustomType": {
     "none": "없음",
     "pointStore": "포인트교환소"
+  },
+  "pointProductType": {
+    "0": "대박상품",
+    "1": "실속상품"
+  },
+  "pointOrderStatus": {
+    "WAIT": "대기",
+    "ING": "처리중",
+    "DONE": "완료"
   }
 }
