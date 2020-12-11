@@ -1,8 +1,16 @@
 const models = require('../models')
 const response = require('../libs/response')
+const moment = require('moment')
 
 exports.list = async function (ctx) {
-	let where = { isOpen: true }
+	let now = moment().format('YYYY-MM-DD')
+	let where = {
+		isOpen: true,
+		eventCustomType: 'none',
+		startDate: {
+			[models.Sequelize.Op.lte]: now
+		}
+	}
 	let order = [['createdAt', 'DESC']]
 	let events = await models.event.findAll({where, order})
 	response.send(ctx, events)

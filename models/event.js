@@ -1,5 +1,6 @@
 'use strict'
 const response = require('../libs/response')
+const codes = require('../configs/codes')
 module.exports = (sequelize, DataTypes) => {
 	const event = sequelize.define('event', {
 		uid: {
@@ -36,6 +37,30 @@ module.exports = (sequelize, DataTypes) => {
 		eventType: {
 			type: DataTypes.INTEGER,
 			allowNull: false
+		},
+		eventTypeName: {
+			type: DataTypes.VIRTUAL,
+			get: function () {
+				if (this.getDataValue('eventType') !== null) {
+					return codes.eventType[this.getDataValue('eventType')]
+				} else {
+					return null
+				}
+			}
+		},
+		eventCustomType: {
+			type: DataTypes.STRING,
+			defaultValue: 'none'
+		},
+		eventCustomTypeName: {
+			type: DataTypes.VIRTUAL,
+			get: function () {
+				if (this.getDataValue('eventCustomType') !== null) {
+					return codes.eventCustomType[this.getDataValue('eventCustomType')]
+				} else {
+					return null
+				}
+			}
 		},
 		isOpen: {
 			type: DataTypes.BOOLEAN,

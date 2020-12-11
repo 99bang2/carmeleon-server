@@ -226,5 +226,14 @@
   "popupLinkType": {
     "0": "없음",
     "1": "이벤트"
+  },
+  "eventType": {
+    "0": "일반",
+    "1": "제휴",
+    "2": "주차권"
+  },
+  "eventCustomType": {
+    "none": "없음",
+    "pointStore": "포인트교환소"
   }
 }
