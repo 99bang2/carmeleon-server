@@ -17,11 +17,29 @@
     "isPlus": true,
     "reason": "리뷰작성(텍스트+이미지)"
   },
+  "POINT_GAME_REWARD": {
+    "id": 3000,
+    "amount": null,
+    "isPlus": true,
+    "reason": "포인트게임 보상"
+  },
   "USE_FOR_PARKING_TICKET": {
     "id": 5000,
     "amount": null,
     "isPlus": false,
     "reason": "주차권 구매시 사용"
+  },
+  "POINT_GAME_PLAY": {
+    "id": 6000,
+    "amount": null,
+    "isPlus": false,
+    "reason": "포인트게임 플레이"
+  },
+  "POINT_PRODUCT_PURCHASE": {
+    "id": 6100,
+    "amount": null,
+    "isPlus": false,
+    "reason": "포인트상품 구매"
   },
   "REVIEW_DELETE": {
     "id": 9100,

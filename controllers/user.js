@@ -185,6 +185,7 @@ exports.getBadge = async function (ctx) {
 	//공지
 	result.notice = await models.notice.count({
 		where: {
+			isOpen: true,
 			updatedAt: {
 				[models.Sequelize.Op.gte]: today
 			}
@@ -194,6 +195,7 @@ exports.getBadge = async function (ctx) {
 	//이벤트
 	result.event = await models.event.count({
 		where: {
+			isOpen: true,
 			updatedAt: {
 				[models.Sequelize.Op.gte]: today
 			}

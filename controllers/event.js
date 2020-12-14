@@ -6,7 +6,6 @@ exports.list = async function (ctx) {
 	let now = moment().format('YYYY-MM-DD')
 	let where = {
 		isOpen: true,
-		eventCustomType: 'none',
 		startDate: {
 			[models.Sequelize.Op.lte]: now
 		}

@@ -25,6 +25,8 @@ const questionController = require('../controllers/question')
 const pushController = require('../controllers/push')
 const teslaController = require('../controllers/tesla')
 
+const pointStoreController = require('../controllers/pointStore')
+
 const pgController = require('../controllers/pg')
 const commonController = require('../controllers/common')
 
@@ -149,6 +151,12 @@ api.post('/pgPaymentRefund', auth.isUserLoggedIn, payLogController.refundRequest
 api.post('/pgPaymentRefundCancel', auth.isUserLoggedIn, payLogController.refundRequestCancel)
 
 api.post('/priceCheck', auth.isUserLoggedIn, payLogController.priceCheck)
+
+
+api.get('/pointStore/info', pointStoreController.getInfo)
+api.post('/pointStore/exchange', auth.isUserLoggedIn, pointStoreController.exchange)
+api.post('/pointStore/playGame', auth.isUserLoggedIn, pointStoreController.play)
+api.get('/pointStore/gameInfo', pointStoreController.getGameInfo)
 
 
 api.get('/versions', commonController.getVersions)
