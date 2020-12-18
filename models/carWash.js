@@ -86,9 +86,12 @@ module.exports = (sequelize, DataTypes) => {
 			type: DataTypes.VIRTUAL,
 			get: function () {
 				if (this.getDataValue('typeTag') !== null) {
-					return this.getDataValue('typeTag').map(function (obj) {
-						return codes.carWashTypeTag[obj]
-					})
+					if(typeof this.getDataValue('typeTag') !== 'undefined'){
+						return this.getDataValue('typeTag').map(function (obj) {
+							return codes.carWashTypeTag[obj]
+						})
+					}
+					return null
 				}
 			}
 		},
@@ -103,9 +106,12 @@ module.exports = (sequelize, DataTypes) => {
 			type: DataTypes.VIRTUAL,
 			get: function () {
 				if (this.getDataValue('timeTag') !== null) {
-					return this.getDataValue('timeTag').map(function (obj) {
-						return codes.carWashTimeTag[obj]
-					})
+					if(typeof this.getDataValue('timeTag') !== 'undefined'){
+						return this.getDataValue('timeTag').map(function (obj) {
+							return codes.carWashTimeTag[obj]
+						})
+					}
+					return null
 				}
 			}
 		},
@@ -137,7 +143,7 @@ module.exports = (sequelize, DataTypes) => {
 			}
 		})
 	}
-	
+
 	// 어드민용
 	carWash.search = async (params, models) => {
 		let where = {}
