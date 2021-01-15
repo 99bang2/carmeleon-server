@@ -31,6 +31,8 @@ const questionController = require('../controllers/question')
 const pushController = require('../controllers/push')
 const pgController = require('../controllers/pg')
 const tutorialController = require('../controllers/tutorial')
+const statisticController = require('../controllers/admin/statistics')
+
 const auth = require('../libs/auth')
 
 /**
@@ -240,5 +242,8 @@ api.post('/searchList', commonController.searchList)
 //keyword : '주차장'
 api.post('/avgRate', commonController.avgRate)
 api.post('/codes', commonController.codes)
+
+api.get('/allPayLogs', auth.isAdminLoggedIn, payLogController.allList)
+api.get('/parkingStatistics', statisticController.parkingStatistics)
 
 module.exports = api

@@ -213,3 +213,9 @@ exports.priceCheck = async function (ctx) {
 	/*TODO:쿠폰 관련 할인 추가 예정*/
 	response.send(ctx, data)
 }
+
+exports.allList = async function (ctx) {
+	let _ = ctx.request.query
+	let payLogs = await models.payLog.searchAll(_, models)
+	response.send(ctx, payLogs)
+}
