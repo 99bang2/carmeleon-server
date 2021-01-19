@@ -244,6 +244,7 @@ api.post('/avgRate', commonController.avgRate)
 api.post('/codes', commonController.codes)
 
 api.get('/allPayLogs', auth.isAdminLoggedIn, payLogController.allList)
-api.get('/parkingStatistics', statisticController.parkingStatistics)
+api.get('/parkingStatistics', auth.isAdminLoggedIn, statisticController.parkingStatistics)
+api.get('/parkingLists', auth.isAdminLoggedIn, parkingController.parkingListForAdmin)
 
 module.exports = api

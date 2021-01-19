@@ -31,6 +31,7 @@ exports.parkingStatistics = async function (ctx) {
 		LEFT JOIN
 		(SELECT
 		COUNT(CASE WHEN active_status=true  `+subQuery+` THEN 0 END) as complete_count,
+		COUNT(CASE WHEN active_status=false  `+subQuery+` THEN 0 END) as non_complete_count,
 		DATE_FORMAT(created_at, '%Y-%m-%d') as created_at
 		FROM pay_logs GROUP BY DATE_FORMAT(created_at, '%Y-%m-%d')) t
 		ON v.selected_date = t.created_at

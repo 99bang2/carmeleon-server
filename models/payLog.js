@@ -311,6 +311,7 @@ module.exports = (sequelize, DataTypes) => {
 
 	payLog.searchAll = async (params, models) => {
 		let where = {}
+		let parkingSiteUid = null
 		if (params.searchData) {
 			let searchData = JSON.parse(params.searchData)
 			console.log('searchData', searchData)
@@ -359,6 +360,7 @@ module.exports = (sequelize, DataTypes) => {
 				}
 			}
 			if (searchData.searchParkingSite !== ""){
+				parkingSiteUid = searchData.searchParkingSite
 				let sequelizeObj = {[Op.and]: [sequelize.literal('`parkingSite`.`uid` = ' + searchData.searchParkingSite)]}
 				Object.assign(where, sequelizeObj)
 			}
@@ -376,6 +378,12 @@ module.exports = (sequelize, DataTypes) => {
 		if (params.carNumber) {
 			where.carNumber = {[Op.substring]: params.carNumber}
 		}
+		if (parkingSiteUid){
+			where.siteUid = parkingSiteUid
+		}
+
+		console.log('where', where)
+
 		let data = await payLog.findAll({
 				include: [
 					{
