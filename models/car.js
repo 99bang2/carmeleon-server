@@ -15,6 +15,15 @@ module.exports = (sequelize, DataTypes) => {
 		carModel: {
 			type: DataTypes.STRING
 		},
+		brand: {
+			type: DataTypes.STRING
+		},
+		model: {
+			type: DataTypes.STRING
+		},
+		mobilxCarUid: {
+			type: DataTypes.INTEGER
+		},
 		carPlate: {
 			type: DataTypes.STRING
 		},

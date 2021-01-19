@@ -15,19 +15,20 @@ exports.create = async function (ctx) {
 			message: '이미 등록 된 차량 입니다.'
 		})
 	}
-
 	let count = await models.car.count({
 		where : {
 			userUid: ctx.user.uid
 		}
 	})
-	if(count === 0){
-		_.isMain = true
-	}
-	if(Number(_.discountType) > 0) {
-		_.discountStatus = 10
-	}
-	let car = await models.car.create(_)
+	let car = await models.car.create({
+		userUid: ctx.user.uid,
+		brand: _.brand,
+		model: _.model,
+		carModel: _.brand + ' ' + _.model,
+		carPlate: _.carPlate,
+		isMain: count === 0,
+		mobilxCarUid: _.mobilxCarUid
+	})
 	response.send(ctx, car)
 }
 
