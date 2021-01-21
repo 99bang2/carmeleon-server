@@ -64,6 +64,9 @@ api.get('/gasStations/:uid', gasStationController.read)
 // 세차장
 api.get('/carWashes', carWashController.list)
 api.get('/carWashes/:uid', carWashController.read)
+api.get('/carWashes/products/:productUid', carWashController.getProductInfo)
+api.get('/carWashes/:uid/timeSlots/:date', carWashController.getTimeSlots)
+api.post('/carWashes/booking', auth.isUserLoggedIn, carWashController.booking)
 
 // 리뷰
 api.post('/rates/:targetType/:targetUid', auth.isUserLoggedIn, commonController.isAvailableTarget, rateController.create) //리뷰쓰기
