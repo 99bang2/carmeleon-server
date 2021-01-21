@@ -46,3 +46,16 @@ exports.bulkDelete = async function (ctx) {
     })
     response.send(ctx, deleteResult)
 }
+
+exports.parkingListForAdmin = async function (ctx){
+	let params = ctx.request.query
+	let where  = {}
+	if(params.accountUid){
+		where.accountUid = params.accountUid
+	}
+	let parkingList = await models.parkingSite.findAll({
+		attributes: ['uid', 'name'],
+		where: where
+	})
+	response.send(ctx, parkingList)
+}
