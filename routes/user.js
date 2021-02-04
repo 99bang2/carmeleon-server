@@ -66,7 +66,13 @@ api.get('/carWashes', carWashController.list)
 api.get('/carWashes/:uid', carWashController.read)
 api.get('/carWashes/products/:productUid', carWashController.getProductInfo)
 api.get('/carWashes/:uid/timeSlots/:date', carWashController.getTimeSlots)
-api.post('/carWashes/booking', auth.isUserLoggedIn, carWashController.booking)
+api.post('/carWashes/bookings', auth.isUserLoggedIn, carWashController.booking)
+api.get('/carWashes/user/bookings', auth.isUserLoggedIn, carWashController.getBookings)
+api.get('/carWashes/user/bookings/:uid', auth.isUserLoggedIn, carWashController.getBooking)
+api.put('/carWashes/user/bookings/:uid', auth.isUserLoggedIn, carWashController.putBooking)
+api.post('/carWashes/user/bookings/:uid/refund', auth.isUserLoggedIn, carWashController.bookingRefundRequest)
+
+api.post('/carWashes/bookings/cancelPayment', carWashController.cancelPayment)
 
 // 리뷰
 api.post('/rates/:targetType/:targetUid', auth.isUserLoggedIn, commonController.isAvailableTarget, rateController.create) //리뷰쓰기
@@ -115,7 +121,8 @@ api.post('/payLogs', auth.isUserLoggedIn, payLogController.create)
 api.get('/payLogs', auth.isUserLoggedIn, payLogController.userList)
 api.get('/payLogs/:uid', auth.isUserLoggedIn, payLogController.read)
 api.put('/payLogs/:uid', auth.isUserLoggedIn, payLogController.update)
-api.get('/ticketList', auth.isUserLoggedIn, payLogController.activeTicketList)
+
+api.get('/ticketList', auth.isUserLoggedIn, userController.activeTicketList)
 
 api.get('/coupons', auth.isUserLoggedIn, couponController.list)
 api.get('/coupons/:uid', auth.isUserLoggedIn, couponController.read)
@@ -128,7 +135,7 @@ api.post('/questions', auth.isUserLoggedIn, questionController.create)
 api.get('/questions', auth.isUserLoggedIn, questionController.list)
 api.get('/questions/:uid', auth.isUserLoggedIn, questionController.read)
 //알림 리스트//
- api.get('/pushes', auth.isUserLoggedIn, pushController.userList)
+api.get('/pushes', auth.isUserLoggedIn, pushController.userList)
 ///////////////////
 /**
  * 테슬라 컨트롤러

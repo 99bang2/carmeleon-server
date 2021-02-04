@@ -1,8 +1,10 @@
 const axios = require('axios')
 const models = require('../models')
+const moment = require('moment')
 const response = require('../libs/response')
-const carWashBookingAPI = 'https://community.rocketlaunch.co.kr:5000'
-//const carWashBookingAPI = 'http://localhost:4000'
+const nicePay = require('../libs/nicePay')
+//const carWashBookingAPI = 'https://community.rocketlaunch.co.kr:5000'
+const carWashBookingAPI = 'http://localhost:4000'
 
 exports.read = async function (ctx) {
     let {uid} = ctx.params
@@ -121,45 +123,150 @@ exports.booking = async function (ctx) {
         let productIndex = productOptionUids.indexOf(Number(cur))
         let productOption = productOptions[productIndex]
         let price = productOption.price
-        if(acc === null || price === null) {
-            acc = null
-        }else {
+        if(price !== null) {
             acc = acc + price
         }
         return acc
     }, 0)
-    let finalPrice = productPrice === null || totalOptionPrice === null ? null : productPrice + totalOptionPrice
-    if((finalPrice || _.finalPrice) && finalPrice !== _.finalPrice) {
+    let finalPrice = productPrice + totalOptionPrice
+
+    console.log('productPrice', productPrice)
+    console.log('totalOptionPrice', totalOptionPrice)
+    console.log('finalPrice', finalPrice)
+
+    if(finalPrice !== _.finalPrice) {
         response.customError(ctx, '잘못된 가격 정보입니다.')
     }
-    if(finalPrice) {
-        //결제진행.
-        let card = await models.card.findOne({
-            where: {
-                uid: _.cardUid,
-                userUid: ctx.user.uid
-            }
+    let optionPrices = []
+    for(let optUid of _.options) {
+        let productOptionIndex = productOptionUids.indexOf(Number(optUid))
+        let productOption = productOptions[productOptionIndex]
+        optionPrices.push({
+            uid: productOption.uid,
+            price: productOption.price,
+            name: productOption.name
         })
-        if(!card) {
-            response.customError(ctx, '잘못된 카드 정보입니다.')
+    }
+    let card = await models.card.findOne({
+        where: {
+            uid: _.cardUid,
+            userUid: ctx.user.uid
+        }
+    })
+    if(!card) {
+        response.customError(ctx, '잘못된 카드 정보입니다.')
+    }
+    let user = await models.user.findByPk(ctx.user.uid)
+
+    //결제
+    /*let payResult = await nicePay.pgPaymentNice({
+        userUid: user.uid,
+        billKey: card.billKey,
+        price: finalPrice,
+        goodsName: product.name,
+        buyerName: _.name,
+        buyerEmail: user.email || 'mobilx.carmeleon@gmail.com',
+        buyerTel: _.phone
+    })
+    if(payResult.resultCode !== '3001') {
+        response.customError(ctx, '[결제실패] ' + payResult.resultMsg)
+    }*/
+    //결제부분 주석처리. 테스트완료.
+    let payResult = {
+        uid: 1,
+        cardName: '현대',
+        cardCode: '04',
+        tid: 'testtid',
+        moid: 'testmoid',
+        cardNumber: card.maskingCardNumber,
+    }
+
+    console.log({
+        userUid: user.uid,
+        price: _.finalPrice,
+        payResultUid: payResult.uid,
+        cardName: payResult.cardName,
+        cardCode: payResult.cardCode,
+        tid: payResult.tid,
+        cardNumber: card.maskingCardNumber,
+        moid: payResult.moid,
+    })
+
+    let formData = {
+        vendorCode: 'carmeleon',
+        vendorCarWashUid: carWash.uid,
+        vendorUserKey: user.uid,
+        carWashUid: carWash.bookingCode,
+        productUid: _.productUid,
+        bookingDateTime: _.bookingDate + ' ' + _.bookingTime,
+        bookingDate: _.bookingDate,
+        bookingTime: _.bookingTime,
+        name: _.name,
+        phone: _.phone,
+        mobilxCarUid: car.mobilxCarUid,
+        carBrand: car.brand,
+        carModel: car.model,
+        carPlate: car.carPlate,
+        options: _.options,
+        productPrice: _.productPrice,
+        totalOptionPrice: _.totalOptionPrice,
+        finalPrice: _.finalPrice,
+        requireExtraPay: _.requireExtraPay,
+        optionPrices: optionPrices,
+        paymentsData: {
+            userUid: user.uid,
+            price: _.finalPrice,
+            payResultUid: payResult.uid,
+            cardName: payResult.cardName,
+            cardCode: payResult.cardCode,
+            tid: payResult.tid,
+            cardNumber: card.maskingCardNumber,
+            moid: payResult.moid
         }
     }
-    let formData = {
-        /*carWashUid: this.carWash.uid,
-        carWashName: this.carWash.name,
-        productUid: this.product.uid,
-        bookingDateTime: this.reserveDate,
-        bookingDate: this.selectedDate,
-        bookingTime: this.selectedSlot,
-        name: this.name,
-        phone: this.phone,
-        carUid: this.userCar.carUid,
-        carPlate: this.userCar.plateNumber,
-        options: this.selectedOptions,
-        productPrice: this.productPrice,
-        totalOptionPrice: this.totalOptionPrice,
-        finalPrice: this.finalPrice,*/
-    }
-    response.send(ctx, formData)
+    let booking = await axios.post(carWashBookingAPI + `/api/carmeleon/bookings`, formData)
+    response.send(ctx, booking.data.data)
 
+}
+
+exports.getBookings = async function (ctx) {
+    let _ = ctx.request.query
+    let res = await axios.get(carWashBookingAPI + `/api/carmeleon/bookings`, {
+        params: {
+            ..._,
+            vendorUserKey: ctx.user.uid
+        }
+    })
+    response.send(ctx, res.data.data)
+}
+
+exports.getBooking = async function (ctx) {
+    let { uid } = ctx.params
+    let res = await axios.get(carWashBookingAPI + `/api/carmeleon/bookings/${uid}`)
+    response.send(ctx, res.data.data)
+}
+
+exports.putBooking = async function (ctx) {
+    let { uid } = ctx.params
+    let _ = ctx.request.body
+    let res = await axios.put(carWashBookingAPI + `/api/carmeleon/bookings/${uid}`, _)
+    response.send(ctx, res.data.data)
+}
+
+exports.cancelPayment = async function (ctx) {
+    let _ = ctx.request.body
+    let result = await nicePay.pgPaymentCancelNice(_)
+    response.send(ctx, result)
+}
+
+exports.bookingRefundRequest = async function (ctx) {
+    let { uid } = ctx.params
+    let _ = ctx.request.body
+    let res = await axios.put(carWashBookingAPI + `/api/carmeleon/bookings/${uid}`, {
+        status: 'CANCEL',
+        cancelStatus: 0,
+        cancelReason: _.cancelReason,
+        cancelRequestTime: moment().format('YYYY-MM-DD HH:mm:ss')
+    })
+    response.send(ctx, res.data.data)
 }

@@ -1,12 +1,15 @@
 const models = require('../models')
 const response = require('../libs/response')
 const jwt = require('jsonwebtoken')
+const axios = require('axios')
 const env = process.env.NODE_ENV || 'development'
 const config = require('../configs/config.json')[env]
 const secret = config.secretKey
 const common = require('../controllers/common')
 const pointCodes = require('../configs/pointCodes')
 const moment = require('moment')
+//const carWashBookingAPI = 'https://community.rocketlaunch.co.kr:5000'
+const carWashBookingAPI = 'http://localhost:4000'
 
 exports.create = async function (ctx) {
     let _ = ctx.request.body
@@ -173,7 +176,7 @@ exports.getBadge = async function (ctx) {
 	})
 
 	//이용내역
-	result.payLog = await models.payLog.count({
+	let payLogCount = await models.payLog.count({
 		where: {
 			visible: true,
 			userUid: ctx.user.uid,
@@ -182,6 +185,15 @@ exports.getBadge = async function (ctx) {
 			}
 		}
 	})
+	let res = await axios.get(carWashBookingAPI + `/api/carmeleon/bookings`, {
+		params: {
+			onlyToday: true,
+			vendorUserKey: ctx.user.uid
+		}
+	})
+	let carWashBookingCount = res.data.data.count
+	result.payLog = payLogCount + carWashBookingCount
+
 	//공지
 	result.notice = await models.notice.count({
 		where: {
@@ -221,4 +233,67 @@ exports.getBadge = async function (ctx) {
 	}
 
 	response.send(ctx, result)
+}
+
+
+exports.activeTicketList = async function (ctx) {
+	let list = []
+	let payLogs = await models.payLog.findAll({
+		include: [
+			{
+				model: models.parkingSite,
+				attributes: ['name', 'address']
+			},
+			{
+				model: models.discountTicket,
+				attributes: ['ticketType', 'ticketDayType', 'ticketTime']
+			}
+		],
+		attributes: ['uid', 'carNumber', 'reserveTime', 'price', 'discountPrice', 'createdAt', 'totalPrice'],
+		where: {
+			userUid: ctx.user.uid,
+			activeStatus: false,
+			status: 10,
+			cancelStatus: -1,
+			expired: false
+		}
+	})
+	for(let payLog of payLogs) {
+		list.push({
+			targetType: 0, // 0: 주차권 3: 세차권
+			recordUid: payLog.uid,
+			dateTime: moment(payLog.createdAt).format('YYYY-MM-DD') + ' ' + payLog.reserveTime,
+			spotName: payLog.parkingSite.name,
+			spotAddress: payLog.parkingSite.address,
+			title: '일반 주차권',
+			subTitle: payLog.discountTicket.ticketTitle
+		})
+	}
+	//세차권
+	let res = await axios.get(carWashBookingAPI + `/api/carmeleon/bookings`, {
+		params: {
+			onlyAccept: true,
+			vendorUserKey: ctx.user.uid
+		}
+	})
+	let carWashBookings = res.data.data.rows
+	for(let booking of carWashBookings) {
+		list.push({
+			targetType: 3, // 0: 주차권 3: 세차권
+			recordUid: booking.uid,
+			dateTime: booking.bookingDate + ' ' + booking.bookingTime,
+			spotName: booking.carWashName,
+			spotAddress: booking.carWash.address,
+			title: '세차권',
+			subTitle: booking.product.name
+		})
+	}
+	list.sort((a, b) => {
+		if(moment(a.dateTime).isAfter(moment(b.dateTime))) {
+			return 1
+		}else {
+			return -1
+		}
+	})
+	response.send(ctx, list)
 }
