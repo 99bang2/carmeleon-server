@@ -247,4 +247,16 @@ api.get('/allPayLogs', auth.isAdminLoggedIn, payLogController.allList)
 api.get('/parkingStatistics', auth.isAdminLoggedIn, statisticController.parkingStatistics)
 api.get('/parkingLists', auth.isAdminLoggedIn, parkingController.parkingListForAdmin)
 
+/**
+ * 세차장 예약
+ */
+api.get('/carWashes/admin/bookings', auth.isAdminLoggedIn, carWashController.getBookings)
+api.get('/carWashes/admin/bookings/:uid', auth.isAdminLoggedIn, carWashController.getBooking)
+api.put('/carWashes/admin/bookings/:uid',auth.isAdminLoggedIn, carWashController.putBooking)
+/**
+ * 세차장 결제 취소
+ */
+//결제 취소 //
+api.post('/bookingRefundApprove', auth.isAdminLoggedIn, pgController.bookingPgPaymentCancelNice)
+api.post('/bookingRefundReject', auth.isAdminLoggedIn, pgController.bookingRefundReject)
 module.exports = api

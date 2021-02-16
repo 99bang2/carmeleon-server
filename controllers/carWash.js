@@ -3,7 +3,7 @@ const models = require('../models')
 const moment = require('moment')
 const response = require('../libs/response')
 const nicePay = require('../libs/nicePay')
-//const carWashBookingAPI = 'https://community.rocketlaunch.co.kr:5000'
+// const carWashBookingAPI = 'https://community.rocketlaunch.co.kr:5000'
 const carWashBookingAPI = 'http://localhost:4000'
 
 exports.read = async function (ctx) {

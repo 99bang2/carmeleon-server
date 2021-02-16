@@ -1,5 +1,8 @@
+const axios = require('axios')
 const models = require('../../models')
 const response = require('../../libs/response')
+// const carWashBookingAPI = 'https://community.rocketlaunch.co.kr:5000'
+const carWashBookingAPI = 'http://localhost:4000'
 
 exports.create = async function (ctx) {
     let _ = ctx.request.body
@@ -45,4 +48,27 @@ exports.bulkDelete = async function (ctx) {
         }
     })
     response.send(ctx, deleteResult)
+}
+exports.getBookings = async function (ctx) {
+    let _ = ctx.request.query
+    let res = await axios.get(carWashBookingAPI + `/api/carmeleon/bookings`, {
+        params: {
+            ..._,
+            vendorUserKey: ctx.user.uid
+        }
+    })
+    response.send(ctx, res.data.data)
+}
+
+exports.getBooking = async function (ctx) {
+    let { uid } = ctx.params
+    let res = await axios.get(carWashBookingAPI + `/api/carmeleon/bookings/${uid}`)
+    response.send(ctx, res.data.data)
+}
+
+exports.putBooking = async function (ctx) {
+    let { uid } = ctx.params
+    let _ = ctx.request.body
+    let res = await axios.put(carWashBookingAPI + `/api/carmeleon/bookings/${uid}`, _)
+    response.send(ctx, res.data.data)
 }
