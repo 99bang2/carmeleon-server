@@ -310,6 +310,7 @@ exports.bookingPgPaymentCancelNice = async function (ctx) {
 	let payInfo = _.paymentsData
 	let status = _.cancelStatus
 	let cancelRequestTime = _.cancelRequestTime
+	let clientStatus = _.clientStatus
 	let ediDate = moment().format('YYYYMMDDHHmmss')
 	let transactionID = payInfo.tid
 	let amt = payInfo.price
@@ -365,10 +366,17 @@ exports.bookingPgPaymentCancelNice = async function (ctx) {
 			}
 			await common.pushMessage(data)
 		}
-		await axios.put(carWashBookingAPI + `/api/carmeleon/bookings/${uid}`,{
-			cancelStatus: 10,
-			cancelCompleteTime: Sequelize.fn('NOW')
-		})
+		if(clientStatus === 'wait' || clientStatus=== 'accept'){
+			await axios.put(carWashBookingAPI + `/api/carmeleon/bookings/${uid}`,{
+				status: 'REJECT',
+				cancelCompleteTime: moment().format('YYYY-MM-DD HH:mm')
+			})
+		}else{
+			await axios.put(carWashBookingAPI + `/api/carmeleon/bookings/${uid}`,{
+				cancelStatus: 10,
+				cancelCompleteTime: moment().format('YYYY-MM-DD HH:mm')
+			})
+		}
 		response.send(ctx, {
 			result: true
 		})

@@ -159,7 +159,7 @@ exports.booking = async function (ctx) {
     let user = await models.user.findByPk(ctx.user.uid)
 
     //결제
-    /*let payResult = await nicePay.pgPaymentNice({
+    let payResult = await nicePay.pgPaymentNice({
         userUid: user.uid,
         billKey: card.billKey,
         price: finalPrice,
@@ -170,16 +170,16 @@ exports.booking = async function (ctx) {
     })
     if(payResult.resultCode !== '3001') {
         response.customError(ctx, '[결제실패] ' + payResult.resultMsg)
-    }*/
+    }
     //결제부분 주석처리. 테스트완료.
-    let payResult = {
+    /*let payResult = {
         uid: 1,
         cardName: '현대',
         cardCode: '04',
         tid: 'testtid',
         moid: 'testmoid',
         cardNumber: card.maskingCardNumber,
-    }
+    }*/
 
     console.log({
         userUid: user.uid,
