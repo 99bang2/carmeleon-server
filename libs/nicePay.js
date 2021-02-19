@@ -69,7 +69,7 @@ exports.pgPaymentNice = async function (_) {
 }
 
 exports.pgPaymentCancelNice = async function (_) {
-	let reason = "환불처리"
+	let reason = _.reason
 	let ediDate = moment().format('YYYYMMDDHHmmss')
 	let transactionID = _.tid
 	let amt = _.price

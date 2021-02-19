@@ -30,6 +30,7 @@ const couponLogController = require('../controllers/couponLog')
 const questionController = require('../controllers/question')
 const pushController = require('../controllers/push')
 const pgController = require('../controllers/pg')
+const bookingPgController = require('../controllers/admin/pg')
 const tutorialController = require('../controllers/tutorial')
 const statisticController = require('../controllers/admin/statistics')
 
@@ -257,6 +258,6 @@ api.put('/carWashes/admin/bookings/:uid',auth.isAdminLoggedIn, carWashController
  * 세차장 결제 취소
  */
 //결제 취소 //
-api.post('/bookingRefundApprove', auth.isAdminLoggedIn, pgController.bookingPgPaymentCancelNice)
-api.post('/bookingRefundReject', auth.isAdminLoggedIn, pgController.bookingRefundReject)
+api.post('/bookingRefundApprove', auth.isAdminLoggedIn, bookingPgController.bookingPgPaymentCancelNice)
+api.post('/bookingRefundReject', auth.isAdminLoggedIn, bookingPgController.bookingRefundReject)
 module.exports = api
