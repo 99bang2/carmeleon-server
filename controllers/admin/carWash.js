@@ -53,8 +53,7 @@ exports.getBookings = async function (ctx) {
     let _ = ctx.request.query
     let res = await axios.get(carWashBookingAPI + `/api/carmeleon/bookings`, {
         params: {
-            ..._,
-            vendorUserKey: ctx.user.uid
+            ..._
         }
     })
     response.send(ctx, res.data.data)
