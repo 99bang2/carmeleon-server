@@ -8,6 +8,7 @@ const carWashBookingAPI = 'https://community.rocketlaunch.co.kr:5000'
 
 exports.read = async function (ctx) {
     let {uid} = ctx.params
+    let _ = ctx.request.query
     let carWash = await models.carWash.findByPk(uid)
     if(ctx.user) {
         let favorite = await models.favorite.count({
@@ -24,14 +25,19 @@ exports.read = async function (ctx) {
     if(carWash.bookingCode) {
         let params = {}
         if(ctx.user) {
-            let mainCar = await models.car.findOne({
-                where: {
-                    userUid: ctx.user.uid,
-                    isMain: true
-                }
-            })
-            if(mainCar) {
-                params.mobilxCarUid = mainCar.mobilxCarUid
+            let car = null
+            if(_.carUid) {
+                car = await models.car.findByPk(_.carUid)
+            }else {
+                car = await models.car.findOne({
+                    where: {
+                        userUid: ctx.user.uid,
+                        isMain: true
+                    }
+                })
+            }
+            if(car) {
+                params.mobilxCarUid = car.mobilxCarUid
             }
         }
         let resProducts = await axios.get(carWashBookingAPI + `/api/carmeleon/carWashes/${carWash.bookingCode}/products`, {
