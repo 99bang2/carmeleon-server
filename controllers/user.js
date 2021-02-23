@@ -8,8 +8,8 @@ const secret = config.secretKey
 const common = require('../controllers/common')
 const pointCodes = require('../configs/pointCodes')
 const moment = require('moment')
-// const carWashBookingAPI = 'https://community.rocketlaunch.co.kr:5000'
-const carWashBookingAPI = 'http://localhost:4000'
+const carWashBookingAPI = 'https://community.rocketlaunch.co.kr:5000'
+//const carWashBookingAPI = 'http://localhost:4000'
 
 exports.create = async function (ctx) {
     let _ = ctx.request.body

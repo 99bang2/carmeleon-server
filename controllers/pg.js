@@ -10,8 +10,8 @@ const CryptoJS = require("crypto-js")
 const Sequelize = require('sequelize')
 const common = require('../controllers/common')
 const pointCodes = require('../configs/pointCodes')
-// const carWashBookingAPI = 'https://community.rocketlaunch.co.kr:5000'
-const carWashBookingAPI = 'http://localhost:4000'
+const carWashBookingAPI = 'https://community.rocketlaunch.co.kr:5000'
+//const carWashBookingAPI = 'http://localhost:4000'
 
 
 const merchantKey = config.nicePay.merchantKey
