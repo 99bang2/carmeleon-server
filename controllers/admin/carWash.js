@@ -1,8 +1,9 @@
 const axios = require('axios')
 const models = require('../../models')
 const response = require('../../libs/response')
-const carWashBookingAPI = 'https://community.rocketlaunch.co.kr:5000'
-//const carWashBookingAPI = 'http://localhost:4000'
+const env = process.env.NODE_ENV || 'development'
+const config = require('../../configs/config.json')[env]
+const carWashBookingAPI = config.carWashBookingAPI
 
 exports.create = async function (ctx) {
     let _ = ctx.request.body
