@@ -174,6 +174,14 @@ exports.getBadge = async function (ctx) {
 			expired: false
 		}
 	})
+	let resBooking = await axios.get(carWashBookingAPI + `/api/carmeleon/bookings`, {
+		params: {
+			onlyAccept: true,
+			vendorUserKey: ctx.user.uid
+		}
+	})
+	result.ticket += resBooking.data.data.count
+
 
 	//이용내역
 	let payLogCount = await models.payLog.count({
