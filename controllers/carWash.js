@@ -44,7 +44,9 @@ exports.read = async function (ctx) {
         let resProducts = await axios.get(carWashBookingAPI + `/api/carmeleon/carWashes/${carWash.bookingCode}/products`, {
             params: params
         })
+        let carWashData = await axios.get(carWashBookingAPI + `/api/carmeleon/carWashes/${carWash.bookingCode}`)
         let products = resProducts.data.data
+        carWash.dataValues.carWashData = carWashData.data.data
         carWash.dataValues.products = products
     }
 
