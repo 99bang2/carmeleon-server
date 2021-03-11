@@ -53,6 +53,6 @@
 			"idNo": "2a85a40a538229467eafa1370ce28218",
 			"cardPass": "50d931ca82df0153bdb1b065f42e5c05"
 		},
-		"carWashBookingAPI": "https://community.rocketlaunch.co.kr:5000"
+		"carWashBookingAPI": "https://carwash.carmeleon.co.kr:4000"
 	}
 }
