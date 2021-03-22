@@ -1,10 +1,13 @@
 const models = require('../../models')
 const response = require('../../libs/response')
 const moment = require('moment')
+const naverConfig = require('../../configs/objectStorage.json')
+const converter = require('../../libs/imageConvert')
 
 exports.create = async function (ctx) {
     let _ = ctx.request.body
     let parkingSite = await models.parkingSite.create(_)
+    converter(parkingSite.picture, naverConfig.prefix_parking)
     response.send(ctx, parkingSite)
 }
 
@@ -26,6 +29,7 @@ exports.update = async function (ctx) {
     let parkingSite = await models.parkingSite.findByPk(uid)
     Object.assign(parkingSite, _)
     await parkingSite.save()
+    converter(parkingSite.picture, naverConfig.prefix_parking)
     response.send(ctx, parkingSite)
 }
 

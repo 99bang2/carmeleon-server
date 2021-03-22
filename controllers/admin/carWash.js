@@ -4,10 +4,13 @@ const response = require('../../libs/response')
 const env = process.env.NODE_ENV || 'development'
 const config = require('../../configs/config.json')[env]
 const carWashBookingAPI = config.carWashBookingAPI
+const naverConfig = require('../../configs/objectStorage.json')
+const converter = require('../../libs/imageConvert')
 
 exports.create = async function (ctx) {
     let _ = ctx.request.body
     let carWash = await models.carWash.create(_)
+    converter(carWash.picture, naverConfig.prefix_car_wash)
     response.send(ctx, carWash)
 }
 
@@ -30,6 +33,7 @@ exports.update = async function (ctx) {
     let carWash = await models.carWash.findByPk(uid)
     Object.assign(carWash, _)
     await carWash.save()
+    converter(carWash.picture, naverConfig.prefix_car_wash)
     response.send(ctx, carWash)
 }
 
