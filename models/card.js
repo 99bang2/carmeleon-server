@@ -102,7 +102,7 @@ module.exports = (sequelize, DataTypes) => {
 		return result
 	}
 	card.checkCard = async (params) => {
-		let count = await card.count(
+		return card.count(
 			{
 				where: {
 					userUid: params.userUid,
@@ -110,10 +110,9 @@ module.exports = (sequelize, DataTypes) => {
 				}
 			}
 		)
-		return count
 	}
 	card.findUserCard = async function(userUid, cardUid) {
-		return models.card.findOne({
+		return card.findOne({
 			where: {
 				uid: cardUid,
 				userUid: userUid
