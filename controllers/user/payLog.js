@@ -30,14 +30,13 @@ exports.create = async function (ctx) {
         response.customError(ctx, '매진된 상품입니다.')
     }
 
-    // todo: coopPayment 변수 추가
     let user 			= await models.user.findByPk(ctx.user.uid)
     let sellingPrice 	= discountTicket.ticketPrice - discountTicket.ticketPriceDiscount
     let discountPrice 	= 0 // 경감차량 할인금액 todo:경감차량 할인
     let discountType 	= 0 // 경감차량 할인유형 todo:경감차량 할인
     let price 			= sellingPrice - discountPrice
     let point 			= Number(_.point)
-    let coopPayment 	= Number(_.coopPayment)
+    let coopPayment 	= Number(_.coopPayment) || 0
     let fee 			= price * Number(discountTicket.fee) / 100
     let totalPrice 		= price - point - coopPayment
 

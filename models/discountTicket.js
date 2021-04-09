@@ -204,8 +204,7 @@ module.exports = (sequelize, DataTypes) => {
 	discountTicket.search = (params, models) => {
 		let currentDate = moment().format('YYYY-MM-DD')
 		let currentDay = parseInt(moment().format('e'))
-		let dayType
-		(currentDay === 0 || currentDay === 6) ? dayType = 2 : dayType = 1
+		let dayType = (currentDay === 0 || currentDay === 6) ? 2 : 1
 		let where = {}
 		if (params.siteUid) {
 			where.siteUid = params.siteUid
