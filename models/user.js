@@ -52,6 +52,10 @@ module.exports = (sequelize, DataTypes) => {
 		marketing: {
 			type: DataTypes.BOOLEAN
 		},
+		coopPayment: {
+			type: DataTypes.INTEGER.UNSIGNED,
+			defaultValue: 0
+		},
 		memo: {
 			type: DataTypes.TEXT
 		},
@@ -142,6 +146,17 @@ module.exports = (sequelize, DataTypes) => {
 			}
 		})
 		return data
+	}
+
+	user.getUserPoint = function (uid) {
+		return user.findOne(
+			{
+				attributes: ['point'],
+				where: {
+					uid: uid
+				}
+			}
+		)
 	}
 
 	return user

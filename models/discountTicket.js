@@ -1,7 +1,9 @@
 'use strict'
-const response = require('../libs/response')
-const codes = require('../configs/codes.json')
-const moment = require('moment')
+
+const response 	= require('../libs/response')
+const codes 	= require('../configs/codes.json')
+const moment 	= require('moment')
+
 module.exports = (sequelize, DataTypes) => {
 	const discountTicket = sequelize.define('discountTicket', {
 		uid: {
@@ -199,7 +201,7 @@ module.exports = (sequelize, DataTypes) => {
 		}
 		return data
 	}
-	discountTicket.search = async (params, models) => {
+	discountTicket.search = (params, models) => {
 		let currentDate = moment().format('YYYY-MM-DD')
 		let currentDay = parseInt(moment().format('E'))
 		let dayType
@@ -211,7 +213,8 @@ module.exports = (sequelize, DataTypes) => {
 		if (params.productTag) {
 			where.ticketType = params.productTag
 		}
-		let result = await discountTicket.findAll({
+
+		return discountTicket.findAll({
 			attributes: {
 				include: [
 					[sequelize.literal(`case when ('` + currentDate + `' not between ticket_start_date AND ticket_end_date) AND (ticket_day_type !=` + dayType + `) then true else false end`), 'expire'],
@@ -220,7 +223,15 @@ module.exports = (sequelize, DataTypes) => {
 			},
 			where: where
 		})
-		return result
+	}
+
+	discountTicket.getTicketPrice = function (uid) {
+		return discountTicket.findOne({
+			attributes: ['ticketPriceDiscountPercent', 'ticketPrice', 'ticketPriceDiscount'],
+			where: {
+				uid: uid
+			}
+		})
 	}
 
 	return discountTicket

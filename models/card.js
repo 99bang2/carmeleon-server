@@ -112,5 +112,13 @@ module.exports = (sequelize, DataTypes) => {
 		)
 		return count
 	}
+	card.findUserCard = async function(userUid, cardUid) {
+		return models.card.findOne({
+			where: {
+				uid: cardUid,
+				userUid: userUid
+			}
+		})
+	}
 	return card
 }

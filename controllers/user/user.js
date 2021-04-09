@@ -1,12 +1,12 @@
-const models = require('../models')
-const response = require('../libs/response')
+const models = require('../../models')
+const response = require('../../libs/response')
 const jwt = require('jsonwebtoken')
 const axios = require('axios')
 const env = process.env.NODE_ENV || 'development'
-const config = require('../configs/config.json')[env]
+const config = require('../../configs/config.json')[env]
 const secret = config.secretKey
-const common = require('../controllers/common')
-const pointCodes = require('../configs/pointCodes')
+const common = require('../common')
+const pointCodes = require('../../configs/pointCodes.json')
 const moment = require('moment')
 const carWashBookingAPI = config.carWashBookingAPI
 

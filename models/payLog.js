@@ -4,6 +4,7 @@ const codes = require('../configs/codes.json')
 const moment = require('moment')
 const Sequelize = require('sequelize')
 const Op = Sequelize.Op
+
 module.exports = (sequelize, DataTypes) => {
 	const payLog = sequelize.define('payLog', {
 		uid: {
@@ -119,10 +120,19 @@ module.exports = (sequelize, DataTypes) => {
 		clientStatus: {
 			type: DataTypes.VIRTUAL,
 			get: function () {
-				let status = this.getDataValue('status')
-				let cancelStatus = this.getDataValue('cancelStatus')
-				let expired = this.getDataValue('expired')
-				let activeStatus = this.getDataValue('activeStatus')
+				let status 			= this.getDataValue('status')
+				let cancelStatus 	= this.getDataValue('cancelStatus')
+				let expired 		= this.getDataValue('expired')
+				let activeStatus 	= this.getDataValue('activeStatus')
+
+				if (status === -10) { // 결제 실패
+
+				} else {
+					// 결제성공 혹은 결제취소
+
+				}
+
+
 				if (status === 10 || status === -20) {
 					if (activeStatus) {
 						return 'used'
@@ -150,11 +160,16 @@ module.exports = (sequelize, DataTypes) => {
 		cancelCompleteTime: {
 			type: DataTypes.DATE
 		},
+		coopPayment: {
+			type: DataTypes.INTEGER,
+			defaultValue: 0
+		}
 	}, {
 		timestamps: true,
 		underscored: true,
 		paranoid: true
 	})
+
 	payLog.associate = function (models) {
 		payLog.belongsTo(models.user)
 		payLog.belongsTo(models.payResult)
@@ -162,6 +177,7 @@ module.exports = (sequelize, DataTypes) => {
 		payLog.belongsTo(models.discountTicket)
 		payLog.belongsTo(models.card)
 	}
+
 	payLog.getByUid = async function (ctx, uid, models) {
 		let data = await payLog.findByPk(uid, {
 			include: [
@@ -183,14 +199,24 @@ module.exports = (sequelize, DataTypes) => {
 		}
 		return data
 	}
+
 	payLog.search = async (params, models) => {
-		let where = {}
-		let offset = null
-		let limit = null
-		let order = [['createdAt', 'DESC']]
+		let where 	= {}
+		let offset 	= params.offset ? Number(params.offset) : null
+		let limit 	= params.limit ? Number(params.limit) : null
+		let order 	= [['createdAt', 'DESC']]
+
+		// if (params.page) {
+		// 	limit = 10
+		// 	offset = (Number(params.page) - 1) * limit
+		// } else {
+		// 	limit = params.limit ? Number(params.limit) : null
+		// 	offset = params.offset ? Number(params.offset) : null
+		// }
+
 		if (params.searchData) {
-			console.log(params.searchData)
 			let searchData = JSON.parse(params.searchData)
+
 			if (searchData.searchKeyword) {
 				where = {
 					[Op.or]: [
@@ -222,9 +248,36 @@ module.exports = (sequelize, DataTypes) => {
 					]
 				}
 			}
+
 			if (searchData.searchStatus) {
-				where.clientStatus = searchData.searchStatus
+				where.status = [10, -20]
+				switch (searchData.searchStatus) {
+					case 'all':
+						delete where.status
+						break
+					case 'used':
+						where.activeStatus = true
+						break
+					case 'expired':
+						where.expired = true
+						break
+					case 'refunding':
+						where.expired = false
+						where.cancelStatus = 0
+						break
+					case 'refunded':
+						where.expired = false
+						where.cancelStatus = 10
+						break
+					case 'paid':
+						where.expired = false
+						where.cancelStatus = {
+							[Op.notIn]: [0, 10]
+						}
+						break
+				}
 			}
+
 			if (searchData.searchDate) {
 				if (searchData.searchDate.split('~').length > 1) {
 					where.createdAt = {
@@ -242,32 +295,38 @@ module.exports = (sequelize, DataTypes) => {
 					}
 				}
 			}
-			if (searchData.searchParkingSite !== "") {
-				let sequelizeObj = {[Op.and]: [sequelize.literal('`parkingSite`.`uid` = ' + searchData.searchParkingSite)]}
-				Object.assign(where, sequelizeObj)
-			}
+
+			// if (searchData.searchParkingSite !== "") {
+			// 	let sequelizeObj = {[Op.and]: [sequelize.literal('`parkingSite`.`uid` = ' + searchData.searchParkingSite)]}
+			// 	Object.assign(where, sequelizeObj)
+			// }
 		}
-		if (params.accountUid) {
-			let sequelizeObj = {[Op.and]: [sequelize.literal('`parkingSite`.`account_uid` = ' + params.accountUid)]}
-			Object.assign(where, sequelizeObj)
-		}
-		if (params.userUid) {
-			where.userUid = params.userUid
-		}
-		if (params.visible) {
-			where.visible = params.visible
-		}
-		if (params.carNumber) {
-			where.carNumber = {[Op.substring]: params.carNumber}
-		}
-		if (params.page) {
-			//offset, limit 처리//
-			limit = 10
-			offset = (Number(params.page) - 1) * limit
-		} else {
-			limit = params.limit ? Number(params.limit) : null
-			offset = params.offset ? Number(params.offset) : null
-		}
+
+		// if (params.accountUid) {
+		// 	let sequelizeObj = {[Op.and]: [sequelize.literal('`parkingSite`.`account_uid` = ' + params.accountUid)]}
+		// 	Object.assign(where, sequelizeObj)
+		// }
+
+		// if (params.userUid) {
+		// 	where.userUid = params.userUid
+		// }
+
+		// if (params.visible) {
+		// 	where.visible = params.visible
+		// }
+
+		// if (params.carNumber) {
+		// 	where.carNumber = {[Op.substring]: params.carNumber}
+		// }
+
+		// if (params.page) {
+		// 	limit = 10
+		// 	offset = (Number(params.page) - 1) * limit
+		// } else {
+		// 	limit = params.limit ? Number(params.limit) : null
+		// 	offset = params.offset ? Number(params.offset) : null
+		// }
+
 		let rateWhere = 'target_type = 0 AND target_uid = payLog.site_uid AND user_uid = payLog.user_uid)'
 		let result = await payLog.findAll({
 			//TODO:추후 필요한 사항만 attribute 넣어 놓을 것
@@ -294,6 +353,7 @@ module.exports = (sequelize, DataTypes) => {
 			where: where,
 			order: order
 		})
+
 		let count = await payLog.count({
 			include: [
 				{
@@ -303,6 +363,7 @@ module.exports = (sequelize, DataTypes) => {
 			],
 			where: where
 		})
+
 		return {
 			rows: result,
 			count: count
@@ -381,8 +442,6 @@ module.exports = (sequelize, DataTypes) => {
 		if (parkingSiteUid){
 			where.siteUid = parkingSiteUid
 		}
-
-		console.log('where', where)
 
 		let data = await payLog.findAll({
 				include: [
@@ -480,7 +539,12 @@ module.exports = (sequelize, DataTypes) => {
 		console.log(settleData)
 		return settleData
 	}
+
 	payLog.getByUserUid = async function (ctx, params, models) {
+		let offset 	= null
+		let limit 	= null
+		let order	= [['createdAt', 'DESC']]
+
 		let where = {
 			visible: true,
 			status: {
@@ -488,13 +552,12 @@ module.exports = (sequelize, DataTypes) => {
 			},
 			userUid: ctx.user.uid
 		}
-		let offset = null
-		let limit = null
-		let order = [['createdAt', 'DESC']]
+
 		if (params.page) {
 			limit = 10
 			offset = (Number(params.page) - 1) * limit
 		}
+
 		let result = await payLog.findAll({
 			include: [
 				{
@@ -509,21 +572,23 @@ module.exports = (sequelize, DataTypes) => {
 			where: where,
 			order: order
 		})
+
 		let count = await payLog.count({
 			where: where
 		})
+
 		return {
 			rows: result,
 			count: count
 		}
 	}
 
-	payLog.getByUserUidForAdmin = async function (ctx, userUid, models) {
+	payLog.getByUserUidForAdmin = function (ctx, userUid, models) {
 		let where = {
 			userUid: userUid,
 		}
 		let order = [['createdAt', 'DESC']]
-		let result = await payLog.findAll({
+		return payLog.findAll({
 			include: [
 				{
 					model: models.parkingSite,
@@ -535,11 +600,10 @@ module.exports = (sequelize, DataTypes) => {
 			where: where,
 			order: order
 		})
-		return result
 	}
 
 	payLog.activeTicketList = async function (ctx, models) {
-		let result = await models.payLog.findAll({
+		return models.payLog.findAll({
 			//TODO:필요한 항목만 Attribute 추가)
 			include: [
 				{
@@ -559,7 +623,21 @@ module.exports = (sequelize, DataTypes) => {
 				expired: false
 			}
 		})
-		return result
 	}
+
+	payLog.todayCount = async function(ticketUid, date) {
+		return await payLog.count({
+			where: {
+				discountTicketUid: ticketUid,
+				createdAt: {
+					[Op.gte]: date.format('YYYY-MM-DD')
+				},
+				status: {
+					[Op.in]: [0, 10]
+				}
+			}
+		})
+	}
+
 	return payLog
 }

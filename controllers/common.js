@@ -1,14 +1,15 @@
 'use strict'
-const models = require('../models')
-const response = require('../libs/response')
-const env = process.env.NODE_ENV || 'development'
-const config = require('../configs/config.json')[env]
-const imageUpload = require('../libs/imageUpload')
-const axios = require('axios')
-const codes = require('../configs/codes.json')
+const env 			= process.env.NODE_ENV || 'development'
+const Sequelize 	= require('sequelize')
+const moment 		= require('moment')
+const axios 		= require('axios')
+const models 		= require('../models')
+const response 		= require('../libs/response')
+const imageUpload 	= require('../libs/imageUpload')
+const config 		= require('../configs/config.json')[env]
+const codes 		= require('../configs/codes.json')
+
 const availableTargetTypes = ["0", "1", "2", "3"]
-const Sequelize = require('sequelize')
-const moment = require('moment')
 
 exports.fileUpload = async function (ctx) {
 	let _ = ctx.request.body
@@ -98,8 +99,7 @@ exports.checkRateAvailable = async function (uid) {
 }
 
 exports.pushMessage = async function (data) {
-	let push = await models.push.create(data)
-	return push
+	return models.push.create(data)
 }
 
 
@@ -194,4 +194,17 @@ exports.getVersions = async function (ctx) {
 		}
 	}
 	response.send(ctx, result)
+}
+
+exports.updateCoopPayment = async function(data) {
+	let user = await models.user.findByPk(data.userUid)
+	let usage = data.usageType === 'use' ? data.price * (-1) : data.price
+
+	if (user.coopPayment + usage > 0) {
+		user.coopPayment += usage
+		await user.save()
+		await models.coopPaymentLog.create(data)
+	} else {
+		response.validationError(ctx)
+	}
 }

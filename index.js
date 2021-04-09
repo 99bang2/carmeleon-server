@@ -14,10 +14,9 @@ const response = require('./libs/response')
 const env = process.env.NODE_ENV || 'development'
 const config = require(__dirname + '/configs/config.json')[env]
 
-router.get('/', (ctx) => {
-	ctx.body = 'OK'
-})
+router.get('/', (ctx) => ctx.body = 'OK')
 router.use('/api', response.res, apiV1Router.routes())
+
 app.use(cors())
 app.use(koaBody({
 	formidable: {
@@ -29,8 +28,10 @@ app.use(koaBody({
 	multipart: true,
 }))
 app.use(router.routes()).use(router.allowedMethods())
+
 //static
 app.use(koaStatic('./uploads'));
+
 models.sequelize.sync().then(async function () {
 	let superAdmin = await models.account.findOne({
 		where: {
@@ -67,6 +68,7 @@ models.sequelize.sync().then(async function () {
 		}]
 		models.pointGame.bulkCreate(pointGameArray)
 	}
+
 	app.listen(config.listenPort, async () => {
 		consola.ready({
 			message: `Server listening on ${config.listenPort}`,

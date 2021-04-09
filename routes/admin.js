@@ -2,39 +2,39 @@
 const Router = require('koa-router')
 const api = new Router()
 
-const commonController = require('../controllers/common')
-const accountController = require('../controllers/account')
-const userController = require('../controllers/user')
-const noticeController = require('../controllers/admin/notice')
-const eventController = require('../controllers/admin/event')
-const popupController = require('../controllers/admin/popup')
-const pointProductController = require('../controllers/admin/pointProduct')
-const pointOrderController = require('../controllers/admin/pointOrder')
+const commonController          = require('../controllers/common')
+const userController            = require('../controllers/user/user')
 
-const parkingController = require('../controllers/admin/parkingSite')
+const accountController         = require('../controllers/admin/account')
+const noticeController          = require('../controllers/admin/notice')
+const eventController           = require('../controllers/admin/event')
+const popupController           = require('../controllers/admin/popup')
+const pointProductController    = require('../controllers/admin/pointProduct')
+const pointOrderController      = require('../controllers/admin/pointOrder')
+const parkingController         = require('../controllers/admin/parkingSite')
 const evChargeStationController = require('../controllers/admin/evChargeStation')
-const gasStationController = require('../controllers/admin/gasStation')
-const carWashController = require('../controllers/admin/carWash')
-const rateController = require('../controllers/admin/rate')
+const gasStationController      = require('../controllers/admin/gasStation')
+const carWashController         = require('../controllers/admin/carWash')
+const rateController            = require('../controllers/admin/rate')
+const payLogController          = require('../controllers/admin/payLog')
+const pgController              = require('../controllers/admin/pg')
 
-const evChargeController = require('../controllers/evCharge')
-const reviewTemplateController = require('../controllers/reviewTemplate')
-const carController = require('../controllers/car')
-const cardController = require('../controllers/card')
-const favoriteController = require('../controllers/favorite')
-const discountTicketController = require('../controllers/discountTicket')
-const pointLogController = require('../controllers/point')
-const payLogController = require('../controllers/payLog')
-const couponController = require('../controllers/coupon')
-const couponLogController = require('../controllers/couponLog')
-const questionController = require('../controllers/question')
-const pushController = require('../controllers/push')
-const pgController = require('../controllers/pg')
-const bookingPgController = require('../controllers/admin/pg')
-const tutorialController = require('../controllers/tutorial')
-const statisticController = require('../controllers/admin/statistics')
+const evChargeController        = require('../controllers/evCharge')
+// const reviewTemplateController  = require('../controllers/reviewTemplate')
+const carController             = require('../controllers/car')
+const cardController            = require('../controllers/card')
+const favoriteController        = require('../controllers/favorite')
+const discountTicketController  = require('../controllers/discountTicket')
+const pointLogController        = require('../controllers/point')
+const couponController          = require('../controllers/coupon')
+const couponLogController       = require('../controllers/couponLog')
+const questionController        = require('../controllers/question')
+const pushController            = require('../controllers/push')
+// const pgController              = require('../controllers/pg')
+const tutorialController        = require('../controllers/tutorial')
+const statisticController       = require('../controllers/admin/statistics')
 
-const auth = require('../libs/auth')
+const auth                      = require('../libs/auth')
 
 /**
  * POST: Insert, GET: Read, PUT: UPDATE, DELETE: DELETE
@@ -165,12 +165,14 @@ api.get('/users/:uid', auth.isAdminLoggedIn, userController.read)
 api.put('/users/:uid', auth.isAdminLoggedIn, userController.update)
 api.delete('/users/:uid', auth.isAdminLoggedIn, userController.delete)
 api.post('/users/bulkDelete', auth.isAdminLoggedIn, userController.bulkDelete)
+
 //유저 정보 조회
 api.get('/userCars/:userUid', auth.isAdminLoggedIn, carController.userList)
 api.get('/userCards/:userUid', auth.isAdminLoggedIn, cardController.userList)
 api.get('/userFavorites/:userUid', auth.isAdminLoggedIn, favoriteController.userList)
 api.get('/userPointLogs/:userUid', auth.isAdminLoggedIn, pointLogController.userListForAdmin)
-api.get('/userPayLogs/:userUid', auth.isAdminLoggedIn, payLogController.userListForAdmin)
+api.get('/userPayLogs/:userUid', auth.isAdminLoggedIn, payLogController.userPayLogs)
+
 /**
  * 할인권 관리
  */
@@ -181,14 +183,16 @@ api.put('/discountTickets/:uid', auth.isAdminLoggedIn, discountTicketController.
 api.delete('/discountTickets/:uid', auth.isAdminLoggedIn, discountTicketController.delete)
 //상품 할인
 api.post('/discountTickets/addDiscount', auth.isAdminLoggedIn, discountTicketController.addDiscount)
+
 /**
  * 이용내역 관리
  */
-api.post('/payLogs', auth.isAdminLoggedIn, payLogController.create)
-api.get('/payLogs', auth.isAdminLoggedIn, payLogController.list)
-api.get('/payLogs/:uid', auth.isAdminLoggedIn, payLogController.read)
-api.put('/payLogs/:uid', auth.isAdminLoggedIn, payLogController.update)
-api.delete('/payLogs/:uid', auth.isAdminLoggedIn, payLogController.delete)
+// api.post('/payLogs', auth.isAdminLoggedIn, payLogController.create)
+api.get('/payLogs', auth.isAdminLoggedIn, payLogController.list) // *
+// api.get('/payLogs/:uid', auth.isAdminLoggedIn, payLogController.read)
+// api.put('/payLogs/:uid', auth.isAdminLoggedIn, payLogController.update)
+// api.delete('/payLogs/:uid', auth.isAdminLoggedIn, payLogController.delete)
+
 /**
  * 쿠폰 관리
  */
@@ -197,6 +201,7 @@ api.get('/coupons', auth.isAdminLoggedIn, couponController.list)
 api.get('/coupons/:uid', auth.isAdminLoggedIn, couponController.read)
 api.put('/coupons/:uid', auth.isAdminLoggedIn, couponController.update)
 api.delete('/coupons/:uid', auth.isAdminLoggedIn, couponController.delete)
+
 /**
  * 쿠폰 내역 관리
  */
@@ -205,6 +210,7 @@ api.get('/couponLogs', auth.isAdminLoggedIn, couponLogController.list)
 api.get('/couponLogs/:uid', auth.isAdminLoggedIn, couponLogController.read)
 api.put('/couponLogs/:uid', auth.isAdminLoggedIn, couponLogController.update)
 api.delete('/couponLogs/:uid', auth.isAdminLoggedIn, couponLogController.delete)
+
 /**
  * 튜토리얼
  */
@@ -230,9 +236,11 @@ api.get('/pushes/:uid', auth.isAdminLoggedIn, pushController.read)
 api.put('/pushes/:uid', auth.isAdminLoggedIn, pushController.update)
 api.delete('/pushes/:uid', auth.isAdminLoggedIn, pushController.delete)
 api.post('/pushes/bulkDelete', auth.isAdminLoggedIn, pushController.bulkDelete)
+
 //결제 취소 //
-api.post('/refundApprove', auth.isAdminLoggedIn, pgController.pgPaymentCancelNice)
+api.post('/refundApprove', auth.isAdminLoggedIn, pgController.refundApprove)
 api.post('/refundReject', auth.isAdminLoggedIn, pgController.refundReject)
+
 /**
  * 공통 컨트롤러
  */
@@ -258,6 +266,6 @@ api.put('/carWashes/admin/bookings/:uid',auth.isAdminLoggedIn, carWashController
  * 세차장 결제 취소
  */
 //결제 취소 //
-api.post('/bookingRefundApprove', auth.isAdminLoggedIn, bookingPgController.bookingPgPaymentCancelNice)
-api.post('/bookingRefundReject', auth.isAdminLoggedIn, bookingPgController.bookingRefundReject)
+api.post('/bookingRefundApprove', auth.isAdminLoggedIn, pgController.bookingPgPaymentCancelNice)
+api.post('/bookingRefundReject', auth.isAdminLoggedIn, pgController.bookingRefundReject)
 module.exports = api

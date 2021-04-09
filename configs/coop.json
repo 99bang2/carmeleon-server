@@ -1,0 +1,41 @@
+{
+  "url"   : "http://test.authapi.inumber.co.kr:9999",
+  "method": "POST",
+  "appKey": "g9PJGmeh6BaSfprJx1xkAQ",
+  "path"  : "/AuthUse",
+  "processType": {
+    "check"               : "L0",
+    "use"                 : "L1",
+    "useCancel"           : "L2",
+    "useNetworkCancel"    : "L3",
+    "active"              : "A1",
+    "inactive"            : "A2",
+    "activeNetworkCancel" : "A3",
+    "charge"              : "C1",
+    "chargeCancel"        : "C2",
+    "chargeNetworkCancel" : "C3"
+  },
+  "couponType": {
+    "exchange": "00",
+    "discount": "01",
+    "payment" : "02"
+  },
+  "response": {
+    "complete"          : "0000",
+    "notExist"          : "8001",
+    "unusual"           : "8002",
+    "expired"           : "8003",
+    "alreadyUsed"       : "8005",
+    "typeMismatch"      : "8006",
+    "canceled"          : "8099",
+    "inputError"        : "9981",
+    "dataError"         : "9982",
+    "dataProcessingFail": "9983",
+    "etc"               : "9999"
+  },
+  "usageType": {
+    "add"   : "등록",
+    "use"   : "사용",
+    "cancel": "취소"
+  }
+}

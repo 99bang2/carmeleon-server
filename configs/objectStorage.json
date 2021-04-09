@@ -7,9 +7,11 @@
       "secretAccessKey": "5vxKOkyvMHmboApyCzAmHLYYQnjr6JzjdNHFweyn"
     }
   },
-  "bucket_name" : "carmeleon",
-  "bucket_image_test": "carmeleon-image-test",
-  "prefix_parking": "admin/parking/",
-  "prefix_car_wash": "admin/carWash/",
-  "local_path": "./images/"
+  "bucket_name"       : "carmeleon",
+  "bucket_image_test" : "carmeleon-image-test",
+  "prefix_parking"    : "parking",
+  "prefix_car_wash"   : "carWash",
+  "prefix_gas"        : "evCharge",
+  "prefix_charge"     : "gasStation",
+  "local_path"        : "./images/"
 }

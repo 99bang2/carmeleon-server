@@ -5,9 +5,9 @@ const naverConfig = require('../../configs/objectStorage.json')
 const converter = require('../../libs/imageConvert')
 
 exports.create = async function (ctx) {
-    let _ = ctx.request.body
+    let _           = ctx.request.body
+    _.picture       = await converter(_.picture, naverConfig.prefix_parking)
     let parkingSite = await models.parkingSite.create(_)
-    converter(parkingSite.picture, naverConfig.prefix_parking)
     response.send(ctx, parkingSite)
 }
 
@@ -24,12 +24,12 @@ exports.read = async function (ctx) {
 }
 
 exports.update = async function (ctx) {
-    let {uid} = ctx.params
-	let _ = ctx.request.body
+    let {uid}       = ctx.params
+	let _           = ctx.request.body
     let parkingSite = await models.parkingSite.findByPk(uid)
+    _.picture       = await converter(_.picture, naverConfig.prefix_parking)
     Object.assign(parkingSite, _)
     await parkingSite.save()
-    converter(parkingSite.picture, naverConfig.prefix_parking)
     response.send(ctx, parkingSite)
 }
 

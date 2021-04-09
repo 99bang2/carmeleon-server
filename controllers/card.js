@@ -1,6 +1,8 @@
-const models = require('../models')
-const response = require('../libs/response')
-const pg = require('../controllers/pg')
+'use strict'
+
+const models 	= require('../models')
+const response 	= require('../libs/response')
+const pg 		= require('./user/pg')
 
 exports.create = async function (ctx) {
 	let _ = ctx.request.body

@@ -3,41 +3,37 @@ const Router = require('koa-router')
 const api = new Router()
 
 const auth = require('../libs/auth')
-const userController = require('../controllers/user')
-const noticeController = require('../controllers/notice')
-const eventController = require('../controllers/event')
-const popupController = require('../controllers/popup')
-const parkingController = require('../controllers/parkingSite')
-const carWashController = require('../controllers/carWash')
-const gasStationController = require('../controllers/gasStation')
-const rateController = require('../controllers/rate')
-const rateTipController = require('../controllers/rateTip')
-const carController = require('../controllers/car')
-const cardController = require('../controllers/card')
-const favoriteController = require('../controllers/favorite')
-const pointLogController = require('../controllers/point')
-const payLogController = require('../controllers/payLog')
-const discountTicketController = require('../controllers/discountTicket')
-const couponController = require('../controllers/coupon')
-const couponLogController = require('../controllers/couponLog')
+const userController            = require('../controllers/user/user')
+const payLogController          = require('../controllers/user/payLog')
+const coopController            = require('../controllers/user/coop')
+const pgController              = require('../controllers/user/pg')
+
+const noticeController          = require('../controllers/notice')
+const eventController           = require('../controllers/event')
+const popupController           = require('../controllers/popup')
+const parkingController         = require('../controllers/parkingSite')
+const carWashController         = require('../controllers/carWash')
+const gasStationController      = require('../controllers/gasStation')
+const rateController            = require('../controllers/rate')
+const rateTipController         = require('../controllers/rateTip')
+const carController             = require('../controllers/car')
+const cardController            = require('../controllers/card')
+const favoriteController        = require('../controllers/favorite')
+const pointLogController        = require('../controllers/point')
+const discountTicketController  = require('../controllers/discountTicket')
+const couponController          = require('../controllers/coupon')
+const couponLogController       = require('../controllers/couponLog')
 const evChargeStationController = require('../controllers/evChargeStation')
-const questionController = require('../controllers/question')
-const pushController = require('../controllers/push')
-const teslaController = require('../controllers/tesla')
+const questionController        = require('../controllers/question')
+const pushController            = require('../controllers/push')
+const teslaController           = require('../controllers/tesla')
+const pointStoreController      = require('../controllers/pointStore')
+const commonController          = require('../controllers/common')
 
-const pointStoreController = require('../controllers/pointStore')
-
-const pgController = require('../controllers/pg')
-const commonController = require('../controllers/common')
-
-/**
- * POST: Insert, GET: Read, PUT: UPDATE, DELETE: DELETE
- */
-
+// user
 api.post('/users/login', userController.login)
-api.get('/users/logout', auth.isUserLoggedIn, userController.logout)
 api.get('/users/check', userController.check)
-
+api.get('/users/logout', auth.isUserLoggedIn, userController.logout)
 
 // 공지사항
 api.get('/notices', noticeController.list)
@@ -71,7 +67,6 @@ api.get('/carWashes/user/bookings', auth.isUserLoggedIn, carWashController.getBo
 api.get('/carWashes/user/bookings/:uid', auth.isUserLoggedIn, carWashController.getBooking)
 api.put('/carWashes/user/bookings/:uid', auth.isUserLoggedIn, carWashController.putBooking)
 api.post('/carWashes/user/bookings/:uid/refund', auth.isUserLoggedIn, carWashController.bookingRefundRequest)
-
 api.post('/carWashes/bookings/cancelPayment', carWashController.cancelPayment)
 
 // 리뷰
@@ -86,6 +81,7 @@ api.post('/rateTips', auth.isUserLoggedIn, rateTipController.create) //꿀팁 ON
  */
 api.post('/favorites', auth.isUserLoggedIn, favoriteController.create)
 api.get('/favorites/:userUid', auth.isUserLoggedIn, favoriteController.userList)
+
 /**
  * 유저 관련 컨트롤러
  */
@@ -94,6 +90,7 @@ api.get('/users/:uid', auth.isUserLoggedIn, userController.read)
 api.put('/users/:uid', auth.isUserLoggedIn, userController.update)
 api.get('/getBadge/:uid', auth.isUserLoggedIn, userController.getBadge)
 
+// 차량
 api.post('/cars', auth.isUserLoggedIn, carController.create)
 api.get('/cars', auth.isUserLoggedIn, carController.list)
 api.get('/cars/:uid', auth.isUserLoggedIn, carController.read)
@@ -102,6 +99,7 @@ api.delete('/cars/:uid', auth.isUserLoggedIn, carController.delete)
 api.put('/mainCars', auth.isUserLoggedIn, carController.isMain)
 api.get('/carLists/:userUid', auth.isUserLoggedIn, carController.carList)
 
+// 카드
 api.post('/cards', auth.isUserLoggedIn, cardController.create)
 api.get('/cards', auth.isUserLoggedIn, cardController.list)
 api.get('/cards/:uid', auth.isUserLoggedIn, cardController.read)
@@ -110,26 +108,30 @@ api.delete('/cards/:uid', auth.isUserLoggedIn, cardController.delete)
 api.put('/mainCards', auth.isUserLoggedIn, cardController.isMain)
 api.get('/cardLists/:userUid', auth.isUserLoggedIn, cardController.cardList)
 
+// 주차권
 api.get('/discountTickets', discountTicketController.list)
 api.get('/discountTickets/:uid', discountTicketController.read)
 
+// 포인트
 api.get('/points', auth.isUserLoggedIn, pointLogController.list)
 api.get('/points/:uid', auth.isUserLoggedIn, pointLogController.read)
 api.get('/pointLogs/:userUid', auth.isUserLoggedIn, pointLogController.userList)
 
+// 이용내역
 api.post('/payLogs', auth.isUserLoggedIn, payLogController.create)
-api.get('/payLogs', auth.isUserLoggedIn, payLogController.userList)
+api.get('/payLogs', auth.isUserLoggedIn, payLogController.list)
 api.get('/payLogs/:uid', auth.isUserLoggedIn, payLogController.read)
-api.put('/payLogs/:uid', auth.isUserLoggedIn, payLogController.update)
 
+// 주차권 목록
 api.get('/ticketList', auth.isUserLoggedIn, userController.activeTicketList)
 
+// 쿠폰
 api.get('/coupons', auth.isUserLoggedIn, couponController.list)
 api.get('/coupons/:uid', auth.isUserLoggedIn, couponController.read)
-
 api.get('/couponLogs', auth.isUserLoggedIn, couponLogController.list)
 api.get('/couponLogs/:uid', auth.isUserLoggedIn, couponLogController.read)
 
+// 문의사항
 api.post('/questions', auth.isUserLoggedIn, questionController.create)
 //필요 없을 시 삭제//
 api.get('/questions', auth.isUserLoggedIn, questionController.list)
@@ -137,11 +139,13 @@ api.get('/questions/:uid', auth.isUserLoggedIn, questionController.read)
 //알림 리스트//
 api.get('/pushes', auth.isUserLoggedIn, pushController.userList)
 ///////////////////
+
 /**
  * 테슬라 컨트롤러
  */
 api.post('/teslaLogin', teslaController.teslaLogin)
 api.post('/teslas', teslaController.teslaUpdate)
+
 /**
  * 공통 컨트롤러
  */
@@ -153,22 +157,24 @@ api.post('/searchList', commonController.searchList)
 api.post('/avgRate', commonController.avgRate)
 api.post('/codes', commonController.codes)
 
+// 결제
 api.post('/pgBillNice', auth.isUserLoggedIn, pgController.pgBillNice)
 api.post('/pgPaymentNice', auth.isUserLoggedIn, pgController.pgPaymentNice)
-api.post('/pgPaymentCancelNice', auth.isUserLoggedIn, pgController.pgPaymentCancelNice)
-
+// api.post('/pgPaymentCancelNice', auth.isUserLoggedIn, pgController.pgPaymentCancelNice)
 api.post('/pgPaymentRefund', auth.isUserLoggedIn, payLogController.refundRequest)
-api.post('/pgPaymentRefundCancel', auth.isUserLoggedIn, payLogController.refundRequestCancel)
-
 api.post('/priceCheck', auth.isUserLoggedIn, payLogController.priceCheck)
 
-
+// 포인트 상품
 api.get('/pointStore/info', pointStoreController.getInfo)
 api.post('/pointStore/exchange', auth.isUserLoggedIn, pointStoreController.exchange)
 api.post('/pointStore/playGame', auth.isUserLoggedIn, pointStoreController.play)
 api.get('/pointStore/gameInfo', pointStoreController.getGameInfo)
 
+// 모바일 상품권
+api.post('/coop/add', auth.isUserLoggedIn, coopController.add)
+api.get('/coop/history', auth.isUserLoggedIn, coopController.history)
 
+// 버전 관리
 api.get('/versions', commonController.getVersions)
 
 module.exports = api

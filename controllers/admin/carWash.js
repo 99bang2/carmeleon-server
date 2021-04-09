@@ -1,16 +1,19 @@
-const axios = require('axios')
-const models = require('../../models')
-const response = require('../../libs/response')
-const env = process.env.NODE_ENV || 'development'
-const config = require('../../configs/config.json')[env]
+'use strict'
+
+const env               = process.env.NODE_ENV || 'development'
+const axios             = require('axios')
+const models            = require('../../models')
+const response          = require('../../libs/response')
+const converter         = require('../../libs/imageConvert')
+const config            = require('../../configs/config.json')[env]
+const naverConfig       = require('../../configs/objectStorage.json')
+
 const carWashBookingAPI = config.carWashBookingAPI
-const naverConfig = require('../../configs/objectStorage.json')
-const converter = require('../../libs/imageConvert')
 
 exports.create = async function (ctx) {
-    let _ = ctx.request.body
+    let _       = ctx.request.body
+    _.picture   = await converter(_.picture, naverConfig.prefix_car_wash)
     let carWash = await models.carWash.create(_)
-    converter(carWash.picture, naverConfig.prefix_car_wash)
     response.send(ctx, carWash)
 }
 
@@ -28,12 +31,12 @@ exports.read = async function (ctx) {
 }
 
 exports.update = async function (ctx) {
-    let {uid} = ctx.params
-	let _ = ctx.request.body
+    let {uid}   = ctx.params
+	let _       = ctx.request.body
     let carWash = await models.carWash.findByPk(uid)
+    _.picture   = await converter(_.picture, naverConfig.prefix_car_wash)
     Object.assign(carWash, _)
     await carWash.save()
-    converter(carWash.picture, naverConfig.prefix_car_wash)
     response.send(ctx, carWash)
 }
 

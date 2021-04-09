@@ -10,8 +10,8 @@ const S3 = new AWS.S3({
 })
 
 const objectStorageApi = {
-    async uploadStream(file, name, dirname) {
-        let key = dirname + name
+    async uploadStream(file, name, prefix) {
+        let key = 'watermark/' + prefix + '/' + name
         let param = {
             Bucket: naverConfig.bucket_name,
             Key: key,

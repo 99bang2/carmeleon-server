@@ -1,9 +1,10 @@
 'use strict'
-const Request = require('request-promise')
+const Request       = require('request-promise')
 const objectStorage = require('./naverStorage')
-const sharp = require('./sharp')
-const jimp = require('./jimp')
-const fs = require('fs')
+const sharp         = require('./sharp')
+const jimp          = require('./jimp')
+const fs            = require('fs')
+const config        = require('../configs/objectStorage.json')
 
 function getName(url) {
     let split = url.split('/')
@@ -22,10 +23,12 @@ async function checkUrl(url) {
 }
 
 module.exports = async (images, prefix) => {
+    let list = []
+
     while (images.length) {
         let url = images.pop()
         if (await checkUrl(url)) {
-            let name = getName(url)
+            let name = getName(url).replace('.','_watermarked.')
             let width = await sharp.getUrlImageWidth(url)
 
             if (width > sharp.WIDTH) {
@@ -38,6 +41,11 @@ module.exports = async (images, prefix) => {
 
             await watermarkedImage.writeAsync(local_watermark_path)
             await objectStorage.uploadStream(fs.createReadStream(local_watermark_path), name, prefix)
+
+            let image = config.url + '/' + config.bucket_name + '/watermark/' + prefix + '/' + name
+            list.push(image)
         }
     }
+
+    return list
 }
