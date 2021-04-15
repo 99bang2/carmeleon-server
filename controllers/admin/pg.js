@@ -99,7 +99,7 @@ exports.refundApprove = async function (ctx) {
 	let msg 			= null
 	let coopPaymentData = {
 		userUid		: payInfo.userUid,
-		payLogUid	: payInfo.payLogUid,
+		payLogUid	: payInfo.uid,
 		usageType	: 'cancel',
 		price		: payInfo.coopPayment
 	}

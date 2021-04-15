@@ -8,6 +8,7 @@ const secret = config.secretKey
 const common = require('../common')
 const pointCodes = require('../../configs/pointCodes.json')
 const moment = require('moment')
+
 const carWashBookingAPI = config.carWashBookingAPI
 
 exports.create = async function (ctx) {
@@ -222,7 +223,6 @@ exports.getBadge = async function (ctx) {
 	})
 
 	//푸시
-
 	if(user.newMessage) {
 		result.alarm = await models.push.count({
 			where: {

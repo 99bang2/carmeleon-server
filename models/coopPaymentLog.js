@@ -53,8 +53,8 @@ module.exports = (sequelize, DataTypes) => {
         coopLog.belongsTo(models.payLog)
     }
 
-    coopLog.getCoopHistory = function (ctx, models) {
-        return models.coopPaymentLog.findAll({
+    coopLog.getCoopHistory = async function (ctx, models) {
+        return coopLog.findAll({
             attributes: ['createdAt', 'payLogUid', 'price', 'uid', 'usageType'],
             include: {
                 model: models.payLog,
