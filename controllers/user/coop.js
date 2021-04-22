@@ -38,15 +38,15 @@ exports.add = async function(ctx) {
             message = "상품권이 비활성화 상태 입니다."
         }
 
-        // if (flag) {
-        //     coopPayLog.userUid = ctx.user.uid
-        //     coopPayLog.usageType = 'add'
-        //
-        //     let user = await models.user.findByPk(ctx.user.uid)
-        //     user.coopPayment += coopPayLog.price
-        //     await user.save()
-        //     await models.coopPaymentLog.create(coopPayLog)
-        // }
+        if (flag) {
+            coopPayLog.userUid = ctx.user.uid
+            coopPayLog.usageType = 'add'
+
+            let user = await models.user.findByPk(ctx.user.uid)
+            user.coopPayment += coopPayLog.price
+            await user.save()
+            await models.coopPaymentLog.create(coopPayLog)
+        }
     }
 
     response.send(ctx, {

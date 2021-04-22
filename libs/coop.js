@@ -50,14 +50,11 @@ module.exports = {
                     let body        = Object.values(envelope[0])
                     let useInfo     = body[1][0].UseResponse
                     let useResult   = useInfo[0].UseResult
-                    consola.info("useResult", useResult)
                     let apiResult   = useResult[0].ApiResult[0]
                     if (!useResult[0].AprvResult) {
                         resolve("SERVERERROR")
                     }
                     let aprvResult  = useResult[0].AprvResult[0]
-
-                    console.log(aprvResult)
 
                     if (apiResult.$.ResultCd !== '0000') {
                         consola.error(`COOP ERROR CODE : ${apiResult.$.ResultCd}`)
@@ -142,6 +139,62 @@ module.exports = {
             consola.error('COOP CALL ERROR', e)
             return 'SERVERERROR'
         }
+    },
+    async useCancel(data) {
+        header.SOAPAction = api.action + "/UseCancel"
+
+        let url = api.url + '?op=UseCancel'
+        data.couponNumber = encrypt(data.couponNumber)
+
+        let xml = requestXMLForm('cancel', data)
+
+        try {
+            let res = await soap({
+                method:'POST',
+                headers: header,
+                url: url,
+                xml: xml,
+                timeout: 5000
+            })
+
+            let parser = new xml2js.Parser()
+
+            return new Promise((resolve, reject) => {
+
+                parser.parseString(res.response.body, (err, result) => {
+                    if (err) {
+                        consola.error('XML Parsing Error', err)
+                        reject(err)
+                    }
+
+                    let envelope    = Object.values(result)
+                    let body        = Object.values(envelope[0])
+                    let info        = body[1][0].UseCancelResponse
+                    let _result     = info[0].UseCancelResult
+                    let apiResult   = _result[0].ApiResult[0]
+
+                    if (!_result[0].AprvResult) {
+                        resolve("SERVERERROR")
+                    }
+
+                    let aprvResult  = _result[0].AprvResult[0]
+
+                    if (apiResult.$.ResultCd !== '0000') {
+                        consola.error(`COOP ERROR CODE : ${apiResult.$.ResultCd}`)
+                        resolve('MISMATCH')
+                    }
+                    if (aprvResult.$.GfctStat !== 'IF') {
+                        consola.error('COOP Coupon Inactive')
+                        resolve('INACTIVE')
+                    }
+
+                    resolve("SUCCESS")
+                })
+            })
+        } catch (e) {
+            consola.error('COOP CALL ERROR', e)
+            return 'SERVERERROR'
+        }
     }
 }
 
@@ -208,7 +261,7 @@ function requestXMLForm(type, data) {
                     ` SvcTpCd="00"` +
                     ` DealDay="${moment().format('YYYYMMDD')}"` +
                     ` DealTime="${moment().format('HHmmss')}"` +
-                    ` TracNo="1"` +
+                    ` TracNo=""` +
                     ` UsecoTpCd="1"` +
                     ` PtnrCd="P00313"` +
                     ` MersCd="PAYS_WEB"` +
@@ -226,7 +279,7 @@ function requestXMLForm(type, data) {
                     ` SvcTpCd="00"` +
                     ` DealDay="${moment().format('YYYYMMDD')}"` +
                     ` DealTime="${moment().format('HHmmss')}"` +
-                    ` TracNo="1"` +
+                    ` TracNo="${moment().format('YYYYMMDDHHmmss')}"` +
                     ` UsecoTpCd="1"` +
                     ` PtnrCd="P00313"` +
                     ` MersCd="PAYS_WEB"` +
@@ -234,13 +287,34 @@ function requestXMLForm(type, data) {
                     ` PosNo="0000"` +
                     ` GfctNo="${data.couponNumber}"` +
                     ` GfctCertNo=""` +
-                    ` DealOrdNo="" ` +
-                    ` AdjDay="${moment().format('YYYYMMDD')}" ` +
-                    ` DealAmt=${data.price} ` +
+                    ` DealOrdNo=""` +
+                    ` AdjDay="${moment().format('YYYYMMDD')}"` +
+                    ` DealAmt="${data.price}"` +
                     ` />` +
                 '</Use>'
             break
-        case 'netCancel':
+        case 'cancel':
+            request =
+                `<UseCancel xmlns="${api.action}">` +
+                `<req` +
+                    ` SvcTpCd="00"` +
+                    ` DealDay="${moment().format('YYYYMMDD')}"` +
+                    ` DealTime="${moment().format('HHmmss')}"` +
+                    ` TracNo="${moment().format('YYYYMMDDHHmmss')}"` +
+                    ` UsecoTpCd="1"` +
+                    ` PtnrCd="P00313"` +
+                    ` MersCd="PAYS_WEB"` +
+                    ` BizNo="1208811319"` +
+                    ` PosNo="0000"` +
+                    ` GfctNo="${data.couponNumber}"` +
+                    ` GfctCertNo=""` +
+                    ` DealOrdNo=""` +
+                    ` AdjDay="${moment().format('YYYYMMDD')}"` +
+                    ` OrgAprvDay="${data.approvalDate}"` +
+                    ` OrgAprvTime="${data.approvalTime}"` +
+                    ` OrgDealAmt="${data.price}"` +
+                    ` />` +
+                '</UseCancel>'
             break
     }
 
