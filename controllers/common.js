@@ -200,7 +200,7 @@ exports.updateCoopPayment = async function(data) {
 	let user = await models.user.findByPk(data.userUid)
 	let usage = data.usageType === 'use' ? data.price * (-1) : data.price
 
-	if (user.coopPayment + usage > 0) {
+	if (user.coopPayment + usage >= 0) {
 		user.coopPayment += usage
 		await user.save()
 		await models.coopPaymentLog.create(data)
