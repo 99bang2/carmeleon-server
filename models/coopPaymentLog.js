@@ -1,9 +1,5 @@
 'use strict'
-const response = require('../libs/response')
-const codes = require('../configs/codes.json')
-const moment = require('moment')
-const Sequelize = require('sequelize')
-const Op = Sequelize.Op
+
 const coopCode = require('../configs/coop.json')
 
 module.exports = (sequelize, DataTypes) => {
@@ -21,6 +17,18 @@ module.exports = (sequelize, DataTypes) => {
         payLogUid: {
             type: DataTypes.INTEGER
         },
+        giftCardType: {
+            type: DataTypes.STRING
+        },
+        giftCardTypeName: {
+            type: DataTypes.VIRTUAL,
+            get: function () {
+                let type = this.getDataValue('giftCardType')
+                if (type) {
+                    return coopCode.giftCardType[type]
+                }
+            }
+        },
         usageType: {
             type: DataTypes.STRING,
             allowNull: false
@@ -36,10 +44,22 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.INTEGER,
             allowNull: false
         },
-        brandAuthCode: {
+        couponNumber: {
             type: DataTypes.STRING
         },
-        couponNumber: {
+        approvalDate: {
+            type: DataTypes.STRING
+        },
+        approvalTime: {
+            type: DataTypes.STRING
+        },
+        approvalNo: {
+            type: DataTypes.STRING
+        },
+        productCode: {
+            type: DataTypes.STRING
+        },
+        paysCode: {
             type: DataTypes.STRING
         }
     }, {

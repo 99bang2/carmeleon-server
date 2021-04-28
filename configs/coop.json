@@ -5,45 +5,19 @@
       "key": "7A87D18F122216519BA31259064EFA85",
       "iv": "E5173DCA57A9D66E6DA5C0DA69D644AB",
       "algorithm": "aes-128-cbc",
-      "testKey": "vkSzAYCx/hPFoBdy0VtOdDAtaQRhVXoQsHLBksY8Bsg="
+      "action": "http://authapi.paysgift.com/ApprovalApi"
     },
     "production": {
       "url": "https://authapi.paysgift.com/Approval/V130/ApprovalApi.asmx",
       "key": "1FF366FD34C20BAF5A876AA2C5288B3C",
       "iv": "1BCB7270856076B77020F0E946851181",
-      "algorithm": "aes128",
-      "testKey": "TM/U9VD8zxjHFrd9WpodDKDY6NtyIOvB4aTzhxpy15g="
+      "algorithm": "aes-128-cbc",
+      "action": "http://authapi.paysgift.com/ApprovalApi"
     }
   },
-  "processType": {
-    "check"               : "L0",
-    "use"                 : "L1",
-    "useCancel"           : "L2",
-    "useNetworkCancel"    : "L3",
-    "active"              : "A1",
-    "inactive"            : "A2",
-    "activeNetworkCancel" : "A3",
-    "charge"              : "C1",
-    "chargeCancel"        : "C2",
-    "chargeNetworkCancel" : "C3"
-  },
-  "couponType": {
-    "exchange": "00",
-    "discount": "01",
-    "payment" : "02"
-  },
-  "response": {
-    "complete"          : "0000",
-    "notExist"          : "8001",
-    "unusual"           : "8002",
-    "expired"           : "8003",
-    "alreadyUsed"       : "8005",
-    "typeMismatch"      : "8006",
-    "canceled"          : "8099",
-    "inputError"        : "9981",
-    "dataError"         : "9982",
-    "dataProcessingFail": "9983",
-    "etc"               : "9999"
+  "giftCardType": {
+    "01": "금액권 (잔액 관리형)",
+    "02": "교환권 (전액 차감형)"
   },
   "usageType": {
     "add"   : "등록",
