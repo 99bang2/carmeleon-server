@@ -57,6 +57,7 @@ exports.parkingListForAdmin = async function (ctx){
 	if(params.accountUid){
 		where.accountUid = params.accountUid
 	}
+	where.isBuy = true
 	let parkingList = await models.parkingSite.findAll({
 		attributes: ['uid', 'name'],
 		where: where
