@@ -212,6 +212,11 @@ module.exports = (sequelize, DataTypes) => {
                 where = {
                     [Op.or]: [
                         {
+                            '$parkingSite.name$':{
+                                [Op.like]: '%' + searchData.searchKeyword + '%'
+                            }
+                        },
+                        {
                             carNumber: {
                                 [Op.like]: '%' + searchData.searchKeyword + '%'
                             }
@@ -344,6 +349,11 @@ module.exports = (sequelize, DataTypes) => {
             if (searchData.searchKeyword) {
                 where = {
                     [Op.or]: [
+                        {
+                            '$parkingSite.name$':{
+                                [Op.like]: '%' + searchData.searchKeyword + '%'
+                            }
+                        },
                         {
                             carNumber: {
                                 [Op.like]: '%' + searchData.searchKeyword + '%'
