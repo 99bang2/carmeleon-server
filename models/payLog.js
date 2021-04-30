@@ -291,7 +291,7 @@ module.exports = (sequelize, DataTypes) => {
                     }
                 }
             }
-            if (searchData.searchParkingSite !== "") {
+            if (searchData.searchParkingSite) {
                 where.siteUid = searchData.searchParkingSite
             }
         }
