@@ -61,6 +61,9 @@ module.exports = (sequelize, DataTypes) => {
         },
         paysCode: {
             type: DataTypes.STRING
+        },
+        tracNo: {
+            type: DataTypes.STRING
         }
     }, {
         timestamps: true,
