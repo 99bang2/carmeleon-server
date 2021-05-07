@@ -77,3 +77,11 @@ exports.list = async function (ctx) {
     let parkingSites = await models.parkingSite.findAll({ attributes, where, order })
 	response.send(ctx, parkingSites)
 }
+
+exports.bookingList = async function (ctx) {
+    let parkingSites = await models.parkingSite.findAll({
+        where: {
+            isBuy : true
+        }})
+    response.send(ctx, parkingSites)
+}

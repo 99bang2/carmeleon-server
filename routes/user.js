@@ -177,4 +177,7 @@ api.get('/coop/history', auth.isUserLoggedIn, coopController.history)
 // 버전 관리
 api.get('/versions', commonController.getVersions)
 
+// 판매 주차장 표시
+api.get('/parkingInfo', parkingController.bookingList )
+
 module.exports = api
