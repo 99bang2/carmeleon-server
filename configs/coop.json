@@ -1,27 +1,29 @@
 {
-  "api": {
-    "development": {
-      "url": "http://tauthapi.paysgift.com:9999/Approval/V130/ApprovalApi.asmx",
-      "key": "7A87D18F122216519BA31259064EFA85",
-      "iv": "E5173DCA57A9D66E6DA5C0DA69D644AB",
-      "algorithm": "aes-128-cbc",
-      "action": "http://authapi.paysgift.com/ApprovalApi"
+    "api": {
+        "development": {
+            "url": "http://tauthapi.paysgift.com:9999/Approval/V130/ApprovalApi.asmx",
+            "key": "7A87D18F122216519BA31259064EFA85",
+            "iv": "E5173DCA57A9D66E6DA5C0DA69D644AB",
+            "algorithm": "aes-128-cbc",
+            "action": "http://authapi.paysgift.com/ApprovalApi",
+            "partnerCode": "P00313"
+        },
+        "production": {
+            "url": "https://authapi.paysgift.com/Approval/V130/ApprovalApi.asmx",
+            "key": "1FF366FD34C20BAF5A876AA2C5288B3C",
+            "iv": "1BCB7270856076B77020F0E946851181",
+            "algorithm": "aes-128-cbc",
+            "action": "http://authapi.paysgift.com/ApprovalApi",
+            "partnerCode": "P00428"
+        }
     },
-    "production": {
-      "url": "https://authapi.paysgift.com/Approval/V130/ApprovalApi.asmx",
-      "key": "1FF366FD34C20BAF5A876AA2C5288B3C",
-      "iv": "1BCB7270856076B77020F0E946851181",
-      "algorithm": "aes-128-cbc",
-      "action": "http://authapi.paysgift.com/ApprovalApi"
+    "giftCardType": {
+        "01": "금액권 (잔액 관리형)",
+        "02": "교환권 (전액 차감형)"
+    },
+    "usageType": {
+        "add": "등록",
+        "use": "사용",
+        "cancel": "취소"
     }
-  },
-  "giftCardType": {
-    "01": "금액권 (잔액 관리형)",
-    "02": "교환권 (전액 차감형)"
-  },
-  "usageType": {
-    "add"   : "등록",
-    "use"   : "사용",
-    "cancel": "취소"
-  }
 }
