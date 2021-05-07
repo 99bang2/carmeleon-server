@@ -10,8 +10,8 @@
         },
         "production": {
             "url": "https://authapi.paysgift.com/Approval/V130/ApprovalApi.asmx",
-            "key": "1FF366FD34C20BAF5A876AA2C5288B3C",
-            "iv": "1BCB7270856076B77020F0E946851181",
+            "key": "1F8BA421FDE8FEB5BE5D2E4DFA17F402",
+            "iv": "9BF973D63B997C6C1D04FB7C2F577C8C",
             "algorithm": "aes-128-cbc",
             "action": "http://authapi.paysgift.com/ApprovalApi",
             "partnerCode": "P00428"

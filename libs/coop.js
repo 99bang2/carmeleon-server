@@ -1,6 +1,7 @@
 'use strict'
 
 const env = process.env.NODE_ENV || 'development'
+// const env = 'production'
 const Coop = require('../configs/coop.json')
 const api = Coop.api[env]
 const crypto = require('crypto')
