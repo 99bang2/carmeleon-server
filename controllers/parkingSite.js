@@ -84,3 +84,11 @@ exports.check = async function (ctx) {
     })
     response.send(ctx, moment(lastUpdatedParkingSite.updatedAt).format('YYYY-MM-DD HH:mm:ss'))
 }
+
+exports.bookingList = async function (ctx) {
+    let parkingSites = await models.parkingSite.findAll({
+        where: {
+            isBuy : true
+        }})
+    response.send(ctx, parkingSites)
+}

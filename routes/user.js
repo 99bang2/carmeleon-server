@@ -175,10 +175,15 @@ api.post('/pointStore/playGame', auth.isUserLoggedIn, pointStoreController.play)
 api.get('/pointStore/gameInfo', pointStoreController.getGameInfo)
 
 // 모바일 상품권
-api.post('/coop/add', auth.isUserLoggedIn, coopController.add)
+api.post('/coop/use', auth.isUserLoggedIn, coopController.use)
+api.post('/coop/check', auth.isUserLoggedIn, coopController.check)
+api.post('/coop/cancel', auth.isUserLoggedIn, coopController.cancel)
 api.get('/coop/history', auth.isUserLoggedIn, coopController.history)
 
 // 버전 관리
 api.get('/versions', commonController.getVersions)
+
+// 판매 주차장 표시
+api.get('/parkingInfo', parkingController.bookingList )
 
 module.exports = api

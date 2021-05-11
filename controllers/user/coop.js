@@ -4,58 +4,72 @@ const models    = require('../../models')
 const coop      = require('../../libs/coop')
 const response  = require('../../libs/response')
 
-exports.add = async function(ctx) {
-    let _ = ctx.request.body
-    let info = await coop.checkCoupon(_.couponNumber)
-    let flag = true
-    let message = "SUCCESS"
-
+function coopError(info) {
+    let message = 'SUCCESS'
+    let result = true
+    
     if (info === 'SERVERERROR') {
-        flag = false
+        result = false
         message = "통신중 에러가 발생하였습니다. \n 잠시후 다시 시도해주세요."
     }
     if (info === 'MISMATCH') {
-        flag = false
+        result = false
         message = "일치하는 상품권이 없습니다."
     }
     if (info === 'INACTIVE') {
-        flag = false
+        result = false
         message = "상품권이 비활성화 상태 입니다."
     }
-
-    if (flag) {
-        let coopPayLog = await coop.useCoupon(info)
-        if (coopPayLog === 'SERVERERROR') {
-            flag = false
-            message = "통신중 에러가 발생하였습니다. \n 잠시후 다시 시도해주세요."
-        }
-        if (coopPayLog === 'MISMATCH') {
-            flag = false
-            message = "일치하는 상품권이 없습니다."
-        }
-        if (coopPayLog === 'INACTIVE') {
-            flag = false
-            message = "상품권이 비활성화 상태 입니다."
-        }
-
-        if (flag) {
-            coopPayLog.userUid = ctx.user.uid
-            coopPayLog.usageType = 'add'
-
-            let user = await models.user.findByPk(ctx.user.uid)
-            user.coopPayment += coopPayLog.price
-            await user.save()
-            await models.coopPaymentLog.create(coopPayLog)
-        }
+    
+    return {
+        result,
+        message
     }
-
-    response.send(ctx, {
-        data: flag,
-        message: message
-    })
 }
 
-exports.history = async function(ctx) {
-    let list = await models.coopPaymentLog.getCoopHistory(ctx, models)
-    response.send(ctx, list)
+module.exports = {
+    async check(ctx) {
+        let _ = ctx.request.body
+        let info = await coop.checkCoupon(_.couponNumber)
+        let check = coopError(info)
+
+        response.send(ctx, {
+            data: info,
+            message: check.message
+        })
+    },
+    async use(ctx) {
+        let _ = ctx.request.body
+        let info = await coop.useCoupon(_)
+        let check = coopError(info)
+        
+        if (check.result) {
+            info.userUid = ctx.user.uid
+            info.usageType = 'add'
+    
+            let user = await models.user.findByPk(ctx.user.uid)
+            user.coopPayment += info.price
+            await user.save()
+            await models.coopPaymentLog.create(info)
+        }
+    
+        response.send(ctx, {
+            data: info,
+            message: check.message
+        })
+    },
+    async cancel(ctx) {
+        let _ = ctx.request.body
+        let info = await coop.useNetworkCancel(_)
+        let check = coopError(info)
+    
+        response.send(ctx, {
+            data: info,
+            message: check.message
+        })
+    },
+    async history(ctx) {
+        let list = await models.coopPaymentLog.getCoopHistory(ctx, models)
+        response.send(ctx, list)
+    }
 }

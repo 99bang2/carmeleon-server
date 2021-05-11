@@ -1,50 +1,50 @@
 {
-  "WELCOME": {
-    "id": 1000,
-    "amount": 100,
-    "isPlus": true,
-    "reason": "회원가입"
-  },
-  "REVIEW_TEXT": {
-    "id": 2000,
-    "amount": 10,
-    "isPlus": true,
-    "reason": "리뷰작성(텍스트)"
-  },
-  "REVIEW_IMAGE": {
-    "id": 2100,
-    "amount": 30,
-    "isPlus": true,
-    "reason": "리뷰작성(텍스트+이미지)"
-  },
-  "POINT_GAME_REWARD": {
-    "id": 3000,
-    "amount": null,
-    "isPlus": true,
-    "reason": "포인트게임 보상"
-  },
-  "USE_FOR_PARKING_TICKET": {
-    "id": 5000,
-    "amount": null,
-    "isPlus": false,
-    "reason": "주차권 구매시 사용"
-  },
-  "POINT_GAME_PLAY": {
-    "id": 6000,
-    "amount": null,
-    "isPlus": false,
-    "reason": "포인트게임 플레이"
-  },
-  "POINT_PRODUCT_PURCHASE": {
-    "id": 6100,
-    "amount": null,
-    "isPlus": false,
-    "reason": "포인트상품 구매"
-  },
-  "REVIEW_DELETE": {
-    "id": 9100,
-    "amount": null,
-    "isPlus": false,
-    "reason": "리뷰삭제 회수"
-  }
+    "WELCOME": {
+        "id": 1000,
+        "amount": 100,
+        "isPlus": true,
+        "reason": "회원가입"
+    },
+    "REVIEW_TEXT": {
+        "id": 2000,
+        "amount": 10,
+        "isPlus": true,
+        "reason": "리뷰작성(텍스트)"
+    },
+    "REVIEW_IMAGE": {
+        "id": 2100,
+        "amount": 30,
+        "isPlus": true,
+        "reason": "리뷰작성(텍스트+이미지)"
+    },
+    "POINT_GAME_REWARD": {
+        "id": 3000,
+        "amount": null,
+        "isPlus": true,
+        "reason": "포인트게임 보상"
+    },
+    "USE_FOR_PARKING_TICKET": {
+        "id": 5000,
+        "amount": null,
+        "isPlus": false,
+        "reason": "주차권 구매시 사용"
+    },
+    "POINT_GAME_PLAY": {
+        "id": 6000,
+        "amount": null,
+        "isPlus": false,
+        "reason": "포인트게임 플레이"
+    },
+    "POINT_PRODUCT_PURCHASE": {
+        "id": 6100,
+        "amount": null,
+        "isPlus": false,
+        "reason": "포인트상품 구매"
+    },
+    "REVIEW_DELETE": {
+        "id": 9100,
+        "amount": null,
+        "isPlus": false,
+        "reason": "리뷰삭제 회수"
+    }
 }
