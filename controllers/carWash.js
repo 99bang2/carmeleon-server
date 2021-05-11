@@ -71,6 +71,14 @@ exports.list = async function (ctx) {
 	response.send(ctx, carWashes)
 }
 
+exports.check = async function (ctx) {
+    let lastUpdated = await models.carWash.findOne({
+        order: [['updatedAt', 'desc']]
+    })
+    response.send(ctx, moment(lastUpdated.updatedAt).format('YYYY-MM-DD HH:mm:ss'))
+}
+
+
 exports.getProductInfo = async function (ctx) {
     let {productUid} = ctx.params
     let _ = ctx.request.query

@@ -47,18 +47,22 @@ api.get('/popups', popupController.list)
 
 // 주차장
 api.get('/parkings', parkingController.list)
+api.get('/parkings/check', parkingController.check)
 api.get('/parkings/:uid', parkingController.read)
 
 // 전기충전소
 api.get('/evChargeStations', evChargeStationController.list)
+api.get('/evChargeStations/check', evChargeStationController.check)
 api.get('/evChargeStations/:uid', evChargeStationController.read)
 
 // 주유소
 api.get('/gasStations', gasStationController.list)
+api.get('/gasStations/check', gasStationController.check)
 api.get('/gasStations/:uid', gasStationController.read)
 
 // 세차장
 api.get('/carWashes', carWashController.list)
+api.get('/carWashes/check', carWashController.check)
 api.get('/carWashes/:uid', carWashController.read)
 api.get('/carWashes/products/:productUid', carWashController.getProductInfo)
 api.get('/carWashes/:uid/timeSlots/:date', carWashController.getTimeSlots)

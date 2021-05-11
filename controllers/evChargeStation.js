@@ -1,6 +1,6 @@
 const models = require('../models')
 const response = require('../libs/response')
-
+const moment = require('moment')
 
 exports.list = async function (ctx) {
     let _ = ctx.request.query
@@ -19,6 +19,13 @@ exports.list = async function (ctx) {
     }]
     let evChargeStations = await models.evChargeStation.findAll({include, attributes, where})
 	response.send(ctx, evChargeStations)
+}
+
+exports.check = async function (ctx) {
+    let lastUpdated = await models.evChargeStation.findOne({
+        order: [['updatedAt', 'desc']]
+    })
+    response.send(ctx, moment(lastUpdated.updatedAt).format('YYYY-MM-DD HH:mm:ss'))
 }
 
 exports.read = async function (ctx) {
