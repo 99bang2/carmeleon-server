@@ -48,7 +48,7 @@ module.exports = {
             info.usageType = 'add'
     
             let user = await models.user.findByPk(ctx.user.uid)
-            user.coopPayment += info.price
+            user.coopPayment += parseInt(info.price)
             await user.save()
             await models.coopPaymentLog.create(info)
         }
