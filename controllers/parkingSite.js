@@ -78,6 +78,13 @@ exports.list = async function (ctx) {
 	response.send(ctx, parkingSites)
 }
 
+exports.check = async function (ctx) {
+    let lastUpdatedParkingSite = await models.parkingSite.findOne({
+        order: [['updatedAt', 'desc']]
+    })
+    response.send(ctx, moment(lastUpdatedParkingSite.updatedAt).format('YYYY-MM-DD HH:mm:ss'))
+}
+
 exports.bookingList = async function (ctx) {
     let parkingSites = await models.parkingSite.findAll({
         where: {
