@@ -30,36 +30,41 @@ module.exports = async (images, prefix) => {
     while (images.length) {
         let url = images.pop()
         if (await checkUrl(url)) {
-            let name = getName(url).replace('.','_watermarked.')
-            let width = await sharp.getUrlImageWidth(url)
+            let image;
+            if(url.includes('_watermarked')){
+                image = url
+            }else {
+                let name = getName(url).replace('.','_watermarked.')
+                let width = await sharp.getUrlImageWidth(url)
 
-            if (width > sharp.WIDTH) {
-                let resize = await sharp.resizeUrlImageToFilestream(url)
-                await objectStorage.uploadStream(resize, name, prefix)
-            }
-
-            let local_watermark_path = './images/watermarked.jpg'
-            let watermarkedImage = await jimp.addWaterMark(url)
-
-            await watermarkedImage.writeAsync(local_watermark_path)
-
-            /////////////////////////// jpeg-autorotate///////////////////////////////
-            await jo.rotate(local_watermark_path)
-                .then(async ({orientation}) => {
-                    if(orientation !== null && orientation === 6) {
-                        let image = await Jimp.read(local_watermark_path)
-                        await image.rotate(180).writeAsync(local_watermark_path)
-                    }
-            }).catch((error) => {
-                if(error.code === jo.errors.correct_orientation) {
-                    console.log('The orientation of this image is already correct!')
+                if (width > sharp.WIDTH) {
+                    let resize = await sharp.resizeUrlImageToFilestream(url)
+                    await objectStorage.uploadStream(resize, name, prefix)
                 }
-            })
-            //////////////////////////////////////////////////////////////////////////
 
-            await objectStorage.uploadStream(fs.createReadStream(local_watermark_path), name, prefix)
+                let local_watermark_path = './images/watermarked.jpg'
+                let watermarkedImage = await jimp.addWaterMark(url)
 
-            let image = config.url + '/' + config.bucket_name + '/watermark/' + prefix + '/' + name
+                await watermarkedImage.writeAsync(local_watermark_path)
+
+                /////////////////////////// jpeg-autorotate///////////////////////////////
+                await jo.rotate(local_watermark_path)
+                    .then(async ({orientation}) => {
+                        if(orientation !== null && orientation === 6) {
+                            let image = await Jimp.read(local_watermark_path)
+                            await image.rotate(180).writeAsync(local_watermark_path)
+                        }
+                    }).catch((error) => {
+                        if(error.code === jo.errors.correct_orientation) {
+                            console.log('The orientation of this image is already correct!')
+                        }
+                    })
+                //////////////////////////////////////////////////////////////////////////
+
+                await objectStorage.uploadStream(fs.createReadStream(local_watermark_path), name, prefix)
+
+                image = config.url + '/' + config.bucket_name + '/watermark/' + prefix + '/' + name
+            }
             list.push(image)
         }
     }
