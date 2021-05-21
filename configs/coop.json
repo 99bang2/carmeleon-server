@@ -8,6 +8,14 @@
             "action": "http://authapi.paysgift.com/ApprovalApi",
             "partnerCode": "P00313"
         },
+        "test": {
+            "url": "http://tauthapi.paysgift.com:9999/Approval/V130/ApprovalApi.asmx",
+            "key": "7A87D18F122216519BA31259064EFA85",
+            "iv": "E5173DCA57A9D66E6DA5C0DA69D644AB",
+            "algorithm": "aes-128-cbc",
+            "action": "http://authapi.paysgift.com/ApprovalApi",
+            "partnerCode": "P00313"
+        },
         "production": {
             "url": "https://authapi.paysgift.com/Approval/V130/ApprovalApi.asmx",
             "key": "1F8BA421FDE8FEB5BE5D2E4DFA17F402",

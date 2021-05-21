@@ -9,6 +9,16 @@
         "timezone": "+09:00",
         "logging": true
     },
+    "test": {
+        "username": "carmeleon",
+        "password": "thwlsWkd123",
+        "database": "carmeleon",
+        "host": "db-6dhqg.cdb.ntruss.com",
+        "port": "3306",
+        "dialect": "mysql",
+        "timezone": "+09:00",
+        "logging": false
+    },
     "production": {
         "username": "carmeleon",
         "password": "thwlsWkd123",
