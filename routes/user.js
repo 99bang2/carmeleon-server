@@ -60,6 +60,7 @@ api.get('/parkings/:uid', parkingController.read)
 
 // 전기충전소
 api.get('/evChargeStations', auth.onlyAppRequest, apiCache.route({ prefix: "evChargeStations", expire: 300 }), evChargeStationController.list)
+api.get('/evChargeStations/realTime', auth.isUserLoggedIn, evChargeStationController.listRealTime)
 api.get('/evChargeStations/check', evChargeStationController.check)
 api.get('/evChargeStations/:uid', evChargeStationController.read)
 

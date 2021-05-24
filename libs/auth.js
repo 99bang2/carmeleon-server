@@ -60,14 +60,12 @@ exports.isEitherLoggedIn = async (ctx, next) => {
 }
 
 exports.onlyAppRequest = async (ctx, next) => {
-	console.log(require('util').inspect(ctx.userAgent))
 	let userAgent = ctx.userAgent
-	console.log(userAgent.source)
 	if(userAgent.isDesktop) {
 		response.unauthorized(ctx)
 	}
-	/*if(!ctx.user){
+	if(userAgent.source.indexOf('com.mobilx.carmeleon') < 0 && userAgent.browser.indexOf('okhttp') < 0) {
 		response.unauthorized(ctx)
-	}*/
+	}
 	await next()
 }
