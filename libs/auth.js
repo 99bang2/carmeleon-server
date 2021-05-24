@@ -58,3 +58,16 @@ exports.isEitherLoggedIn = async (ctx, next) => {
 	}
 	response.unauthorized(ctx)
 }
+
+exports.onlyAppRequest = async (ctx, next) => {
+	console.log(require('util').inspect(ctx.userAgent))
+	let userAgent = ctx.userAgent
+	console.log(userAgent.source)
+	if(userAgent.isDesktop) {
+		response.unauthorized(ctx)
+	}
+	/*if(!ctx.user){
+		response.unauthorized(ctx)
+	}*/
+	await next()
+}

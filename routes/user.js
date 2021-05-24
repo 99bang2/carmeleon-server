@@ -54,22 +54,22 @@ api.get('/events/:uid', eventController.read)
 api.get('/popups', popupController.list)
 
 // 주차장
-api.get('/parkings', apiCache.route({ prefix: "parkings", expire: 300 }), parkingController.list)
+api.get('/parkings', auth.onlyAppRequest, apiCache.route({ prefix: "parkings", expire: 300 }), parkingController.list)
 api.get('/parkings/check', parkingController.check)
 api.get('/parkings/:uid', parkingController.read)
 
 // 전기충전소
-api.get('/evChargeStations', apiCache.route({ prefix: "evChargeStations", expire: 300 }), evChargeStationController.list)
+api.get('/evChargeStations', auth.onlyAppRequest, apiCache.route({ prefix: "evChargeStations", expire: 300 }), evChargeStationController.list)
 api.get('/evChargeStations/check', evChargeStationController.check)
 api.get('/evChargeStations/:uid', evChargeStationController.read)
 
 // 주유소
-api.get('/gasStations', apiCache.route({ prefix: "gasStations", expire: 300 }), gasStationController.list)
+api.get('/gasStations', auth.onlyAppRequest, apiCache.route({ prefix: "gasStations", expire: 300 }), gasStationController.list)
 api.get('/gasStations/check', gasStationController.check)
 api.get('/gasStations/:uid', gasStationController.read)
 
 // 세차장
-api.get('/carWashes', apiCache.route({ prefix: "carWashes", expire: 300 }), carWashController.list)
+api.get('/carWashes', auth.onlyAppRequest, apiCache.route({ prefix: "carWashes", expire: 300 }), carWashController.list)
 api.get('/carWashes/check', carWashController.check)
 api.get('/carWashes/:uid', carWashController.read)
 api.get('/carWashes/products/:productUid', carWashController.getProductInfo)

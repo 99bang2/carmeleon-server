@@ -61,7 +61,6 @@ exports.read = async function (ctx) {
 }
 
 exports.list = async function (ctx) {
-    console.log(ctx.userAgent)
 	/*let _ = ctx.request.query
     let longitude = _.lon ? parseFloat(_.lon) : null
     let latitude = _.lat ? parseFloat(_.lat) : null
