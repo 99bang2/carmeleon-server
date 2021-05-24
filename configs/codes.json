@@ -236,7 +236,9 @@
     "eventCustomType": {
         "none": "없음",
         "pointStore": "포인트교환소",
-        "hiCare": "하이케어"
+        "hiCare": "하이케어",
+        "coopMarketing": "쿠프마케팅",
+        "carmeleonManual": "주차장이용방법"
     },
     "pointProductType": {
         "0": "대박상품",
