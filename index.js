@@ -5,6 +5,7 @@ const Router = require('koa-router')
 const koaBody = require('koa-body')
 const koaStatic = require('koa-static')
 const cors = require('koa2-cors')
+const { userAgent } = require('koa-useragent')
 const consola = require('consola')
 const app = new koa()
 const router = new Router()
@@ -18,6 +19,7 @@ router.get('/', (ctx) => ctx.body = 'OK')
 router.use('/api', response.res, apiV1Router.routes())
 
 app.use(cors())
+app.use(userAgent)
 app.use(koaBody({
 	formidable: {
 		uploadDir: './uploads',

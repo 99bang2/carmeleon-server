@@ -6,9 +6,9 @@ exports.list = async function (ctx) {
     let _ = ctx.request.query
     let longitude = _.lon ? parseFloat(_.lon) : null
     let latitude = _.lat ? parseFloat(_.lat) : null
-    let radius = _.radius
+    let radius = 10
     let where = {}
-    if(radius) {
+    if(longitude && latitude) {
         let distanceQuery = models.sequelize.where(models.sequelize.literal(`(6371 * acos(cos(radians(${latitude})) * cos(radians(lat)) * cos(radians(lon) - radians(${longitude})) + sin(radians(${latitude})) * sin(radians(lat))))`), '<=', radius)
         where = [distanceQuery]
     }

@@ -1,6 +1,14 @@
 'use strict'
+const env = process.env.NODE_ENV || 'development'
+const config = require(__dirname + '/../configs/config.json')[env]
 const Router = require('koa-router')
 const api = new Router()
+const Redis = require('ioredis')
+const redis = new Redis(config.redis)
+const ApiCache = require('koa-api-cache')
+const apiCache = new ApiCache({redis, conditionFunc(body) {
+    return body.result.code === 200
+}})
 
 const auth = require('../libs/auth')
 const userController            = require('../controllers/user/user')
@@ -46,22 +54,22 @@ api.get('/events/:uid', eventController.read)
 api.get('/popups', popupController.list)
 
 // 주차장
-api.get('/parkings', parkingController.list)
+api.get('/parkings', apiCache.route({ prefix: "parkings", expire: 300 }), parkingController.list)
 api.get('/parkings/check', parkingController.check)
 api.get('/parkings/:uid', parkingController.read)
 
 // 전기충전소
-api.get('/evChargeStations', evChargeStationController.list)
+api.get('/evChargeStations', apiCache.route({ prefix: "evChargeStations", expire: 300 }), evChargeStationController.list)
 api.get('/evChargeStations/check', evChargeStationController.check)
 api.get('/evChargeStations/:uid', evChargeStationController.read)
 
 // 주유소
-api.get('/gasStations', gasStationController.list)
+api.get('/gasStations', apiCache.route({ prefix: "gasStations", expire: 300 }), gasStationController.list)
 api.get('/gasStations/check', gasStationController.check)
 api.get('/gasStations/:uid', gasStationController.read)
 
 // 세차장
-api.get('/carWashes', carWashController.list)
+api.get('/carWashes', apiCache.route({ prefix: "carWashes", expire: 300 }), carWashController.list)
 api.get('/carWashes/check', carWashController.check)
 api.get('/carWashes/:uid', carWashController.read)
 api.get('/carWashes/products/:productUid', carWashController.getProductInfo)

@@ -54,20 +54,17 @@ exports.read = async function (ctx) {
 }
 
 exports.list = async function (ctx) {
-	let _           = ctx.request.query
+	/*let _           = ctx.request.query
     let longitude   = _.lon ? parseFloat(_.lon) : null
     let latitude    = _.lat ? parseFloat(_.lat) : null
-    let radius      = _.radius
+    let radius      = _.radius*/
     let where       = {}
-
-    if(radius) {
+    /*if(radius) {
         let distanceQuery = models.sequelize.where(models.sequelize.literal(`(6371 * acos(cos(radians(${latitude})) * cos(radians(lat)) * cos(radians(lon) - radians(${longitude})) + sin(radians(${latitude})) * sin(radians(lat))))`), '<=', radius)
         where = [distanceQuery]
-    }
-
+    }*/
     let attributes = ['uid', 'carWashName', 'carWashType', 'rate', 'typeTag', 'timeTag', 'isRecommend', 'lat', 'lon', 'bookingCode', 'targetType']
     let carWashes = await models.carWash.findAll({ attributes, where })
-
 	response.send(ctx, carWashes)
 }
 

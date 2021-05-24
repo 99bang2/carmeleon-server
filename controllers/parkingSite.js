@@ -61,18 +61,19 @@ exports.read = async function (ctx) {
 }
 
 exports.list = async function (ctx) {
-	let _ = ctx.request.query
+    console.log(ctx.userAgent)
+	/*let _ = ctx.request.query
     let longitude = _.lon ? parseFloat(_.lon) : null
     let latitude = _.lat ? parseFloat(_.lat) : null
-    let radius = _.radius
+    let radius = _.radius*/
     let where = [{
 	    is_active: true,
     }]
     let order= [['isRecommend', 'asc'], ['price', 'desc']]
-    if(radius) {
+    /*if(radius) {
         let distanceQuery = models.sequelize.where(models.sequelize.literal(`(6371 * acos(cos(radians(${latitude})) * cos(radians(lat)) * cos(radians(lon) - radians(${longitude})) + sin(radians(${latitude})) * sin(radians(lat))))`), '<=', radius)
         where.push(distanceQuery)
-    }
+    }*/
     let attributes = ['uid', 'name', 'isBuy', 'rate', 'optionTag', 'valetType', 'isRecommend', 'price', 'lat', 'lon', 'targetType']
     let parkingSites = await models.parkingSite.findAll({ attributes, where, order })
 	response.send(ctx, parkingSites)
