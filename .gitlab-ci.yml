@@ -3,6 +3,7 @@ image: docker:latest
 stages:
   - build
   - release
+  - deploy
 
 before_script:
 #  - docker login -u gitlab-ci-token -p $CI_BUILD_TOKEN $CI_REGISTRY
@@ -27,3 +28,11 @@ release:
     - docker pull $CI_REGISTRY_IMAGE:$CI_COMMIT_REF_NAME
     - docker tag $CI_REGISTRY_IMAGE:$CI_COMMIT_REF_NAME $CI_REGISTRY_IMAGE:latest
     - docker push $CI_REGISTRY_IMAGE:latest
+    -
+deploy-stage:
+  stage: deploy
+  only:
+    - stage
+  script:
+    - sshpass -p $SERVER_PASS ssh $SERVER_USER@$SERVER_HOST 'cd /home/neptune/app/carmeleon-server && git pull origin stage && npm i'
+    - sshpass -p $SERVER_PASS ssh $SERVER_USER@$SERVER_HOST 'cd /home/neptune/app/carmeleon-server && pm2 stop CARMELEON-SERVER && pm2 start --env test'
