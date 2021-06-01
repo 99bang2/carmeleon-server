@@ -19,6 +19,10 @@
         "code": 403,
         "message": "API 권한 없음"
     },
+    "tokenExpired": {
+        "code": 405,
+        "message": "API 토큰 만료"
+    },
     "tooManyRequest": {
         "code": 429,
         "message": "접속자 많음"

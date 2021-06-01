@@ -41,7 +41,7 @@ const commonController          = require('../controllers/common')
 // user
 api.post('/users/login', userController.login)
 api.get('/users/check', userController.check)
-api.get('/users/logout', auth.isUserLoggedIn, userController.logout)
+api.get('/users/logout', userController.logout)
 
 // 공지사항
 api.get('/notices', noticeController.list)

@@ -90,9 +90,11 @@ exports.login = async function (ctx) {
 		})
 		await common.updatePoint(user.uid, pointCodes.WELCOME)
 	}else{
-		user.marketing = _.user.marketing
-		user.token = _.user.token
-		await user.save()
+		if(_.user.token) {
+			user.marketing = _.user.marketing
+			user.token = _.user.token
+			await user.save()
+		}
 	}
 	const accessToken = jwt.sign(
 		{

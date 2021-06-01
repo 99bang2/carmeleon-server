@@ -10,11 +10,18 @@ exports.getAccount = async (ctx) => {
 	if (ctx.request.headers.authorization && ctx.request.headers.authorization.split(' ')[0] === 'Bearer') {
 		try{
 			let accessToken = ctx.request.headers.authorization.split(' ')[1]
-			let accuontData = await jwt.verify(accessToken, secret)
-			return accuontData
+			let accountData = await jwt.verify(accessToken, secret)
+			if(accountData.auth === 'admin') {
+				return accountData
+			}else {
+				return null
+			}
 		}catch (e) {
-			consola.error(e)
-			response.unauthorized(ctx)
+			if(e.name === 'TokenExpiredError') {
+				response.tokenExpired(ctx)
+			}else {
+				response.unauthorized(ctx)
+			}
 		}
 	} else {
 		return null
@@ -25,11 +32,17 @@ exports.getUser = async (ctx) => {
 	if (ctx.request.headers.authorization && ctx.request.headers.authorization.split(' ')[0] === 'Bearer') {
 		try{
 			let accessToken = ctx.request.headers.authorization.split(' ')[1]
-			let userData = await jwt.verify(accessToken, secret)
+			let userData = await jwt.verify(accessToken, secret, {
+				maxAge: '1 days'
+			})
+			consola.info(userData)
 			return userData
 		}catch (e) {
-			consola.error(e)
-			response.unauthorized(ctx)
+			if(e.name === 'TokenExpiredError') {
+				response.tokenExpired(ctx)
+			}else {
+				response.unauthorized(ctx)
+			}
 		}
 	} else {
 		return null

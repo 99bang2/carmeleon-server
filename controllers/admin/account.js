@@ -87,6 +87,7 @@ exports.login = async function (ctx) {
 			id: account.id,
 			grade: account.grade,
 			name: account.name,
+			auth: 'admin'
 		},
 		secret
 	)

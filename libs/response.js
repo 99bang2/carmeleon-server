@@ -20,7 +20,9 @@ exports.res = async (ctx, next) => {
 		})
 		//ctx.admin = await auth.getAdmin(ctx)
 		ctx.account = await auth.getAccount(ctx)
-		ctx.user = await auth.getUser(ctx)
+        if(!ctx.account) {
+            ctx.user = await auth.getUser(ctx)
+        }
 		await next()
     } catch (err) {
 		consola.error(err)
@@ -86,6 +88,10 @@ exports.badRequest = (ctx) => {
 
 exports.unauthorized = (ctx) => {
     ctx.throw(resCode.unauthorized)
+}
+
+exports.tokenExpired = (ctx) => {
+    ctx.throw(resCode.tokenExpired)
 }
 
 exports.forbidden = (ctx) => {
