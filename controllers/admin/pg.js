@@ -29,7 +29,9 @@ exports.bookingPgPaymentCancelNice = async function (ctx) {
 	let cancelRequestTime 	= _.cancelRequestTime
 	let clientStatus 		= _.clientStatus
 	let result 				= await nicePay.pgPaymentCancelNice(payInfo)
-
+	let dataBody = cancelRequestTime !== null
+		? `${moment(cancelRequestTime).format('YYYY.MM.DD HH:mm')}에 요청하신 취소건이 환불 완료되었습니다.`
+		: '해당 결제건이 취소 완료되었습니다.'
 	if (result.dataValues.resultCode === "2001") {
 		//성공
 		let userUid = payInfo.userUid
@@ -38,7 +40,7 @@ exports.bookingPgPaymentCancelNice = async function (ctx) {
 			let data = {
 				pushType : 1,
 				title: '환불이 완료 되었습니다.',
-				body: `${moment(cancelRequestTime).format('YYYY.MM.DD HH:mm')}에 요청하신 취소건이 환불 완료되었습니다.`,
+				body: dataBody,
 				userToken: user.token,
 				userUid: userUid,
 				sendDate: Sequelize.fn('NOW')
@@ -152,14 +154,16 @@ exports.refundApprove = async function (ctx) {
 		cardRefundFlag 	= result.data.ResultCode === "2001"
 		msg 			= result.ResultMsg
 	}
-
+	let dataBody = payInfo.cancelRequestTime !== null
+		? `${moment(payInfo.cancelRequestTime).format('YYYY.MM.DD HH:mm')}에 요청하신 취소건이 환불 완료되었습니다.`
+		: '해당 결제건이 취소 완료되었습니다.'
 	if (cardRefundFlag) {
 		let userUid = payInfo.userUid
 		let user 	= await models.user.getByUid(ctx, userUid)
 		let data 	= {
 			pushType 	: 1,
 			title		: '환불이 완료 되었습니다.',
-			body		: `${moment(payInfo.cancelRequestTime).format('YYYY.MM.DD HH:mm')}에 요청하신 취소건이 환불 완료되었습니다.`,
+			body		: dataBody,
 			userToken	: user.token,
 			userUid		: userUid,
 			sendDate	: Sequelize.fn('NOW')
