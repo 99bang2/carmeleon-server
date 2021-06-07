@@ -47,6 +47,9 @@ exports.read = async function (ctx) {
 exports.update = async function (ctx) {
 	let {uid} = ctx.params
 	let car = await models.car.getByUid(ctx, uid)
+	if(car.userUid !== ctx.user.uid) {
+		response.unauthorized(ctx)
+	}
 	let _ = ctx.request.body
 	Object.assign(car, _)
 	await car.save()
@@ -56,6 +59,9 @@ exports.update = async function (ctx) {
 exports.delete = async function (ctx) {
 	let {uid} = ctx.params
 	let car = await models.car.getByUid(ctx, uid)
+	if(car.userUid !== ctx.user.uid) {
+		response.unauthorized(ctx)
+	}
 	await car.destroy()
 	response.send(ctx, car)
 }
@@ -76,6 +82,9 @@ exports.carList = async function (ctx) {
 
 exports.isMain = async function (ctx) {
 	let _ = ctx.request.body
+	if(_.userUid !== ctx.user.uid) {
+		response.unauthorized(ctx)
+	}
 	await models.car.update(
 		{ isMain: false },
 		{ where: { userUid: _.userUid }}

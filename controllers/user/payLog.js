@@ -93,14 +93,18 @@ exports.create = async function (ctx) {
 exports.read = async function (ctx) {
     let {uid} = ctx.params
     let payLog = await models.payLog.getByUid(ctx, uid, models)
-
+    if(payLog.userUid !== ctx.user.uid) {
+        response.unauthorized(ctx)
+    }
     response.send(ctx, payLog)
 }
 
 exports.list = async function (ctx) {
     let _ = ctx.request.query
+    if(_.userUid !== ctx.user.uid) {
+        response.unauthorized(ctx)
+    }
     let payLog = await models.payLog.getByUserUid(ctx, _, models)
-
     response.send(ctx, payLog)
 }
 

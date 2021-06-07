@@ -38,6 +38,9 @@ exports.read = async function (ctx) {
 exports.update = async function (ctx) {
 	let {uid} = ctx.params
 	let card = await models.card.getByUid(ctx, uid)
+	if(card.userUid !== ctx.user.uid) {
+		response.unauthorized(ctx)
+	}
 	let _ = ctx.request.body
 	Object.assign(card, _)
 	await card.save()
@@ -47,6 +50,9 @@ exports.update = async function (ctx) {
 exports.delete = async function (ctx) {
 	let {uid} = ctx.params
 	let card = await models.card.getByUid(ctx, uid)
+	if(card.userUid !== ctx.user.uid) {
+		response.unauthorized(ctx)
+	}
 	let result = await pg.pgBillRemoveNice(uid)
 	if(result === true){
 		await card.destroy()

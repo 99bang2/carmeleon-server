@@ -32,6 +32,9 @@ exports.read = async function (ctx) {
 exports.update = async function (ctx) {
     let {uid} = ctx.params
     let user = await models.user.getByUid(ctx, uid)
+	if(user.uid !== ctx.user.uid) {
+		response.unauthorized(ctx)
+	}
     let _ = ctx.request.body
     Object.assign(user, _)
     await user.save()

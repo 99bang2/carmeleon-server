@@ -16,16 +16,18 @@ const common 		= require('../../controllers/common')
 
 const merchantKey 	= config.nicePay.merchantKey
 const merchantID 	= config.nicePay.merchantID;
+const privateKey 	= config.privateKey;
 const MOID          = 'carmeleon_billKey'
 
 exports.pgBillNice = async function(ctx){
     let _               = ctx.request.body
     let data            = _.data
+    const buffer = Buffer.from(data, 'hex')
+    const decrypted = crypto.privateDecrypt(privateKey, buffer).toString('utf8')
     let hashKey         = CryptoJS.SHA512(ctx.user.email).toString()
-    let decryptedData   = CryptoJS.AES.decrypt(data, hashKey)
+    let decryptedData   = CryptoJS.AES.decrypt(decrypted, hashKey)
     let decryptData     = JSON.parse(decryptedData.toString(CryptoJS.enc.Utf8))
     let ediDate         = moment().format('YYYYMMDDHHmmss')
-
     //IDno : 생년월일(YYMMDD) or 사업자등록번호(법인카드 등록 시)
     //CardPw : 카드 비밀번호 앞 2자리
     let aesString
