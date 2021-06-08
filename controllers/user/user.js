@@ -120,9 +120,25 @@ exports.login = async function (ctx) {
 }
 
 exports.check = async function (ctx) {
-	response.send(ctx, {
-		user: ctx.user
-	})
+	if (ctx.request.headers.authorization && ctx.request.headers.authorization.split(' ')[0] === 'Bearer') {
+		try{
+			let accessToken = ctx.request.headers.authorization.split(' ')[1]
+			let userData = await jwt.verify(accessToken, secret, {
+				maxAge: '1 days'
+			})
+			response.send(ctx, {
+				user: userData
+			})
+		}catch (e) {
+			if(e.name === 'TokenExpiredError') {
+				response.tokenExpired(ctx)
+			}else {
+				response.unauthorized(ctx)
+			}
+		}
+	} else {
+		response.unauthorized(ctx)
+	}
 }
 
 exports.logout = async function (ctx) {

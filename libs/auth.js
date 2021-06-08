@@ -38,11 +38,12 @@ exports.getUser = async (ctx) => {
 			consola.info(userData)
 			return userData
 		}catch (e) {
-			if(e.name === 'TokenExpiredError') {
+			/*if(e.name === 'TokenExpiredError') {
 				response.tokenExpired(ctx)
 			}else {
 				response.unauthorized(ctx)
-			}
+			}*/
+			return null
 		}
 	} else {
 		return null
