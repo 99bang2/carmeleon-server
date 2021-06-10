@@ -38,10 +38,10 @@ exports.getUser = async (ctx) => {
 			})
 			consola.info(userData)
 			consola.info(userData.uuid)
-			if(userData.uuid) {
+			/*if(userData.uuid) {
 				userData = await models.user.getByUUID(userData.uuid)
 				consola.info(userData)
-			}
+			}*/
 			return userData
 		}catch (e) {
 			consola.info(e)
