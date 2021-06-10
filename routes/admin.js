@@ -33,6 +33,8 @@ const pushController            = require('../controllers/push')
 // const pgController              = require('../controllers/pg')
 const tutorialController        = require('../controllers/tutorial')
 const statisticController       = require('../controllers/admin/statistics')
+const versionController         = require('../controllers/admin/version')
+const configController         = require('../controllers/admin/config')
 
 const auth                      = require('../libs/auth')
 
@@ -268,4 +270,20 @@ api.put('/carWashes/admin/bookings/:uid',auth.isAdminLoggedIn, carWashController
 //결제 취소 //
 api.post('/bookingRefundApprove', auth.isAdminLoggedIn, pgController.bookingPgPaymentCancelNice)
 api.post('/bookingRefundReject', auth.isAdminLoggedIn, pgController.bookingRefundReject)
+
+/**
+ * 버전 관리
+ */
+api.get('/versions', auth.isAdminLoggedIn, versionController.list)
+api.put('/versions/:os', auth.isAdminLoggedIn, versionController.update)
+
+/**
+ * 키 관리
+ */
+api.post('/keys', auth.isAdminLoggedIn, configController.create)
+api.get('/keys', auth.isAdminLoggedIn, configController.list)
+api.put('/keys/:uid', auth.isAdminLoggedIn, configController.update)
+api.delete('/keys/:uid', auth.isAdminLoggedIn, configController.delete)
+api.post('/keys/bulkDelete', auth.isAdminLoggedIn, configController.bulkDelete)
+api.get('/keys/unique/:key', auth.isAdminLoggedIn, configController.checkUniqueKey)
 module.exports = api
