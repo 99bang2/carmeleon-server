@@ -10,7 +10,7 @@ const apiCache = new ApiCache({redis, conditionFunc(body) {
     return body.result.code === 200
 }})
 
-const auth = require('../libs/auth')
+const auth = require('../middleware/auth')
 const userController            = require('../controllers/user/user')
 const payLogController          = require('../controllers/user/payLog')
 const coopController            = require('../controllers/user/coop')

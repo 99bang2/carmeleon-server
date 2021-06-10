@@ -1,7 +1,7 @@
 'use strict'
 const consola = require('consola')
 const resCode = require('../configs/response-code.json')
-const auth = require('../libs/auth')
+const jwt = require('../libs/jwt')
 /**
  * 로그 및 에러 캐치
  * @param ctx
@@ -19,9 +19,9 @@ exports.res = async (ctx, next) => {
 			params: params
 		})
 		//ctx.admin = await auth.getAdmin(ctx)
-		ctx.account = await auth.getAccount(ctx)
+		ctx.account = await jwt.getAccount(ctx)
         if(!ctx.account) {
-            ctx.user = await auth.getUser(ctx)
+            ctx.user = await jwt.getUser(ctx)
         }
 		await next()
     } catch (err) {

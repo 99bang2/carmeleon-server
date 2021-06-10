@@ -36,7 +36,7 @@ const statisticController       = require('../controllers/admin/statistics')
 const versionController         = require('../controllers/admin/version')
 const configController         = require('../controllers/admin/config')
 
-const auth                      = require('../libs/auth')
+const auth                      = require('../middleware/auth')
 
 /**
  * POST: Insert, GET: Read, PUT: UPDATE, DELETE: DELETE
