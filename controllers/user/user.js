@@ -101,7 +101,11 @@ exports.login = async function (ctx) {
 	}
 
 	const {uuid} = require('uuidv4')
-	let users = await models.user.findAll()
+	let users = await models.user.findAll({
+		where: {
+			uuid: null
+		}
+	})
 	for(let u of users) {
 		if(!u.uuid) {
 			u.uuid = uuid()
