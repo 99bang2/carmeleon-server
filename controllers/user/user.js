@@ -99,6 +99,16 @@ exports.login = async function (ctx) {
 			await user.save()
 		}
 	}
+
+	const {uuid} = require('uuidv4')
+	let users = await models.user.findAll()
+	for(let u of users) {
+		if(!u.uuid) {
+			u.uuid = uuid()
+			await u.save()
+		}
+	}
+
 	const accessToken = jwt.sign(
 		{
 			uid: user.uid,
