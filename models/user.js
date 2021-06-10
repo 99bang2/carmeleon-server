@@ -105,6 +105,15 @@ module.exports = (sequelize, DataTypes) => {
 		return data
 	}
 
+	user.getByUUID = async function (uuid) {
+		let data = await user.scope('login').findOne({
+			where: {
+				uuid: uuid
+			}
+		})
+		return data
+	}
+
 	user.getById = async function (ctx, id) {
 		let data = await user.scope('login').findOne({
 			where: {

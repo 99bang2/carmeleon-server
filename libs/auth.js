@@ -1,5 +1,6 @@
 'use strict'
 const response = require('../libs/response')
+const models = require('../models')
 const consola = require('consola')
 const jwt = require('jsonwebtoken')
 const env = process.env.NODE_ENV || 'development'
@@ -36,6 +37,9 @@ exports.getUser = async (ctx) => {
 				maxAge: '1 days'
 			})
 			consola.info(userData)
+			if(userData.uuid) {
+				userData = await models.user.getByUUID(userData.uuid)
+			}
 			return userData
 		}catch (e) {
 			/*if(e.name === 'TokenExpiredError') {

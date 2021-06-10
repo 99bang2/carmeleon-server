@@ -19,7 +19,6 @@ const pgController              = require('../controllers/user/pg')
 const noticeController          = require('../controllers/notice')
 const eventController           = require('../controllers/event')
 const popupController           = require('../controllers/popup')
-const parkingController         = require('../controllers/parkingSite')
 const carWashController         = require('../controllers/carWash')
 const gasStationController      = require('../controllers/gasStation')
 const rateController            = require('../controllers/rate')
@@ -38,6 +37,8 @@ const teslaController           = require('../controllers/tesla')
 const pointStoreController      = require('../controllers/pointStore')
 const commonController          = require('../controllers/common')
 
+const controller = require('../controllers/user')
+
 // user
 api.post('/users/login', userController.login)
 api.get('/users/check', userController.check)
@@ -54,9 +55,9 @@ api.get('/events/:uid', eventController.read)
 api.get('/popups', popupController.list)
 
 // 주차장
-api.get('/parkings', auth.onlyAppRequest, apiCache.route({ prefix: "parkings", expire: 300 }), parkingController.list)
-api.get('/parkings/check', parkingController.check)
-api.get('/parkings/:uid', parkingController.read)
+api.get('/parkings', auth.onlyAppRequest, apiCache.route({ prefix: "parkings", expire: 300 }), controller.parkingSite.list)
+api.get('/parkings/check', controller.parkingSite.check)
+api.get('/parkings/:uid', controller.parkingSite.read)
 
 // 전기충전소
 api.get('/evChargeStations', auth.onlyAppRequest, apiCache.route({ prefix: "evChargeStations", expire: 300 }), evChargeStationController.list)
@@ -193,6 +194,6 @@ api.get('/coop/history', auth.isUserLoggedIn, coopController.history)
 api.get('/versions', commonController.getVersions)
 
 // 판매 주차장 표시
-api.get('/parkingInfo', parkingController.bookingList )
+api.get('/parkingInfo', controller.parkingSite.bookingList )
 
 module.exports = api

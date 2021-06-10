@@ -1,16 +1,16 @@
-const models = require('../models')
-const response = require('../libs/response')
+const models = require('../../models')
+const response = require('../../libs/response')
 const moment = require('moment')
-const parkingTicketLib = require('../libs/parkingTicket')
-
+const parkingTicketLib = require('../../libs/parkingTicket')
+const PARKING_TARGET_TYPE = 0
 exports.read = async function (ctx) {
     let {uid} = ctx.params
-	let _ = ctx.request.query
     let parkingSite = await models.parkingSite.findByPk(uid)
+    console.log(ctx.user)
     if(ctx.user) {
         let favorite = await models.favorite.count({
             where: {
-                targetType: 0,
+                targetType: PARKING_TARGET_TYPE,
                 targetUid: uid,
                 userUid: ctx.user.uid
             }
@@ -19,6 +19,8 @@ exports.read = async function (ctx) {
     }else {
         parkingSite.dataValues.favoriteFlag = false
     }
+
+
     let discountTickets = await models.discountTicket.findAll({
         where: {
             siteUid: uid,
@@ -61,27 +63,15 @@ exports.read = async function (ctx) {
 }
 
 exports.list = async function (ctx) {
-	/*let _ = ctx.request.query
-    let longitude = _.lon ? parseFloat(_.lon) : null
-    let latitude = _.lat ? parseFloat(_.lat) : null
-    let radius = _.radius*/
-    let where = [{
-	    is_active: true,
-    }]
+    let where = { isActive: true }
     let order= [['isRecommend', 'asc'], ['price', 'desc']]
-    /*if(radius) {
-        let distanceQuery = models.sequelize.where(models.sequelize.literal(`(6371 * acos(cos(radians(${latitude})) * cos(radians(lat)) * cos(radians(lon) - radians(${longitude})) + sin(radians(${latitude})) * sin(radians(lat))))`), '<=', radius)
-        where.push(distanceQuery)
-    }*/
     let attributes = ['uid', 'name', 'isBuy', 'rate', 'optionTag', 'valetType', 'isRecommend', 'price', 'lat', 'lon', 'targetType']
     let parkingSites = await models.parkingSite.findAll({ attributes, where, order })
 	response.send(ctx, parkingSites)
 }
 
 exports.check = async function (ctx) {
-    let lastUpdatedParkingSite = await models.parkingSite.findOne({
-        order: [['updatedAt', 'desc']]
-    })
+    let lastUpdatedParkingSite = await models.parkingSite.findOne({ order: [['updatedAt', 'desc']] })
     response.send(ctx, moment(lastUpdatedParkingSite.updatedAt).format('YYYY-MM-DD HH:mm:ss'))
 }
 
