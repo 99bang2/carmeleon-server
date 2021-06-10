@@ -37,11 +37,14 @@ exports.getUser = async (ctx) => {
 				maxAge: '1 days'
 			})
 			consola.info(userData)
+			consola.info(userData.uuid)
 			if(userData.uuid) {
 				userData = await models.user.getByUUID(userData.uuid)
+				consola.info(userData)
 			}
 			return userData
 		}catch (e) {
+			consola.info(e)
 			/*if(e.name === 'TokenExpiredError') {
 				response.tokenExpired(ctx)
 			}else {
