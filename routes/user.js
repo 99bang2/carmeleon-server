@@ -20,7 +20,6 @@ const eventController           = require('../controllers/event')
 const popupController           = require('../controllers/popup')
 const carController             = require('../controllers/car')
 const cardController            = require('../controllers/card')
-const favoriteController        = require('../controllers/favorite')
 const pointLogController        = require('../controllers/point')
 const discountTicketController  = require('../controllers/discountTicket')
 const couponController          = require('../controllers/coupon')
@@ -89,8 +88,8 @@ api.post('/rateTips', middleware.auth.isUserLoggedIn, controller.rate.toggleRate
 /**
  * 즐겨찾기 관리
  */
-api.post('/favorites', middleware.auth.isUserLoggedIn, favoriteController.create)
-api.get('/favorites/:userUid', middleware.auth.isUserLoggedIn, favoriteController.userList)
+api.post('/favorites', middleware.auth.isUserLoggedIn, controller.favorite.toggle)
+api.get('/favorites', middleware.auth.isUserLoggedIn, controller.favorite.list)
 
 /**
  * 유저 관련 컨트롤러

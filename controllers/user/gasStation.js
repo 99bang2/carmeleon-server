@@ -1,24 +1,9 @@
 const models = require('../../models')
 const response = require('../../libs/response')
 const moment = require('moment')
-const jwt = require('../../libs/jwt')
-const TARGET_TYPE = 2
 exports.read = async function (ctx) {
     let {uid} = ctx.params
     let gasStation = await models.gasStation.findByPk(uid)
-    ctx.user = await jwt.getUser(ctx)
-    if(ctx.user) {
-        let favorite = await models.favorite.count({
-            where: {
-                targetType: TARGET_TYPE,
-                targetUid: uid,
-                userUid: ctx.user.uid
-            }
-        })
-        gasStation.dataValues.favoriteFlag = favorite > 0
-    }else {
-        gasStation.dataValues.favoriteFlag = false
-    }
     response.send(ctx, gasStation)
 }
 

@@ -7,24 +7,11 @@ const env = process.env.NODE_ENV || 'development'
 const config = require('../../configs/config.json')[env]
 const carWashBookingAPI = config.carWashBookingAPI
 const jwt = require('../../libs/jwt')
-const TARGET_TYPE = 3
 exports.read = async function (ctx) {
     let {uid} = ctx.params
     let _ = ctx.request.query
     let carWash = await models.carWash.findByPk(uid)
     ctx.user = await jwt.getUser(ctx)
-    if(ctx.user) {
-        let favorite = await models.favorite.count({
-            where: {
-                targetType: TARGET_TYPE,
-                targetUid: uid,
-                userUid: ctx.user.uid
-            }
-        })
-        carWash.dataValues.favoriteFlag = favorite > 0
-    }else {
-        carWash.dataValues.favoriteFlag = false
-    }
     if(carWash.bookingCode) {
         let params = {}
         if(ctx.user) {

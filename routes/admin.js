@@ -20,22 +20,20 @@ const payLogController          = require('../controllers/admin/payLog')
 const pgController              = require('../controllers/admin/pg')
 
 const evChargeController        = require('../controllers/evCharge')
-// const reviewTemplateController  = require('../controllers/reviewTemplate')
 const carController             = require('../controllers/car')
 const cardController            = require('../controllers/card')
-const favoriteController        = require('../controllers/favorite')
 const discountTicketController  = require('../controllers/discountTicket')
 const pointLogController        = require('../controllers/point')
 const couponController          = require('../controllers/coupon')
 const couponLogController       = require('../controllers/couponLog')
 const questionController        = require('../controllers/question')
 const pushController            = require('../controllers/push')
-// const pgController              = require('../controllers/pg')
 const tutorialController        = require('../controllers/tutorial')
 const statisticController       = require('../controllers/admin/statistics')
 const versionController         = require('../controllers/admin/version')
 const configController         = require('../controllers/admin/config')
 
+const controller                = require('../controllers/admin')
 const auth                      = require('../middleware/auth')
 
 /**
@@ -143,8 +141,8 @@ api.post('/rates/bulkDelete', auth.isAdminLoggedIn, rateController.bulkDelete)
 /**
  * 즐겨찾기 관리
  */
-api.get('/favorites/:userUid', auth.isAdminLoggedIn, favoriteController.userList)
-api.delete('/favorites/:uid', auth.isAdminLoggedIn, favoriteController.delete)
+api.get('/favorites/:userUid', auth.isAdminLoggedIn, controller.favorite.userList)
+api.delete('/favorites/:uid', auth.isAdminLoggedIn, controller.favorite.delete)
 
 /**
  * 포인트 상품 관리
@@ -171,7 +169,6 @@ api.post('/users/bulkDelete', auth.isAdminLoggedIn, userController.bulkDelete)
 //유저 정보 조회
 api.get('/userCars/:userUid', auth.isAdminLoggedIn, carController.userList)
 api.get('/userCards/:userUid', auth.isAdminLoggedIn, cardController.userList)
-api.get('/userFavorites/:userUid', auth.isAdminLoggedIn, favoriteController.userList)
 api.get('/userPointLogs/:userUid', auth.isAdminLoggedIn, pointLogController.userListForAdmin)
 api.get('/userPayLogs/:userUid', auth.isAdminLoggedIn, payLogController.userPayLogs)
 
