@@ -20,9 +20,9 @@ exports.res = async (ctx, next) => {
 		})
 		//ctx.admin = await auth.getAdmin(ctx)
 		ctx.account = await jwt.getAccount(ctx)
-        if(!ctx.account) {
+        /*if(!ctx.account) {
             ctx.user = await jwt.getUser(ctx)
-        }
+        }*/
 		await next()
     } catch (err) {
 		consola.error(err)

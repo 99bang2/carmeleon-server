@@ -22,7 +22,6 @@ exports.getAccount = async (ctx) => {
 		return null
 	}
 }
-
 exports.getUser = async (ctx) => {
 	const models = require('../models')
 	if (ctx.request.headers.authorization && ctx.request.headers.authorization.split(' ')[0] === 'Bearer') {
@@ -32,10 +31,10 @@ exports.getUser = async (ctx) => {
 				maxAge: '1 days'
 			})
 			consola.info(userData)
-			consola.info(userData.uuid)
 			if(userData.uuid) {
 				userData = await models.user.getByUUID(userData.uuid)
-				consola.info(userData)
+			}else {
+				userData = await models.user.getByUid(ctx, userData.uid)
 			}
 			return userData
 		}catch (e) {

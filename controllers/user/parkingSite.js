@@ -1,16 +1,17 @@
 const models = require('../../models')
 const response = require('../../libs/response')
+const jwt = require('../../libs/jwt')
 const moment = require('moment')
 const parkingTicketLib = require('../../libs/parkingTicket')
-const PARKING_TARGET_TYPE = 0
+const TARGET_TYPE = 0
 exports.read = async function (ctx) {
     let {uid} = ctx.params
     let parkingSite = await models.parkingSite.findByPk(uid)
-    console.log(ctx.user)
+    ctx.user = await jwt.getUser(ctx)
     if(ctx.user) {
         let favorite = await models.favorite.count({
             where: {
-                targetType: PARKING_TARGET_TYPE,
+                targetType: TARGET_TYPE,
                 targetUid: uid,
                 userUid: ctx.user.uid
             }
@@ -19,8 +20,6 @@ exports.read = async function (ctx) {
     }else {
         parkingSite.dataValues.favoriteFlag = false
     }
-
-
     let discountTickets = await models.discountTicket.findAll({
         where: {
             siteUid: uid,
@@ -34,7 +33,6 @@ exports.read = async function (ctx) {
             ticketCategory: 1
         }
     })
-
     let currentDate = moment(moment().format('YYYY-MM-DD'))
     for(let discountTicket of discountTickets) {
         let openTime = await parkingTicketLib.getOpenTime(discountTicket)

@@ -1,5 +1,6 @@
 'use strict'
 const response = require('../libs/response')
+const jwt = require('../libs/jwt')
 exports.isAdminLoggedIn = async (ctx, next) => {
 	if(!ctx.account){
 		response.unauthorized(ctx)
@@ -7,8 +8,11 @@ exports.isAdminLoggedIn = async (ctx, next) => {
 	await next()
 }
 exports.isUserLoggedIn = async (ctx, next) => {
-	if(!ctx.user){
+	let user = await jwt.getUser(ctx)
+	if(!user) {
 		response.unauthorized(ctx)
+	}else {
+		ctx.user = user
 	}
 	await next()
 }

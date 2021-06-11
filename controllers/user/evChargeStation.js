@@ -1,7 +1,8 @@
-const models = require('../models')
-const response = require('../libs/response')
+const models = require('../../models')
+const response = require('../../libs/response')
 const moment = require('moment')
-
+const jwt = require('../../libs/jwt')
+const TARGET_TYPE = 1
 exports.list = async function (ctx) {
     let where = {}
     let attributes = ['uid', 'statNm', 'evType', 'rate', 'tag', 'availableStall', 'isRecommend', 'updateTime', 'lat', 'lon', 'stall', 'targetType']
@@ -44,10 +45,11 @@ exports.read = async function (ctx) {
             model: models.evCharger
         }]
     })
+    ctx.user = await jwt.getUser(ctx)
     if(ctx.user) {
         let favorite = await models.favorite.count({
             where: {
-                targetType: 1,
+                targetType: TARGET_TYPE,
                 targetUid: uid,
                 userUid: ctx.user.uid
             }

@@ -37,35 +37,5 @@ module.exports = (sequelize, DataTypes) => {
 		// 	sourceKey: 'rateUid'
 		// })
 	}
-	rateTip.getByParams = async function (ctx, params) {
-		let data = await rateTip.findOne({
-			where:{
-				userUid: params.userUid,
-				rateUid: params.rateUid
-			}
-		})
-		if (!data) {
-			response.badRequest(ctx)
-		}
-		return data
-	}
-	rateTip.checkSelf = async function (ctx, params, models) {
-		let data = await models.rating.count({
-			where:{
-				userUid: params.userUid,
-				uid: params.rateUid
-			}
-		})
-		return data
-	}
-	rateTip.checkTip = async function (ctx, params) {
-		let data = await rateTip.count({
-			where:{
-				userUid: params.userUid,
-				rateUid: params.rateUid
-			}
-		})
-		return data
-	}
 	return rateTip
 }

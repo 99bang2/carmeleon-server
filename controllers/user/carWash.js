@@ -1,20 +1,22 @@
 const axios = require('axios')
-const models = require('../models')
+const models = require('../../models')
 const moment = require('moment')
-const response = require('../libs/response')
-const nicePay = require('../libs/nicePay')
+const response = require('../../libs/response')
+const nicePay = require('../../libs/nicePay')
 const env = process.env.NODE_ENV || 'development'
-const config = require('../configs/config.json')[env]
+const config = require('../../configs/config.json')[env]
 const carWashBookingAPI = config.carWashBookingAPI
-
+const jwt = require('../../libs/jwt')
+const TARGET_TYPE = 3
 exports.read = async function (ctx) {
     let {uid} = ctx.params
     let _ = ctx.request.query
     let carWash = await models.carWash.findByPk(uid)
+    ctx.user = await jwt.getUser(ctx)
     if(ctx.user) {
         let favorite = await models.favorite.count({
             where: {
-                targetType: 3,
+                targetType: TARGET_TYPE,
                 targetUid: uid,
                 userUid: ctx.user.uid
             }
@@ -54,15 +56,7 @@ exports.read = async function (ctx) {
 }
 
 exports.list = async function (ctx) {
-	/*let _           = ctx.request.query
-    let longitude   = _.lon ? parseFloat(_.lon) : null
-    let latitude    = _.lat ? parseFloat(_.lat) : null
-    let radius      = _.radius*/
     let where       = {}
-    /*if(radius) {
-        let distanceQuery = models.sequelize.where(models.sequelize.literal(`(6371 * acos(cos(radians(${latitude})) * cos(radians(lat)) * cos(radians(lon) - radians(${longitude})) + sin(radians(${latitude})) * sin(radians(lat))))`), '<=', radius)
-        where = [distanceQuery]
-    }*/
     let attributes = ['uid', 'carWashName', 'carWashType', 'rate', 'typeTag', 'timeTag', 'isRecommend', 'lat', 'lon', 'bookingCode', 'targetType']
     let carWashes = await models.carWash.findAll({ attributes, where })
 	response.send(ctx, carWashes)
@@ -79,7 +73,7 @@ exports.check = async function (ctx) {
 exports.getProductInfo = async function (ctx) {
     let {productUid} = ctx.params
     let _ = ctx.request.query
-
+    ctx.user = await jwt.getUser(ctx)
     let car = null
     if(_.carUid) {
         car = await models.car.findByPk(_.carUid)
