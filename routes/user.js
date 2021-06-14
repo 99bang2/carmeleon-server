@@ -104,11 +104,8 @@ api.put('/cars/:uid/main', middleware.auth.isUserLoggedIn, controller.car.update
 // 카드
 api.post('/cards', middleware.auth.isUserLoggedIn, controller.card.create)
 api.get('/cards', middleware.auth.isUserLoggedIn, controller.card.list)
-api.get('/cards/:uid', middleware.auth.isUserLoggedIn, controller.card.read)
-api.put('/cards/:uid', middleware.auth.isUserLoggedIn, controller.card.update)
 api.delete('/cards/:uid', middleware.auth.isUserLoggedIn, controller.card.delete)
-api.put('/mainCards', middleware.auth.isUserLoggedIn, controller.card.isMain)
-api.get('/cardLists/:userUid', middleware.auth.isUserLoggedIn, controller.card.cardList)
+api.put('/cards/:uid/main', middleware.auth.isUserLoggedIn, controller.card.updateMain)
 
 // 포인트
 api.get('/points', middleware.auth.isUserLoggedIn, pointLogController.list)
@@ -155,7 +152,6 @@ api.post('/avgRate', commonController.avgRate)
 api.post('/codes', commonController.codes)
 
 // 결제
-api.post('/pgBillNice', middleware.auth.isUserLoggedIn, pgController.pgBillNice)
 api.post('/pgPaymentNice', middleware.auth.isUserLoggedIn, pgController.pgPaymentNice)
 // api.post('/pgPaymentCancelNice', middleware.auth.isUserLoggedIn, pgController.pgPaymentCancelNice)
 api.post('/pgPaymentRefund', middleware.auth.isUserLoggedIn, payLogController.refundRequest)

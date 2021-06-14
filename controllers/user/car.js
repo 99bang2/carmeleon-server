@@ -33,11 +33,9 @@ exports.create = async function (ctx) {
 }
 
 exports.list = async function (ctx) {
-	let cars = await models.car.findAll({
-		where: {
-			userUid: ctx.user.uid
-		}
-	})
+	let where = { userUid: ctx.user.uid }
+	let order = [['isMain', 'DESC']]
+	let cars = await models.car.findAll({where, order})
 	response.send(ctx, cars)
 }
 
@@ -53,7 +51,10 @@ exports.updateMain = async function (ctx) {
 	)
 	car.isMain = true
 	await car.save()
-	response.send(ctx, car)
+	let where = { userUid: ctx.user.uid }
+	let order = [['isMain', 'DESC']]
+	let cars = await models.car.findAll({where, order})
+	response.send(ctx, cars)
 }
 
 exports.delete = async function (ctx) {

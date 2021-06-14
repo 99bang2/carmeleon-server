@@ -3,11 +3,94 @@ const models = require('../models')
 const moment = require('moment')
 const qs = require('qs')
 const axios = require('axios')
+const crypto 		= require('crypto')
 const CryptoJS = require("crypto-js")
 const env = process.env.NODE_ENV || 'development'
 const config = require('../configs/config.json')[env]
 const merchantKey = config.nicePay.merchantKey
 const merchantID = config.nicePay.merchantID;
+const privateKey 	= config.privateKey
+const MOID          = 'carmeleon_billKey'
+
+exports.pgBillNice = async function(data, ctx){
+	const buffer = Buffer.from(data, 'hex')
+	const decrypted = crypto.privateDecrypt(privateKey, buffer).toString('utf8')
+	let hashKey         = CryptoJS.SHA512(ctx.user.uid).toString()
+	let decryptedData   = CryptoJS.AES.decrypt(decrypted, hashKey)
+	let decryptData     = JSON.parse(decryptedData.toString(CryptoJS.enc.Utf8))
+	let ediDate         = moment().format('YYYYMMDDHHmmss')
+	let aesString
+		= "CardNo=" 	+ decryptData.CardNo
+		+ "&ExpYear=" 	+ decryptData.ExpYear
+		+ "&ExpMonth=" 	+ decryptData.ExpMonth
+		+ "&IDNo=" 		+ decryptData.IDNo
+		+ "&CardPw=" 	+ decryptData.CardPw
+	let result = await axios.post("https://webapi.nicepay.co.kr/webapi/billing/billing_regist.jsp", qs.stringify({
+		'MID'		: merchantID,
+		'EdiDate'	: ediDate,
+		'Moid'		: MOID,
+		'EncData'	: getAES(aesString, merchantKey),
+		'SignData'	: getSignData(merchantID + ediDate + MOID + merchantKey).toString(),
+		'CharSet'	: 'utf-8',
+	}))
+
+	let convertResult = {
+		resultCode	: result.data.ResultCode,
+		resultMsg	: result.data.ResultMsg,
+		bid			: result.data.BID,
+		authDate	: result.data.AuthDate,
+		cardCode	: result.data.CardCode,
+		cardName	: result.data.CardName,
+		tid			: result.data.TID,
+		userUid		: ctx.user.uid
+	}
+	await models.billResult.create(convertResult)
+	return result.data.ResultCode === "F100" ? {
+		success: true,
+		cardData: {
+			cardNumber 		: rabbitHash(decryptData.CardNo, config.cardSecretKey.cardNumber+ctx.user.uid),
+			cardCode 		: result.data.CardCode,
+			expiryYear 		: rabbitHash(decryptData.ExpYear, config.cardSecretKey.expYY+ctx.user.uid),
+			expiryMonth 	: rabbitHash(decryptData.ExpMonth, config.cardSecretKey.expMM+ctx.user.uid),
+			cardPassword 	: rabbitHash(decryptData.CardPw, config.cardSecretKey.cardPass+ctx.user.uid),
+			cardId 			: rabbitHash(decryptData.IDNo, config.cardSecretKey.idNo+ctx.user.uid),
+			billKey 		: result.data.BID,
+			userUid 		: ctx.user.uid
+		}
+	} : {
+		success: false,
+		message: result.data.ResultMsg
+	}
+}
+
+exports.pgBillRemoveNice = async function(cardUid){
+	let ediDate     = moment().format('YYYYMMDDHHmmss')
+	let cardInfo    = await models.card.findOne({
+		attributes: ['billKey', 'userUid'],
+		where: {
+			uid: cardUid
+		}
+	})
+	let result = await axios.post("https://webapi.nicepay.co.kr/webapi/billing/billkey_remove.jsp", qs.stringify({
+		'BID': cardInfo.billKey,
+		'MID': merchantID,
+		'EdiDate': ediDate,
+		'Moid': MOID,
+		'SignData': getSignData(merchantID + ediDate + MOID + cardInfo.billKey + merchantKey).toString(),
+		'CharSet': 'utf-8',
+	}))
+	let convertResult = {
+		resultCode  : result.data.ResultCode,
+		resultMsg   : result.data.ResultMsg,
+		bid         : result.data.BID,
+		authDate    : result.data.AuthDate,
+		tid         : result.data.TID,
+		userUid     : cardInfo.userUid
+	}
+	await models.billResult.create(convertResult)
+	return result.data.ResultCode === "F101"
+}
+
 
 exports.pgPaymentNice = async function (_) {
 	let ediDate = moment().format('YYYYMMDDHHmmss')
@@ -114,6 +197,14 @@ exports.pgPaymentCancelNice = async function (_) {
 }
 
 function getSignData(str) {
-	let encrypted = CryptoJS.SHA256(str)
-	return encrypted
+	return CryptoJS.SHA256(str)
 }
+function getAES(text, key) {
+	let encKey = key.substr(0, 16)
+	let cipher = crypto.createCipheriv('aes-128-ecb', encKey, Buffer.alloc(0))
+	return Buffer.concat([cipher.update(text, 'utf8'), cipher.final()]).toString('hex')
+}
+function rabbitHash(str, key) {
+	return CryptoJS.Rabbit.encrypt(str, key).toString()
+}
+
