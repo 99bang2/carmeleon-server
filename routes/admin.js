@@ -3,7 +3,6 @@ const Router = require('koa-router')
 const api = new Router()
 
 const commonController          = require('../controllers/common')
-const userController            = require('../controllers/user/user')
 
 const accountController         = require('../controllers/admin/account')
 const noticeController          = require('../controllers/admin/notice')
@@ -159,12 +158,12 @@ api.put('/pointOrders/:uid', auth.isAdminLoggedIn, pointOrderController.update)
 /**
  * 유저 관련 컨트롤러
  */
-api.post('/users', auth.isAdminLoggedIn, userController.create)
-api.get('/users', auth.isAdminLoggedIn, userController.list)
-api.get('/users/:uid', auth.isAdminLoggedIn, userController.read)
-api.put('/users/:uid', auth.isAdminLoggedIn, userController.update)
-api.delete('/users/:uid', auth.isAdminLoggedIn, userController.delete)
-api.post('/users/bulkDelete', auth.isAdminLoggedIn, userController.bulkDelete)
+api.post('/users', auth.isAdminLoggedIn, controller.user.create)
+api.get('/users', auth.isAdminLoggedIn, controller.user.list)
+api.get('/users/:uid', auth.isAdminLoggedIn, controller.user.read)
+api.put('/users/:uid', auth.isAdminLoggedIn, controller.user.update)
+api.delete('/users/:uid', auth.isAdminLoggedIn, controller.user.delete)
+api.post('/users/bulkDelete', auth.isAdminLoggedIn, controller.user.bulkDelete)
 
 //유저 정보 조회
 api.get('/userCars/:userUid', auth.isAdminLoggedIn, carController.userList)

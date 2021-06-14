@@ -10,7 +10,6 @@ const apiCache = new ApiCache({redis, conditionFunc(body) {
     return body.result.code === 200
 }})
 
-const userController            = require('../controllers/user/user')
 const payLogController          = require('../controllers/user/payLog')
 const coopController            = require('../controllers/user/coop')
 const pgController              = require('../controllers/user/pg')
@@ -34,9 +33,9 @@ const controller = require('../controllers/user')
 const middleware = require('../middleware')
 
 // user
-api.post('/users/login', userController.login)
-api.get('/users/check', userController.check)
-api.get('/users/logout', userController.logout)
+api.post('/users/login', controller.user.login)
+api.get('/users/check', controller.user.check)
+api.get('/users/logout', controller.user.logout)
 
 // 공지사항
 api.get('/notices', noticeController.list)
@@ -94,10 +93,10 @@ api.get('/favorites', middleware.auth.isUserLoggedIn, controller.favorite.list)
 /**
  * 유저 관련 컨트롤러
  */
-api.post('/users', userController.create)
-api.get('/users/:uid', middleware.auth.isUserLoggedIn, userController.read)
-api.put('/users/:uid', middleware.auth.isUserLoggedIn, userController.update)
-api.get('/getBadge/:uid', middleware.auth.isUserLoggedIn, userController.getBadge)
+api.get('/users', middleware.auth.isUserLoggedIn, controller.user.read)
+api.put('/users', middleware.auth.isUserLoggedIn, controller.user.update)
+api.get('/getBadge', middleware.auth.isUserLoggedIn, controller.user.getBadge)
+api.get('/ticketList', middleware.auth.isUserLoggedIn, controller.user.activeTicketList)
 
 // 차량
 api.post('/cars', middleware.auth.isUserLoggedIn, carController.create)
@@ -131,8 +130,7 @@ api.post('/payLogs', middleware.auth.isUserLoggedIn, payLogController.create)
 api.get('/payLogs', middleware.auth.isUserLoggedIn, payLogController.list)
 api.get('/payLogs/:uid', middleware.auth.isUserLoggedIn, payLogController.read)
 
-// 주차권 목록
-api.get('/ticketList', middleware.auth.isUserLoggedIn, userController.activeTicketList)
+
 
 // 쿠폰
 api.get('/coupons', middleware.auth.isUserLoggedIn, couponController.list)

@@ -11,45 +11,24 @@ const moment = require('moment')
 
 const carWashBookingAPI = config.carWashBookingAPI
 
-exports.create = async function (ctx) {
-    let _ = ctx.request.body
-    let user = await models.user.create(_)
-    response.send(ctx, user)
-}
-
-exports.list = async function (ctx) {
-    let _ = ctx.request.query
-    let users = await models.user.search(_, models)
-    response.send(ctx, users)
-}
-
 exports.read = async function (ctx) {
-    let {uid} = ctx.params
-    let user = await models.user.getByUid(ctx, uid)
+    let user = await models.user.getByUid(ctx, ctx.user.uid)
     response.send(ctx, user)
 }
 
 exports.update = async function (ctx) {
-    let {uid} = ctx.params
-    let user = await models.user.getByUid(ctx, uid)
-	if(user.uid !== ctx.user.uid) {
-		response.unauthorized(ctx)
-	}
+    let user = await models.user.getByUid(ctx, ctx.user.uid)
     let _ = ctx.request.body
     Object.assign(user, _)
     await user.save()
 	const accessToken = jwt.sign(
 		{
 			uid: user.uid,
+			uuid: user.uuid,
 			snsType: user.snsType,
-			name: user.name,
 			nickname: user.nickname,
-			email: user.email,
-			phone: user.phone,
 			profileImage: user.profileImage,
 			navigationType: user.navigationType,
-			token: user.token,
-			marketing : user.marketing
 		},
 		secret
 	)
@@ -58,13 +37,6 @@ exports.update = async function (ctx) {
 		token: accessToken
 	}
     response.send(ctx, data)
-}
-
-exports.delete = async function (ctx) {
-    let {uid} = ctx.params
-    let user = await models.user.getByUid(ctx, uid)
-    await user.destroy()
-    response.send(ctx, user)
 }
 
 exports.login = async function (ctx) {
@@ -142,35 +114,6 @@ exports.logout = async function (ctx) {
 	response.send(ctx, {})
 }
 
-exports.checkUniqueId = async function (ctx) {
-	let {id} = ctx.params
-	let user = await models.user.findOne({
-		attributes: ['uid', 'id'],
-		where: {
-			id: id
-		},
-		paranoid: false
-	})
-	if (user) {
-		ctx.throw({
-			code: 400,
-			message: '이미 존재 하는 아이디 입니다.'
-		})
-	}
-	let result = !user
-	response.send(ctx, result)
-}
-
-exports.bulkDelete = async function (ctx) {
-	let _ = ctx.request.body
-	let deleteResult = await models.user.destroy({
-		where: {
-			uid: _.uids
-		}
-	})
-	response.send(ctx, deleteResult)
-}
-
 exports.getBadge = async function (ctx) {
 	let user = await models.user.findByPk(ctx.user.uid)
 	let today = moment().format('YYYY-MM-DD')
@@ -199,7 +142,6 @@ exports.getBadge = async function (ctx) {
 		}
 	})
 	result.ticket += resBooking.data.data.count
-
 
 	//이용내역
 	let payLogCount = await models.payLog.count({
