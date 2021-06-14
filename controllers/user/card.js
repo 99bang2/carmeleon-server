@@ -6,7 +6,6 @@ const nicePay = require('../../libs/nicePay')
 exports.create = async function (ctx) {
 	let _ = ctx.request.body
 	let result = await nicePay.pgBillNice(_.data, ctx)
-	console.log(result)
 	if(result.success) {
 		let count = await models.card.count({ where : { userUid: ctx.user.uid} })
 		let card = await models.card.create({
@@ -37,10 +36,7 @@ exports.updateMain = async function (ctx) {
 	if(card.userUid !== ctx.user.uid) {
 		response.unauthorized(ctx)
 	}
-	await models.card.update(
-		{ isMain: false },
-		{ where: { userUid: ctx.user.uid }}
-	)
+	await models.sequelize.query(`UPDATE cards SET is_main = 0 WHERE user_uid = ${ctx.user.uid}`)
 	card.isMain = true
 	await card.save()
 	let where = { userUid: ctx.user.uid }
@@ -60,7 +56,7 @@ exports.delete = async function (ctx) {
 	if(card.userUid !== ctx.user.uid) {
 		response.unauthorized(ctx)
 	}
+	await nicePay.pgBillRemoveNice(uid)
 	await card.destroy()
-	nicePay.pgBillRemoveNice(uid)
 	response.send(ctx, card)
 }
