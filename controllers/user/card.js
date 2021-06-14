@@ -6,10 +6,11 @@ const nicePay = require('../../libs/nicePay')
 exports.create = async function (ctx) {
 	let _ = ctx.request.body
 	let result = await nicePay.pgBillNice(_.data, ctx)
+	console.log(result)
 	if(result.success) {
 		let count = await models.card.count({ where : { userUid: ctx.user.uid} })
 		let card = await models.card.create({
-			..._,
+			...result.cardData,
 			isMain: count === 0
 		})
 		response.send(ctx, card)
