@@ -6,6 +6,8 @@ const carWash = require('./carWash')
 const rate = require('./rate')
 const favorite = require('./favorite')
 const user = require('./user')
+const car = require('./car')
+const card = require('./card')
 
 module.exports = {
 	parkingSite,
@@ -14,5 +16,7 @@ module.exports = {
 	carWash,
 	rate,
 	favorite,
-	user
+	user,
+	car,
+	card
 }

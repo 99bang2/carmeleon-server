@@ -1,5 +1,5 @@
-const models = require('../models')
-const response = require('../libs/response')
+const models = require('../../models')
+const response = require('../../libs/response')
 
 exports.create = async function (ctx) {
 	let _ = ctx.request.body
@@ -33,25 +33,25 @@ exports.create = async function (ctx) {
 }
 
 exports.list = async function (ctx) {
-	let _ = ctx.request.query
-	let cars = await models.car.search(_, models)
+	let cars = await models.car.findAll({
+		where: {
+			userUid: ctx.user.uid
+		}
+	})
 	response.send(ctx, cars)
 }
 
-exports.read = async function (ctx) {
-	let {uid} = ctx.params
-	let car = await models.car.getByUid(ctx, uid)
-	response.send(ctx, car)
-}
-
-exports.update = async function (ctx) {
+exports.updateMain = async function (ctx) {
 	let {uid} = ctx.params
 	let car = await models.car.getByUid(ctx, uid)
 	if(car.userUid !== ctx.user.uid) {
 		response.unauthorized(ctx)
 	}
-	let _ = ctx.request.body
-	Object.assign(car, _)
+	await models.car.update(
+		{ isMain: false },
+		{ where: { userUid: ctx.user.uid }}
+	)
+	car.isMain = true
 	await car.save()
 	response.send(ctx, car)
 }
@@ -63,35 +63,5 @@ exports.delete = async function (ctx) {
 		response.unauthorized(ctx)
 	}
 	await car.destroy()
-	response.send(ctx, car)
-}
-
-exports.userList = async function (ctx) {
-	let {userUid} = ctx.params
-	let car = await models.car.getByUserUid(ctx, userUid)
-	response.send(ctx, car)
-}
-
-exports.carList = async function (ctx) {
-	let {userUid} = ctx.params
-	let _ = ctx.request.query
-	_.userUid = userUid
-	let cards = await models.car.search(_, models)
-	response.send(ctx, cards)
-}
-
-exports.isMain = async function (ctx) {
-	let _ = ctx.request.body
-	if(_.userUid !== ctx.user.uid) {
-		response.unauthorized(ctx)
-	}
-	await models.car.update(
-		{ isMain: false },
-		{ where: { userUid: _.userUid }}
-	);
-	let car = await models.car.update(
-		{ isMain: true },
-		{ where: { uid: _.uid }}
-	);
 	response.send(ctx, car)
 }

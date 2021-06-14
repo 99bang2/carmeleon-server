@@ -19,8 +19,6 @@ const payLogController          = require('../controllers/admin/payLog')
 const pgController              = require('../controllers/admin/pg')
 
 const evChargeController        = require('../controllers/evCharge')
-const carController             = require('../controllers/car')
-const cardController            = require('../controllers/card')
 const discountTicketController  = require('../controllers/discountTicket')
 const pointLogController        = require('../controllers/point')
 const couponController          = require('../controllers/coupon')
@@ -166,8 +164,8 @@ api.delete('/users/:uid', auth.isAdminLoggedIn, controller.user.delete)
 api.post('/users/bulkDelete', auth.isAdminLoggedIn, controller.user.bulkDelete)
 
 //유저 정보 조회
-api.get('/userCars/:userUid', auth.isAdminLoggedIn, carController.userList)
-api.get('/userCards/:userUid', auth.isAdminLoggedIn, cardController.userList)
+api.get('/userCars/:userUid', auth.isAdminLoggedIn, controller.user.carList)
+api.get('/userCards/:userUid', auth.isAdminLoggedIn, controller.user.cardList)
 api.get('/userPointLogs/:userUid', auth.isAdminLoggedIn, pointLogController.userListForAdmin)
 api.get('/userPayLogs/:userUid', auth.isAdminLoggedIn, payLogController.userPayLogs)
 
