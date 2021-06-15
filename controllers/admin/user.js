@@ -73,12 +73,19 @@ exports.bulkDelete = async function (ctx) {
 
 exports.carList = async function (ctx) {
 	let {userUid} = ctx.params
-	let car = await models.car.getByUserUid(ctx, userUid)
-	response.send(ctx, car)
+	let cars = await models.car.getByUserUid(ctx, userUid)
+	response.send(ctx, cars)
 }
 
 exports.cardList = async function (ctx) {
 	let {userUid} = ctx.params
-	let card = await models.card.getByUserUid(ctx, userUid)
-	response.send(ctx, card)
+	let cards = await models.card.getByUserUid(ctx, userUid)
+	response.send(ctx, cards)
+}
+
+exports.pointLogList = async function (ctx) {
+	let {userUid} = ctx.params
+	let _ = ctx.request.query
+	let pointLogs = await models.pointLog.getByUserUid(ctx, userUid, _)
+	response.send(ctx, pointLogs)
 }

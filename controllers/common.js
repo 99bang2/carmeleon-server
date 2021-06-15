@@ -1,24 +1,10 @@
 'use strict'
 const env 			= process.env.NODE_ENV || 'development'
-const Sequelize 	= require('sequelize')
-const moment 		= require('moment')
 const axios 		= require('axios')
 const models 		= require('../models')
 const response 		= require('../libs/response')
-const imageUpload 	= require('../libs/imageUpload')
 const config 		= require('../configs/config.json')[env]
 const codes 		= require('../configs/codes.json')
-
-const availableTargetTypes = ["0", "1", "2", "3"]
-
-exports.fileUpload = async function (ctx) {
-	let _ = ctx.request.body
-	let folder = _.dir + '/'
-	let dir = './uploads/' + folder
-	let file = ctx.request.files.file
-	let filePath = imageUpload.imageUpload(ctx, file, dir, folder)
-	response.send(ctx, filePath)
-}
 
 exports.searchList = async function (ctx) {
 	let _ = ctx.request.body
@@ -42,101 +28,8 @@ exports.searchLocal = async function (ctx) {
 	response.send(ctx, res.data)
 }
 
-exports.avgRate = async function (ctx, targetType, targetUid) {
-	let res = await models.rating.avgRate(targetType, targetUid)
-	let ratingAvg = JSON.parse(JSON.stringify(res))[0].ratingAvg
-	if (!ratingAvg) {
-		ratingAvg = 0
-	}
-	switch (targetType) {
-		case '0' :
-			let parkingSite = await models.parkingSite.findByPk(targetUid)
-			Object.assign(parkingSite, {rate: ratingAvg})
-			await parkingSite.save()
-			break
-		case '1' :
-			let evChargeStation = await models.evChargeStation.findByPk(targetUid)
-			Object.assign(evChargeStation, {rate: ratingAvg})
-			await evChargeStation.save()
-			break
-		case '2' :
-			let gasStation = await models.gasStation.findByPk(targetUid)
-			Object.assign(gasStation, {rate: ratingAvg})
-			await gasStation.save()
-			break
-		case '3' :
-			let carWash = await models.carWash.findByPk(targetUid)
-			Object.assign(carWash, {rate: ratingAvg})
-			await carWash.save()
-			break
-	}
-	return true
-}
-
 exports.codes = function (ctx) {
 	response.send(ctx, codes)
-}
-
-exports.isAvailableTarget = async (ctx, next) => {
-	let {targetType} = ctx.params
-	if (availableTargetTypes.indexOf(targetType) < 0) {
-		ctx.throw({
-			code: 400,
-			message: '잘못된 요청입니다.'
-		})
-	}
-	await next()
-}
-
-exports.checkRateAvailable = async function (uid) {
-	// UID = PayLogUid //
-	let rateCheck = await models.payLog.findOne({
-		attributes: ['rate_uid'],
-		where: {uid: uid},
-		raw: true
-	})
-	return rateCheck.rate_uid === null;
-}
-
-exports.pushMessage = async function (data) {
-	return models.push.create(data)
-}
-
-
-exports.updatePoint = async function (userUid, pointCode, point = 0) {
-	let user = await models.user.findByPk(userUid)
-	point = point > 0 ? point : pointCode.amount
-
-	// 리뷰 중복 체크
-	if(pointCode.id === 2000 || pointCode.id === 2100){
-		let checkPointCount = await models.pointLog.count({
-			where: {
-				userUid: userUid,
-				codeId: {
-					[Sequelize.Op.in]: [2000, 2100]
-				},
-				createdAt: {
-					[Sequelize.Op.gte]: moment().format('YYYY-MM-DD')
-				}
-			}
-		})
-		if(checkPointCount >= 5){
-			point = 0
-		}
-	}
-
-	if(point > 0) {
-		await models.pointLog.create({
-			userUid: userUid,
-			point: pointCode.isPlus ? point : (point * -1),
-			codeId: pointCode.id,
-			reason: pointCode.reason
-		})
-		user.point = pointCode.isPlus ? user.point + point : user.point - point
-		await user.save()
-	}
-
-	return point
 }
 
 exports.getVersions = async function (ctx) {
@@ -196,15 +89,32 @@ exports.getVersions = async function (ctx) {
 	response.send(ctx, result)
 }
 
-exports.updateCoopPayment = async function(data) {
-	let user = await models.user.findByPk(data.userUid)
-	let usage = data.usageType === 'use' ? data.price * (-1) : data.price
+exports.ticketActive = async function (ctx) {
+	let { macroId, active } = ctx.request.body
 
-	if (user.coopPayment + usage >= 0) {
-		user.coopPayment += usage
-		await user.save()
-		await models.coopPaymentLog.create(data)
-	} else {
+	if (!macroId) {
 		response.validationError(ctx)
 	}
+
+	let parkingSite = await models.parkingSite.findByPk(macroId)
+
+	if (parkingSite.siteType !== 0) {
+		response.send(ctx, {
+			data: false,
+			message: "하이파킹 주차장이 아닙니다."
+		})
+	} else {
+		parkingSite.isBuy = active
+		await parkingSite.save()
+
+		response.send(ctx, true)
+	}
+}
+
+exports.parkingBookingList = async function (ctx) {
+	let parkingSites = await models.parkingSite.findAll({
+		where: {
+			isBuy : true
+		}})
+	response.send(ctx, parkingSites)
 }

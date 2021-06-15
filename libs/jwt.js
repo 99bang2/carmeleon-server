@@ -31,11 +31,7 @@ exports.getUser = async (ctx) => {
 				maxAge: '1 days'
 			})
 			consola.info(userData)
-			if(userData.uuid) {
-				userData = await models.user.getByUUID(userData.uuid)
-			}else {
-				userData = await models.user.getByUid(ctx, userData.uid)
-			}
+			userData = await models.user.getByUUID(userData.uuid)
 			return userData
 		}catch (e) {
 			consola.info(e)

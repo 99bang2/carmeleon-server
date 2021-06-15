@@ -9,7 +9,7 @@ const CryptoJS 		= require("crypto-js")
 const qs 			= require('qs')
 
 const models 		= require('../../models')
-const common 		= require('../../controllers/common')
+const pointLib 		= require('../../libs/point')
 const response 		= require('../../libs/response')
 const nicePay 		= require('../../libs/nicePay')
 const config 		= require('../../configs/config.json')[env]
@@ -37,15 +37,14 @@ exports.bookingPgPaymentCancelNice = async function (ctx) {
 		let userUid = payInfo.userUid
 		if(status === 0){
 			let user = await models.user.getByUid(ctx, userUid)
-			let data = {
+			models.push.create({
 				pushType : 1,
 				title: '환불이 완료 되었습니다.',
 				body: dataBody,
 				userToken: user.token,
 				userUid: userUid,
 				sendDate: Sequelize.fn('NOW')
-			}
-			await common.pushMessage(data)
+			})
 		}
 
 		let carWashUpdateData = {cancelCompleteTime: moment().format('YYYY-MM-DD HH:mm')}
@@ -78,15 +77,14 @@ exports.bookingRefundReject = async function (ctx) {
 	})
 
 	if(result){
-		let data = {
+		models.push.create({
 			pushType 	: 1,
 			title		: '환불이 거부 되었습니다.',
 			body		: `${moment(cancelRequestTime).format('YYYY.MM.DD HH:mm')}에 요청하신 취소건이 담당자 확인 결과 환불 거부되었습니다..`,
 			userToken	: user.token,
 			userUid		: userUid,
 			sendDate	: Sequelize.fn('NOW')
-		}
-		await common.pushMessage(data)
+		})
 	}
 
 	response.send(ctx, {result: true})
@@ -160,21 +158,20 @@ exports.refundApprove = async function (ctx) {
 	if (cardRefundFlag) {
 		let userUid = payInfo.userUid
 		let user 	= await models.user.getByUid(ctx, userUid)
-		let data 	= {
+		models.push.create({
 			pushType 	: 1,
 			title		: '환불이 완료 되었습니다.',
 			body		: dataBody,
 			userToken	: user.token,
 			userUid		: userUid,
 			sendDate	: Sequelize.fn('NOW')
-		}
-
-		await common.pushMessage(data)
+		})
 		await payInfo.update(payLogUpdate)
-		await common.updatePoint(userUid, pointCodes.USE_FOR_PARKING_TICKET, -payInfo.point)
-
+		if(payInfo.point > 0) {
+			await pointLib.updatePoint(userUid, pointCodes.REFUND_USE_FOR_PARKING_TICKET, payInfo.point)
+		}
 		if (coopPaymentData.price > 0) {
-			await common.updateCoopPayment(coopPaymentData)
+			await pointLib.updateCoopPayment(coopPaymentData)
 		}
 
 		response.send(ctx, {
@@ -204,15 +201,14 @@ exports.refundReject = async function (ctx) {
 	})
 
 	if(result){
-		let data = {
+		models.push.create({
 			pushType 	: 1,
 			title		: '환불이 거부 되었습니다.',
 			body		: `${moment(payInfo.cancelRequestTime).format('YYYY.MM.DD HH:mm')}에 요청하신 취소건이 담당자 확인 결과 환불 거부되었습니다.`,
 			userToken	: result.user.token,
 			userUid		: result.userUid,
 			sendDate	: Sequelize.fn('NOW')
-		}
-		await common.pushMessage(data)
+		})
 	}
 
 	response.send(ctx, {

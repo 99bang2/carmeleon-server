@@ -1,5 +1,5 @@
-const models = require('../models')
-const response = require('../libs/response')
+const models = require('../../models')
+const response = require('../../libs/response')
 const moment = require('moment')
 
 exports.list = async function (ctx) {

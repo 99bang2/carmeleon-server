@@ -1,10 +1,7 @@
 'use strict'
-const response = require('../libs/response')
 const codes = require('../configs/codes.json')
 const Sequelize = require('sequelize')
 const Op = Sequelize.Op
-const moment = require('moment')
-const common = require('../controllers/common')
 
 module.exports = (sequelize, DataTypes) => {
 	const parkingSite = sequelize.define('parkingSite', {
@@ -205,7 +202,7 @@ module.exports = (sequelize, DataTypes) => {
 			sourceKey: 'uid'
 		})
 	}
-	
+
 	//어드민 검색용
 	parkingSite.search = async (params, models) => {
 		let where = {}

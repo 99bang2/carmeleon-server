@@ -1,7 +1,7 @@
-const models = require('../models')
-const response = require('../libs/response')
-const pointLib = require('../libs/point')
-const pointCodes = require('../configs/pointCodes')
+const models = require('../../models')
+const response = require('../../libs/response')
+const pointLib = require('../../libs/point')
+const pointCodes = require('../../configs/pointCodes')
 const gameFee = 50
 
 exports.getInfo = async function (ctx) {

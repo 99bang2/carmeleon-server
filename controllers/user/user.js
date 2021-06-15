@@ -5,7 +5,8 @@ const axios = require('axios')
 const env = process.env.NODE_ENV || 'development'
 const config = require('../../configs/config.json')[env]
 const secret = config.secretKey
-const common = require('../common')
+const pointLib = require('../../libs/point')
+
 const pointCodes = require('../../configs/pointCodes.json')
 const moment = require('moment')
 
@@ -23,7 +24,6 @@ exports.update = async function (ctx) {
     await user.save()
 	const accessToken = jwt.sign(
 		{
-			uid: user.uid,
 			uuid: user.uuid,
 			snsType: user.snsType,
 			nickname: user.nickname,
@@ -63,7 +63,7 @@ exports.login = async function (ctx) {
 			push: true,
 			marketing: _.user.marketing
 		})
-		await common.updatePoint(user.uid, pointCodes.WELCOME)
+		await pointLib.updatePoint(user.uid, pointCodes.WELCOME)
 	}else{
 		if(_.user.token) {
 			user.marketing = _.user.marketing
@@ -74,7 +74,6 @@ exports.login = async function (ctx) {
 
 	const accessToken = jwt.sign(
 		{
-			uid: user.uid,
 			uuid: user.uuid,
 			snsType: user.snsType,
 			nickname: user.nickname,

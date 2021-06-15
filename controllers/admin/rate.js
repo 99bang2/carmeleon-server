@@ -1,62 +1,6 @@
 
 const models = require('../../models')
 const response = require('../../libs/response')
-const commonController = require('../../controllers/common')
-const pointCodes = require('../../configs/pointCodes')
-
-exports.create = async function (ctx) {
-	let { targetUid, targetType } = ctx.params
-	let _ = ctx.request.body
-	_.targetType = targetType
-	_.targetUid = targetUid
-	let isRate = false
-	let targetName = ''
-	switch(targetType){
-		case '0':
-			let parkingData = await models.parkingSite.findByPk(targetUid, {
-				attributes: ['isRate'],
-				raw: true
-			})
-			isRate = parkingData.isRate
-			targetName = '주차장'
-			break;
-		case '1':
-			let evChargeStationData = await models.evChargeStation.findByPk(targetUid, {
-				attributes: ['isRate'],
-				raw: true
-			})
-			isRate = evChargeStationData.isRate
-			targetName = '충전소'
-			break;
-		case '2':
-			let gasStationData = await models.gasStation.findByPk(targetUid, {
-				attributes: ['isRate'],
-				raw: true
-			})
-			isRate = gasStationData.isRate
-			targetName = '주유소'
-			break;
-		case '3':
-			let carWashData = await models.carWash.findByPk(targetUid, {
-				attributes: ['isRate'],
-				raw: true
-			})
-			isRate = carWashData.isRate
-			targetName = '세차장'
-			break;
-	}
-	if (isRate === false){
-		ctx.throw({
-			code: 400,
-			message: `평가를 할 수 없는 ${targetName} 입니다.`
-		})
-	}
-	_.point = await commonController.updatePoint(ctx.user.uid, _.picture.length > 0 ? pointCodes.REVIEW_IMAGE : pointCodes.REVIEW_TEXT)
-	_.userUid = ctx.user.uid
-	let rate = await models.rating.create(_)
-	await commonController.avgRate(ctx, targetType, targetUid)
-	response.send(ctx, rate)
-}
 
 exports.list = async function (ctx) {
 	let _ = ctx.request.query
@@ -67,27 +11,6 @@ exports.list = async function (ctx) {
 exports.read = async function (ctx) {
 	let {uid} = ctx.params
 	let rate = await models.rating.getByUid(ctx, uid)
-	response.send(ctx, rate)
-}
-
-exports.update = async function (ctx) {
-	let { uid } = ctx.params
-	let _ = ctx.request.body
-	let rate = await models.rating.getByUid(ctx, uid, models)
-	Object.assign(rate, _)
-	await rate.save()
-	await commonController.avgRate(ctx, rate.targetType, rate.targetUid)
-	response.send(ctx, rate)
-}
-
-exports.delete = async function (ctx) {
-	let {uid} = ctx.params
-	let rate = await models.rating.getByUid(ctx, uid, models)
-	if(rate.point > 0) {
-		await commonController.updatePoint(ctx.user.uid, pointCodes.REVIEW_DELETE, rate.point)
-	}
-	await commonController.avgRate(ctx, rate.targetType, rate.targetUid)
-	await rate.destroy()
 	response.send(ctx, rate)
 }
 

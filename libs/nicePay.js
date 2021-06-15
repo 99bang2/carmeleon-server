@@ -15,7 +15,7 @@ const MOID          = 'carmeleon_billKey'
 exports.pgBillNice = async function(data, ctx){
 	const buffer = Buffer.from(data, 'hex')
 	const decrypted = crypto.privateDecrypt(privateKey, buffer).toString('utf8')
-	let hashKey         = CryptoJS.SHA512(ctx.user.uid).toString()
+	let hashKey         = CryptoJS.SHA512(ctx.user.uuid).toString()
 	let decryptedData   = CryptoJS.AES.decrypt(decrypted, hashKey)
 	let decryptData     = JSON.parse(decryptedData.toString(CryptoJS.enc.Utf8))
 	let ediDate         = moment().format('YYYYMMDDHHmmss')
@@ -142,8 +142,6 @@ exports.pgPaymentNice = async function (_) {
 		cardNo: result.data.CardNo,
 		userUid : _.userUid
 	}
-	console.log(convertResult)
-	console.log(moid)
 	let payResult = await models.payResult.create(convertResult)
 	return {
 		...payResult.dataValues,

@@ -1,7 +1,7 @@
-const models = require('../models')
-const response = require('../libs/response')
+const models = require('../../models')
+const response = require('../../libs/response')
 const env = process.env.NODE_ENV || 'development'
-const config = require('../configs/config.json')[env]
+const config = require('../../configs/config.json')[env]
 const axios = require('axios')
 const Sequelize = require('sequelize')
 const Op = Sequelize.Op
@@ -14,8 +14,6 @@ exports.teslaLogin = async function (ctx) {
 		"password": _.password
 	}
 	let vehicleData = await getVehicleId(data)
-	//에러 처리 서버 or 클라 count가 0 or data null
-	console.log('vehicleData', vehicleData)
 	if(vehicleData.success && vehicleData.success === false){
 		ctx.throw({
 			code: vehicleData.code,
@@ -36,8 +34,6 @@ exports.teslaData = async function (ctx) {
 		msg: "성공"
 	}
 	let vehicleData = await getVehicleId(data)
-	//online 상태가 아닐 시 wakeup
-	console.log('vehicleData', vehicleData)
 	if (vehicleData.data.state !== "online") {
 		let checkVehicle = await wakeVehicle(vehicleData.accessToken, vehicleData.data[0].id)
 		//let checkVehicle = await wakeVehicle("qts-6483a6a879bdf615d9b400e49962717953b243439e1dc71933fa08641de18623", 153321439572)
@@ -94,16 +90,13 @@ async function getVehicleId(teslaData) {
 		"client_secret": config.teslaSecret
 	}
 	Object.assign(options, teslaData)
-	console.log(options)
 	let data = await axios.post(config.teslaUrl + "oauth/token", options)
 	let accessToken = data.data.access_token
-	console.log('accessToken', accessToken)
 	let vehicleData = await axios.get(config.teslaUrl + "api/1/vehicles", {
 		headers: {
 			"Authorization": "Bearer " + accessToken
 		}
 	})
-	console.log('count', vehicleData.data.count)
 	let vehicleInfo = {
 		count: vehicleData.data.count,
 		data: vehicleData.data.response,
@@ -160,14 +153,11 @@ async function getVehicleId(teslaData) {
 }
 
 async function wakeVehicle(accessToken, vehicleId) {
-	console.log('wakeVehicle', vehicleId)
-	console.log('accessToken', accessToken)
 	let data = await axios.post(config.teslaUrl + `api/1/vehicles/${vehicleId}/wake_up`, null, {
 		headers: {
 			"Authorization": "Bearer " + accessToken
 		}
 	})
-	console.log('wakeVehicle', vehicleId)
 	return data
 }
 

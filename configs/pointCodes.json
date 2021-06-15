@@ -29,6 +29,12 @@
         "isPlus": false,
         "reason": "주차권 구매시 사용"
     },
+    "REFUND_USE_FOR_PARKING_TICKET": {
+        "id": 5100,
+        "amount": null,
+        "isPlus": true,
+        "reason": "주차권 구매시 사용 환불"
+    },
     "POINT_GAME_PLAY": {
         "id": 6000,
         "amount": null,

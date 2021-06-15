@@ -1,9 +1,6 @@
 'use strict'
-
 const models 	= require('../../models')
 const response 	= require('../../libs/response')
-const Sequelize = require('sequelize')
-
 exports.list = async function (ctx) {
     let _ = ctx.request.query
     let payLogs = await models.payLog.search(_, models)
