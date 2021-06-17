@@ -1,5 +1,5 @@
 const models = require('../../models')
-const jwt = require('../../libs/jwt')
+const passport = require('../../libs/passport')
 const response = require('../../libs/response')
 const pointLib = require('../../libs/point')
 const pointCodes = require('../../configs/pointCodes')
@@ -66,7 +66,7 @@ exports.delete = async function (ctx) {
 
 exports.list = async function (ctx) {
 	let params = ctx.request.query
-	ctx.user = await jwt.getUser(ctx)
+	ctx.user = await passport.getUser(ctx)
 	let userUid = ctx.user ? ctx.user.uid : null
 	let where = {
 		targetType: params.targetType,

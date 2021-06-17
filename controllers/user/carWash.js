@@ -6,12 +6,12 @@ const nicePay = require('../../libs/nicePay')
 const env = process.env.NODE_ENV || 'development'
 const config = require('../../configs/config.json')[env]
 const carWashBookingAPI = config.carWashBookingAPI
-const jwt = require('../../libs/jwt')
+const passport = require('../../libs/passport')
 exports.read = async function (ctx) {
     let {uid} = ctx.params
     let _ = ctx.request.query
     let carWash = await models.carWash.findByPk(uid)
-    ctx.user = await jwt.getUser(ctx)
+    ctx.user = await passport.getUser(ctx)
     if(carWash.bookingCode) {
         let params = {}
         if(ctx.user) {
@@ -60,7 +60,7 @@ exports.check = async function (ctx) {
 exports.getProductInfo = async function (ctx) {
     let {productUid} = ctx.params
     let _ = ctx.request.query
-    ctx.user = await jwt.getUser(ctx)
+    ctx.user = await passport.getUser(ctx)
     let car = null
     if(_.carUid) {
         car = await models.car.findByPk(_.carUid)

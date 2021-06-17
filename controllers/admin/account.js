@@ -1,10 +1,7 @@
 'use strict'
 const models = require('../../models')
 const response = require('../../libs/response')
-const jwt = require('jsonwebtoken')
-const env = process.env.NODE_ENV || 'development'
-const config = require('../../configs/config.json')[env]
-const secret = config.secretKey
+const passport = require('../../libs/passport')
 
 exports.create = async function (ctx) {
 	let _ = ctx.request.body
@@ -81,16 +78,7 @@ exports.login = async function (ctx) {
 			message: '가입하지 않은 아이디이거나, 잘못된 비밀번호입니다.'
 		})
 	}
-	const accessToken = jwt.sign(
-		{
-			uid: account.uid,
-			id: account.id,
-			grade: account.grade,
-			name: account.name,
-			auth: 'admin'
-		},
-		secret
-	)
+	const accessToken = await passport.generateAdminAccessToken(account)
 	response.send(ctx, {
 		token: accessToken
 	})

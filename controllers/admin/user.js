@@ -1,9 +1,5 @@
 const models = require('../../models')
 const response = require('../../libs/response')
-const jwt = require('jsonwebtoken')
-const env = process.env.NODE_ENV || 'development'
-const config = require('../../configs/config.json')[env]
-const secret = config.secretKey
 
 exports.create = async function (ctx) {
     let _ = ctx.request.body
@@ -32,24 +28,8 @@ exports.update = async function (ctx) {
     let _ = ctx.request.body
     Object.assign(user, _)
     await user.save()
-	const accessToken = jwt.sign(
-		{
-			uid: user.uid,
-			snsType: user.snsType,
-			name: user.name,
-			nickname: user.nickname,
-			email: user.email,
-			phone: user.phone,
-			profileImage: user.profileImage,
-			navigationType: user.navigationType,
-			token: user.token,
-			marketing : user.marketing
-		},
-		secret
-	)
 	let data = {
     	user: user,
-		token: accessToken
 	}
     response.send(ctx, data)
 }

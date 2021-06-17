@@ -10,7 +10,7 @@ const commonController          = require('../controllers/common')
 
 api.post('/login', controller.account.login)
 api.get('/logout', controller.account.logout)
-api.get('/check', controller.account.check)
+api.get('/check', middleware.auth.isAdminLoggedIn, controller.account.check)
 /**
  * 관리자 관리
  */

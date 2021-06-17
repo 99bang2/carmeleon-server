@@ -1,15 +1,12 @@
+const env = process.env.NODE_ENV || 'development'
+const axios = require('axios')
+const moment = require('moment')
 const models = require('../../models')
 const response = require('../../libs/response')
-const jwt = require('jsonwebtoken')
-const axios = require('axios')
-const env = process.env.NODE_ENV || 'development'
-const config = require('../../configs/config.json')[env]
-const secret = config.secretKey
+const passport = require('../../libs/passport')
 const pointLib = require('../../libs/point')
-
+const config = require('../../configs/config.json')[env]
 const pointCodes = require('../../configs/pointCodes.json')
-const moment = require('moment')
-
 const carWashBookingAPI = config.carWashBookingAPI
 
 exports.read = async function (ctx) {
@@ -22,16 +19,7 @@ exports.update = async function (ctx) {
     let _ = ctx.request.body
     Object.assign(user, _)
     await user.save()
-	const accessToken = jwt.sign(
-		{
-			uuid: user.uuid,
-			snsType: user.snsType,
-			nickname: user.nickname,
-			profileImage: user.profileImage,
-			navigationType: user.navigationType,
-		},
-		secret
-	)
+	const accessToken = await passport.generateUserAccessToken(user)
 	let data = {
     	user: user,
 		token: accessToken
@@ -72,45 +60,12 @@ exports.login = async function (ctx) {
 		}
 	}
 
-	const accessToken = jwt.sign(
-		{
-			uuid: user.uuid,
-			snsType: user.snsType,
-			nickname: user.nickname,
-			profileImage: user.profileImage,
-			navigationType: user.navigationType,
-		},
-		secret
-	)
+	const accessToken = await passport.generateUserAccessToken(user)
+	const refreshToken = await passport.generateUserRefreshToken(user)
 	response.send(ctx, {
-		token: accessToken
+		token: accessToken,
+		refreshToken: refreshToken
 	})
-}
-
-exports.check = async function (ctx) {
-	if (ctx.request.headers.authorization && ctx.request.headers.authorization.split(' ')[0] === 'Bearer') {
-		try{
-			let accessToken = ctx.request.headers.authorization.split(' ')[1]
-			let userData = await jwt.verify(accessToken, secret, {
-				maxAge: '1 days'
-			})
-			response.send(ctx, {
-				user: userData
-			})
-		}catch (e) {
-			if(e.name === 'TokenExpiredError') {
-				response.tokenExpired(ctx)
-			}else {
-				response.unauthorized(ctx)
-			}
-		}
-	} else {
-		response.unauthorized(ctx)
-	}
-}
-
-exports.logout = async function (ctx) {
-	response.send(ctx, {})
 }
 
 exports.getBadge = async function (ctx) {
@@ -262,4 +217,31 @@ exports.activeTicketList = async function (ctx) {
 		}
 	})
 	response.send(ctx, list)
+}
+
+
+exports.refresh = async function (ctx) {
+	let _ = ctx.request.body
+	let refreshToken = _.refreshToken
+	//accessToken 검증
+	let verifyAccessToken = await passport.verifyUserAccessToken(ctx)
+	if(!verifyAccessToken) {
+		response.unauthorized(ctx)
+	}
+	//refreshToken 검증
+	let verifyRefreshToken = await passport.verifyRefreshToken(refreshToken, verifyAccessToken.uuid)
+	if(!verifyRefreshToken) {
+		response.unauthorized(ctx)
+	}
+	console.log('verifyRefreshToken', verifyRefreshToken)
+	//새로운 accessToken 생성
+	const accessToken = await passport.generateUserAccessToken(verifyAccessToken)
+	//refreshToken 유효기간이 1일 이하인 경우 재생성
+	if(verifyRefreshToken.remainDays < 1) {
+		refreshToken = await passport.generateUserRefreshToken(verifyAccessToken)
+	}
+	response.send(ctx, {
+		token: accessToken,
+		refreshToken: refreshToken
+	})
 }

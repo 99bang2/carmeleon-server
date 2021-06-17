@@ -15,8 +15,11 @@ const commonController =    require('../controllers/common')
 
 // user
 api.post('/users/login', controller.user.login)
-api.get('/users/check', controller.user.check)
-api.get('/users/logout', controller.user.logout)
+api.post('/users/refresh', controller.user.refresh)
+api.get('/users', middleware.auth.isUserLoggedIn, controller.user.read)
+api.put('/users', middleware.auth.isUserLoggedIn, controller.user.update)
+api.get('/getBadge', middleware.auth.isUserLoggedIn, controller.user.getBadge)
+api.get('/ticketList', middleware.auth.isUserLoggedIn, controller.user.activeTicketList)
 
 // 주차장
 api.get('/parkings', middleware.auth.onlyAppRequest, apiCache.route({ prefix: "parkings", expire: 300 }), controller.parkingSite.list)
@@ -57,12 +60,6 @@ api.post('/rateTips', middleware.auth.isUserLoggedIn, controller.rate.toggleRate
 //즐겨찾기
 api.post('/favorites', middleware.auth.isUserLoggedIn, controller.favorite.toggle)
 api.get('/favorites', middleware.auth.isUserLoggedIn, controller.favorite.list)
-
-//사용자
-api.get('/users', middleware.auth.isUserLoggedIn, controller.user.read)
-api.put('/users', middleware.auth.isUserLoggedIn, controller.user.update)
-api.get('/getBadge', middleware.auth.isUserLoggedIn, controller.user.getBadge)
-api.get('/ticketList', middleware.auth.isUserLoggedIn, controller.user.activeTicketList)
 
 // 차량
 api.post('/cars', middleware.auth.isUserLoggedIn, controller.car.create)
