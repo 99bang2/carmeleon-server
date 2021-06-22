@@ -20,12 +20,14 @@ exports.isUserLoggedIn = async (ctx, next) => {
 	await next()
 }
 exports.onlyAppRequest = async (ctx, next) => {
-	let userAgent = ctx.userAgent
-	if(userAgent.isDesktop) {
-		response.unauthorized(ctx)
-	}
-	if(userAgent.source.indexOf('com.mobilx.carmeleon') < 0 && userAgent.browser.indexOf('okhttp') < 0) {
-		response.unauthorized(ctx)
+	if(ctx.request.headers.ak !== 'development') {
+		let userAgent = ctx.userAgent
+		if(userAgent.isDesktop) {
+			response.unauthorized(ctx)
+		}
+		if(userAgent.source.indexOf('com.mobilx.carmeleon') < 0 && userAgent.browser.indexOf('okhttp') < 0) {
+			response.unauthorized(ctx)
+		}
 	}
 	await next()
 }
