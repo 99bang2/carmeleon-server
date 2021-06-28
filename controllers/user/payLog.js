@@ -13,7 +13,7 @@ exports.create = async function (ctx) {
     let discountTicket 	= await models.discountTicket.findByPk(_.discountTicketUid)
     let startDate 		= moment(moment(discountTicket.ticketStartDate).format('YYYY-MM-DD'))
     let endDate 		= moment(moment(discountTicket.ticketEndDate).format('YYYY-MM-DD'))
-    let currentDay 		= parseInt(moment().format('E'))
+    let currentDay 		= parseInt(moment().format('e'))
     let currentDayType 	= (currentDay === 0 || currentDay === 6) ? 2 : 1
 
     // 구매/사용가능 요일 체크
