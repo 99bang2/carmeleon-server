@@ -126,9 +126,7 @@ module.exports = (sequelize, DataTypes) => {
 	user.search = async (params) => {
 		let where = {}
 		let order = [['createdAt', 'DESC']]
-		if (params.grade) {
-			where.grade = params.grade
-		}
+
 		let result = await user.findAll({
 			order: order,
 			where: where

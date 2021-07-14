@@ -151,6 +151,14 @@ module.exports = (sequelize, DataTypes) => {
 		if (params.searchType) {
 			where.gasStationType = params.searchType
 		}
+		if (params.searchKpetro) {
+			if (params.searchKpetro === "1") {
+				where.tag =	{[Sequelize.Op.like]: ['%"kpetro"%'] }
+			} else {
+				where.tag =	{[Sequelize.Op.notLike]: ['%"kpetro"%'] }
+			}
+		}
+
 		let result = await gasStation.findAll({
 			offset: params.offset ? Number(params.offset) : null,
 			limit: params.limit ? Number(params.limit) : null,

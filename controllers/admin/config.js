@@ -41,6 +41,21 @@ exports.bulkDelete = async function (ctx) {
 
 exports.checkUniqueKey = async function (ctx) {
     let {key} = ctx.params
+    let {uid} = ctx.request.query
+
+    if (uid) {
+        let uniqueUid = await models.config.findOne({
+            where: {
+                key: key,
+                uid: uid
+            },
+            paranoid: false
+        })
+        if (uniqueUid) {
+            return response.send(ctx, true)
+        }
+    }
+
     let unique = await models.config.findOne({
         attributes: ['uid', 'key'],
         where: {
