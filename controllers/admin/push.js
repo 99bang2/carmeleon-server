@@ -7,7 +7,7 @@ exports.create = async function (ctx) {
 	let {pushType} = _
 	let {userUid} = _
 
-	if (pushType === "3" && Array.isArray(userUid)) {
+	if (pushType === "1") {
 		let pushs = await Promise.all(userUid.map(async (id) => {
 			let user = await models.user.getByUid(ctx, id)
 			_.userUid = id
@@ -17,10 +17,6 @@ exports.create = async function (ctx) {
 		}))
 		response.send(ctx, pushs)
 	} else {
-		if (pushType === "1" && pushType === "3") {
-			let user = await models.user.getByUid(ctx, _.userUid)
-			_.userToken = user.token
-		}
 		let push = await models.push.create(_)
 		response.send(ctx, push)
 	}
@@ -45,7 +41,7 @@ exports.update = async function (ctx) {
 	let {pushType} = _
 	let {userUid} = _
 
-	if (pushType === "3" && Array.isArray(userUid)) {
+	if (pushType == "1") {
 		let pushs = await Promise.all(userUid.map(async (id, index) => {
 			let user = await models.user.getByUid(ctx, id)
 			_.userUid = id
@@ -62,12 +58,7 @@ exports.update = async function (ctx) {
 		}))
 		response.send(ctx, pushs)
 	} else {
-		if (pushType === "2") {
-			_.userToken = null
-		} else {
-			let user = await models.user.getByUid(ctx, userUid)
-			_.userToken = user.token
-		}
+		_.userToken = null
 		Object.assign(push, _)
 		await push.save()
 		response.send(ctx, push)
