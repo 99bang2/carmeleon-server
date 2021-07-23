@@ -21,6 +21,9 @@ module.exports = (sequelize, DataTypes) => {
         carNumber: {
             type: DataTypes.STRING
         },
+        carModel: {
+            type: DataTypes.STRING
+        },
         phoneNumber: {
             type: DataTypes.STRING
         },
