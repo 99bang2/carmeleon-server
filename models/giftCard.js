@@ -33,12 +33,19 @@ module.exports = (sequelize, DataTypes) => {
 		},
 		givenAt: {
 			type: DataTypes.DATE
-		}
+		},
+        userUid: {
+            type: DataTypes.INTEGER
+        }
     }, {
         timestamps: true,
         underscored: true,
         paranoid: true
     })
+
+    giftCard.associate = function (models) {
+        giftCard.belongsTo(models.user)
+    }
 
     return giftCard
 }

@@ -32,6 +32,7 @@ module.exports = {
                     return 'INACTIVE'
                 }else {
                     giftCard.status = 'USED'
+                    giftCard.userUid = info.userUid
                     giftCard.usedAt = moment().format('YYYY-MM-DD HH:mm:ss')
                     await giftCard.save()
                     return {

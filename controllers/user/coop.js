@@ -49,6 +49,7 @@ module.exports = {
         if(COOP_PATTERN.test(_.couponNumber)) {
             info = await coop.useCoupon(_)
         }else {
+            _.userUid = ctx.user.uid
             info = await giftCard.useCoupon(_)
         }
         let check = coopError(info)
