@@ -21,6 +21,7 @@ const discountTicket = require('./discountTicket')
 const statistics = require('./statistics')
 const version = require('./version')
 const config = require('./config')
+const giftCard = require('./giftCard')
 
 module.exports = {
 	parkingSite,
@@ -44,5 +45,6 @@ module.exports = {
 	discountTicket,
 	statistics,
 	version,
-	config
+	config,
+	giftCard
 }

@@ -211,6 +211,10 @@ api.post('/keys/bulkDelete', middleware.auth.isAdminLoggedIn, controller.config.
 api.get('/keys/unique/:key', middleware.auth.isAdminLoggedIn, controller.config.checkUniqueKey)
 
 
+api.get('/giftCards', middleware.auth.isAdminLoggedIn, controller.giftCard.list)
+api.put('/giftCards/:uid', middleware.auth.isAdminLoggedIn, controller.giftCard.update)
+
+
 /**
  * ETC
  */
