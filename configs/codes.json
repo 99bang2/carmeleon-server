@@ -238,7 +238,8 @@
         "pointStore": "포인트교환소",
         "hiCare": "하이케어",
         "coopMarketing": "쿠프마케팅",
-        "carmeleonManual": "주차장이용방법"
+        "carmeleonManual": "주차장이용방법",
+        "shinhanEv": "신한카드EV"
     },
     "pointProductType": {
         "0": "대박상품",
