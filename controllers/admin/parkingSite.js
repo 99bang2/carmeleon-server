@@ -54,9 +54,6 @@ exports.bulkDelete = async function (ctx) {
 exports.parkingListForAdmin = async function (ctx){
 	let params = ctx.request.query
 	let where  = {}
-	if(params.accountUid){
-		where.accountUid = params.accountUid
-	}
 	where.isBuy = true
 	let parkingList = await models.parkingSite.findAll({
 		attributes: ['uid', 'name'],

@@ -299,7 +299,7 @@ module.exports = (sequelize, DataTypes) => {
             }
         }
 
-        let accountUidWhere = params.accountUid !== undefined ? {accountUid: params.accountUid} : ''
+        // let accountUidWhere = params.accountUid !== undefined ? {accountUid: params.accountUid} : ''
 
         let rateWhere = 'target_type = 0 AND target_uid = payLog.site_uid AND user_uid = payLog.user_uid)'
         let result = await payLog.findAll({
@@ -314,7 +314,7 @@ module.exports = (sequelize, DataTypes) => {
                 {
                     model: models.parkingSite,
                     attribute: ['uid', 'name', 'address', 'lat', 'lon', 'accountUid'],
-                    where:accountUidWhere
+                    // where:accountUidWhere
                 }, {
                     model: models.discountTicket,
                     attributes: ['siteUid', 'ticketDayType', 'ticketDayTypeName', 'ticketPrice', 'ticketPriceDiscount', 'ticketPriceDiscountPercent', 'ticketTime', 'ticketTitle', 'ticketType', 'ticketTypeName', 'uid']
@@ -333,7 +333,7 @@ module.exports = (sequelize, DataTypes) => {
                 {
                     model: models.parkingSite,
                     attribute: ['uid', 'name', 'address', 'lat', 'lon', 'accountUid'],
-                    where: accountUidWhere
+                    // where: accountUidWhere
                 }
             ],
             where: where
@@ -402,14 +402,14 @@ module.exports = (sequelize, DataTypes) => {
                 where.siteUid = searchData.searchParkingSite
             }
         }
-        let accountUidWhere = params.accountUid !== undefined ? {accountUid: params.accountUid} : ''
+        // let accountUidWhere = params.accountUid !== undefined ? {accountUid: params.accountUid} : ''
 
         let data = await payLog.findAll({
                 include: [
                     {
                         model: models.parkingSite,
                         attributes: [],
-                        where: accountUidWhere
+                        // where: accountUidWhere
                     }
                 ],
                 where: where
