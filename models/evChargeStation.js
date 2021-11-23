@@ -4,166 +4,174 @@ const Sequelize = require('sequelize')
 const codes = require('../configs/codes.json')
 
 module.exports = (sequelize, DataTypes) => {
-	const evChargeStation = sequelize.define('evChargeStation', {
-		uid: {
-			type: DataTypes.INTEGER,
-			allowNull: false,
-			autoIncrement: true,
-			primaryKey: true,
-		},
-		statNm: {
-			type: DataTypes.STRING,
-		},
-		statId: {
-			type:DataTypes.STRING,
-			unique: true,
-			allowNull: false
-		},
-		addr: {
-			type: DataTypes.STRING
-		},
-		useTime: {
-			type: DataTypes.STRING
-		},
-		busiId: {
-			type: DataTypes.STRING,
-		},
-		busiNm: {
-			type: DataTypes.STRING,
-		},
-		busiCall: {
-			type: DataTypes.STRING,
-		},
-		rate: {
-			type: DataTypes.DOUBLE
-		},
-		lat: {
-			type:DataTypes.DOUBLE
-		},
-		lon: {
-			type:DataTypes.DOUBLE
-		},
-		sido: {
-			type: DataTypes.STRING
-		},
-		sigungu:{
-			type: DataTypes.STRING
-		},
-		picture:{
-			type: DataTypes.JSON
-		},
-		isRecommend: {
-			type: DataTypes.BOOLEAN,
-			defaultValue: false
-		},
-		tag: {
-			type: DataTypes.JSON
-		},
-		phone: {
-			type: DataTypes.STRING
-		},
-		isRate: {
-			type: DataTypes.BOOLEAN,
-			defaultValue: true
-		},
-		evType: {
-			type: DataTypes.INTEGER,
-			defaultValue: 0
-		},
-		evTypeName: {
-			type: DataTypes.VIRTUAL,
-			get: function () {
-				if (this.getDataValue('evType') !== null) {
-					return codes.evType[this.getDataValue('evType')]
-				}
-			}
-		},
-		// Todo: 테슬라 슈퍼차저 충전기 상태 일단 보류
-		stall: {
-			type: DataTypes.INTEGER
-		},
-		availableStall:{
-			type: DataTypes.INTEGER
-		},
-		info: {
-			type: DataTypes.TEXT
-		},
-		updateTime: {
-			type: DataTypes.DATE
-		},
-		compareName: {
-			type: DataTypes.STRING
-		},
-		targetType: {
-			type: DataTypes.VIRTUAL,
-			get: function () {
-				return 1
-			}
-		},
-	}, {
-		timestamps: true,
-		paranoid: true,
-		underscored: true,
-	})
-	evChargeStation.associate = function (models) {
-		//gasStation.hasMany(models.rating, {foreignKey: 'site_uid'})
-		evChargeStation.hasMany(models.rating, {
-			foreignKey: 'targetUid',
-			constraints: false,
-			scope: {
-				targetType: 1
-			}
-		})
-		evChargeStation.hasMany(models.favorite, {
-			foreignKey: 'targetUid',
-			constraints: false,
-			scope: {
-				targetType: 1
-			}
-		})
-		evChargeStation.hasMany(models.evCharger, {
-			foreignKey: 'statId',
-			sourceKey: 'statId'
-		})
-	}
+    const evChargeStation = sequelize.define('evChargeStation', {
+        uid: {
+            type: DataTypes.INTEGER,
+            allowNull: false,
+            autoIncrement: true,
+            primaryKey: true,
+        },
+        statNm: {
+            type: DataTypes.STRING,
+        },
+        statId: {
+            type: DataTypes.STRING,
+            unique: true,
+            allowNull: false
+        },
+        addr: {
+            type: DataTypes.STRING
+        },
+        useTime: {
+            type: DataTypes.STRING
+        },
+        busiId: {
+            type: DataTypes.STRING,
+        },
+        busiNm: {
+            type: DataTypes.STRING,
+        },
+        busiCall: {
+            type: DataTypes.STRING,
+        },
+        rate: {
+            type: DataTypes.DOUBLE
+        },
+        lat: {
+            type: DataTypes.DOUBLE
+        },
+        lon: {
+            type: DataTypes.DOUBLE
+        },
+        sido: {
+            type: DataTypes.STRING
+        },
+        sigungu: {
+            type: DataTypes.STRING
+        },
+        picture: {
+            type: DataTypes.JSON
+        },
+        isRecommend: {
+            type: DataTypes.BOOLEAN,
+            defaultValue: false
+        },
+        tag: {
+            type: DataTypes.JSON
+        },
+        phone: {
+            type: DataTypes.STRING
+        },
+        isRate: {
+            type: DataTypes.BOOLEAN,
+            defaultValue: true
+        },
+        evType: {
+            type: DataTypes.INTEGER,
+            defaultValue: 0
+        },
+        evTypeName: {
+            type: DataTypes.VIRTUAL,
+            get: function () {
+                if (this.getDataValue('evType') !== null) {
+                    return codes.evType[this.getDataValue('evType')]
+                }
+            }
+        },
+        // Todo: 테슬라 슈퍼차저 충전기 상태 일단 보류
+        stall: {
+            type: DataTypes.INTEGER
+        },
+        availableStall: {
+            type: DataTypes.INTEGER
+        },
+        info: {
+            type: DataTypes.TEXT
+        },
+        updateTime: {
+            type: DataTypes.DATE
+        },
+        compareName: {
+            type: DataTypes.STRING
+        },
+        parkingUid: {
+            type: DataTypes.INTEGER
+        },
+        targetType: {
+            type: DataTypes.VIRTUAL,
+            get: function () {
+                return 1
+            }
+        },
+    }, {
+        timestamps: true,
+        paranoid: true,
+        underscored: true,
+    })
+    evChargeStation.associate = function (models) {
+        //gasStation.hasMany(models.rating, {foreignKey: 'site_uid'})
+        evChargeStation.hasMany(models.rating, {
+            foreignKey: 'targetUid',
+            constraints: false,
+            scope: {
+                targetType: 1
+            }
+        })
+        evChargeStation.hasMany(models.favorite, {
+            foreignKey: 'targetUid',
+            constraints: false,
+            scope: {
+                targetType: 1
+            }
+        })
+        evChargeStation.hasMany(models.evCharger, {
+            foreignKey: 'statId',
+            sourceKey: 'statId'
+        })
+    }
 
-	//어드민용
-	evChargeStation.search = async (params, models) => {
-		let where = {}
-		let order = [['createdAt', 'DESC']]
-		let rateWhere = 'target_type = 1 AND target_uid = evChargeStation.uid)'
-		if (params.searchKeyword) {
-			where = {
-				[Sequelize.Op.or]: [
-					{
-						statNm: {
-							[Sequelize.Op.like]: '%' + params.searchKeyword + '%'
-						}
-					}
-				]
-			}
-		}
-		let result = await evChargeStation.findAll({
-			include: [{
-				model: models.evCharger
-			}],
-			attributes: {
-				include: [
-					[`(SELECT count(uid) FROM ratings WHERE ` + rateWhere, 'rate_count']
-				]
-			},
-			offset: params.offset ? Number(params.offset) : null,
-			limit: params.limit ? Number(params.limit) : null,
-			order: order,
-			where: where
-		})
-		let count = await evChargeStation.scope(null).count({
-			where: where
-		})
-		return {
-			rows: result,
-			count: count
-		}
-	}
-	return evChargeStation
+    //어드민용
+    evChargeStation.search = async (params, models) => {
+        console.log(params)
+        let where = {}
+        let order = [['createdAt', 'DESC']]
+        let rateWhere = 'target_type = 1 AND target_uid = evChargeStation.uid)'
+        if (!(!!parseInt(params.searchIsParking))) {
+            where.parkingUid={
+                [Sequelize.Op.is]: null
+            }
+
+        }
+        if (params.searchKeyword) {
+            let searchObj = {
+                [Sequelize.Op.or]: [
+                    {statNm: {[Sequelize.Op.like]: '%' + params.searchKeyword + '%'}},
+                    {addr: {[Sequelize.Op.like]: '%' + params.searchKeyword + '%'}}
+                ]
+            }
+            Object.assign(where, searchObj)
+        }
+        let result = await evChargeStation.findAll({
+            include: [{
+                model: models.evCharger
+            }],
+            attributes: {
+                include: [
+                    [`(SELECT count(uid) FROM ratings WHERE ` + rateWhere, 'rate_count']
+                ]
+            },
+            offset: params.offset ? Number(params.offset) : null,
+            limit: params.limit ? Number(params.limit) : null,
+            order: order,
+            where: where
+        })
+        let count = await evChargeStation.scope(null).count({
+            where: where
+        })
+        return {
+            rows: result,
+            count: count
+        }
+    }
+    return evChargeStation
 }

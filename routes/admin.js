@@ -107,6 +107,7 @@ api.get('/evChargeStations/:uid', middleware.auth.isAdminLoggedIn, controller.ev
 api.put('/evChargeStations/:uid', middleware.auth.isAdminLoggedIn, controller.evChargeStation.update)
 api.delete('/evChargeStations/:uid', middleware.auth.isAdminLoggedIn, controller.evChargeStation.delete)
 api.post('/evChargeStations/bulkDelete', middleware.auth.isAdminLoggedIn, controller.evChargeStation.bulkDelete)//복수삭제
+api.get('/parkingToEv', middleware.auth.isAdminLoggedIn, controller.evChargeStation.parkingList)
 
 /**
  * 리뷰 관리
