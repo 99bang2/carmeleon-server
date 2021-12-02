@@ -1,5 +1,5 @@
 #!/bin/bash
-
+chmod -R 777 /root/.pm2
 cd /app && npx sequelize-cli db:migrate --env production
 pm2-docker ecosystem.config.js --env production &
 PM2_PID="$!"
