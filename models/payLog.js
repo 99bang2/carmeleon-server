@@ -294,12 +294,20 @@ module.exports = (sequelize, DataTypes) => {
                     }
                 }
             }
-            if (searchData.searchParkingSite) {
+            if (searchData.searchParkingSite !== "" && searchData.searchParkingSite !== undefined) {
                 where.siteUid = searchData.searchParkingSite
+            }
+            console.log(where)
+            if (searchData.searchParkingType !== "" && searchData.searchParkingType !== undefined) {
+                where = {
+                    ...where,
+                    "$parkingSite.site_type$": {
+                        [Op.eq]: searchData.searchParkingType
+                    }
+                }
             }
         }
 
-        // let accountUidWhere = params.accountUid !== undefined ? {accountUid: params.accountUid} : ''
 
         let rateWhere = 'target_type = 0 AND target_uid = payLog.site_uid AND user_uid = payLog.user_uid)'
         let result = await payLog.findAll({
@@ -313,8 +321,7 @@ module.exports = (sequelize, DataTypes) => {
             include: [
                 {
                     model: models.parkingSite,
-                    attribute: ['uid', 'name', 'address', 'lat', 'lon', 'accountUid'],
-                    // where:accountUidWhere
+                    // where:includeWhere
                 }, {
                     model: models.discountTicket,
                     attributes: ['siteUid', 'ticketDayType', 'ticketDayTypeName', 'ticketPrice', 'ticketPriceDiscount', 'ticketPriceDiscountPercent', 'ticketTime', 'ticketTitle', 'ticketType', 'ticketTypeName', 'uid']
@@ -332,7 +339,7 @@ module.exports = (sequelize, DataTypes) => {
             include: [
                 {
                     model: models.parkingSite,
-                    attribute: ['uid', 'name', 'address', 'lat', 'lon', 'accountUid'],
+                    attribute: ['uid', 'name', 'address', 'lat', 'lon', 'accountUid', 'siteType'],
                     // where: accountUidWhere
                 }
             ],
@@ -353,7 +360,7 @@ module.exports = (sequelize, DataTypes) => {
                 where = {
                     [Op.or]: [
                         {
-                            '$parkingSite.name$':{
+                            '$parkingSite.name$': {
                                 [Op.like]: '%' + searchData.searchKeyword + '%'
                             }
                         },
@@ -398,18 +405,24 @@ module.exports = (sequelize, DataTypes) => {
                     }
                 }
             }
-            if (searchData.searchParkingSite !== "") {
+            if (searchData.searchParkingSite !== "" && searchData.searchParkingSite !== undefined) {
                 where.siteUid = searchData.searchParkingSite
             }
+            if (searchData.searchParkingType !== ""  && searchData.searchParkingType !== undefined) {
+                where = {
+                    ...where,
+                    "$parkingSite.site_type$": {
+                        [Op.eq]: searchData.searchParkingType
+                    }
+                }
+            }
         }
-        // let accountUidWhere = params.accountUid !== undefined ? {accountUid: params.accountUid} : ''
 
         let data = await payLog.findAll({
                 include: [
                     {
                         model: models.parkingSite,
-                        attributes: [],
-                        // where: accountUidWhere
+                        // where: includeWhere
                     }
                 ],
                 where: where
