@@ -37,6 +37,10 @@ module.exports = (sequelize, DataTypes) => {
 			type: DataTypes.BOOLEAN,
 			defaultValue: false
 		},
+        isAutoPass: {
+            type: DataTypes.BOOLEAN,
+            defaultValue: false
+        },
 		discountType: {
 			type: DataTypes.INTEGER
 		},

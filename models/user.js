@@ -75,8 +75,11 @@ module.exports = (sequelize, DataTypes) => {
 					return codes.navigationType[this.getDataValue('navigationType')]
 				}
 			}
-		}
-		/* 토큰 관련 컬럼 추가 예정*/
+		},
+        /*자동정산 표시 플래그*/
+        isAutoPass : {
+            type: DataTypes.BOOLEAN,
+        }
 	}, {
 		indexes: [
 			{
@@ -87,7 +90,6 @@ module.exports = (sequelize, DataTypes) => {
 		paranoid: true,
 		underscored: true,
 	})
-
 	user.applyScope = function (models) {
 		user.addScope('defaultScope', {
 			attributes: {exclude: []}
@@ -96,6 +98,10 @@ module.exports = (sequelize, DataTypes) => {
 			attributes: ['uid', 'uuid', 'id', 'snsType', 'name', 'nickname', 'email', 'phone', 'profileImage', 'navigationType' ,'marketing']
 		})
 	}
+    user.associate = function (models) {
+        user.hasMany(models.car)
+        user.hasMany(models.card)
+    }
 
 	user.getByUid = async function (ctx, uid) {
 		let data = await user.findByPk(uid)

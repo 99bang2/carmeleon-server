@@ -176,6 +176,9 @@ module.exports = (sequelize, DataTypes) => {
                 return 0
             }
         },
+        autoPassCode:{
+            type:DataTypes.STRING
+        },
     }, {
         timestamps: true,
         paranoid: true,

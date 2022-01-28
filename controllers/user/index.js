@@ -17,6 +17,7 @@ const event = require('./event')
 const popup = require('./popup')
 const tesla = require('./tesla')
 const pointStore = require('./pointStore')
+const autoPass = require('./autoPass')
 const coop = require('./coop')
 
 module.exports = {
@@ -38,5 +39,6 @@ module.exports = {
 	popup,
 	tesla,
 	pointStore,
-	coop
+	coop,
+    autoPass
 }

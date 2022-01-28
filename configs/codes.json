@@ -26,7 +26,8 @@
         "card": "카드결제",
         "cash": "현금결제",
         "inApp": "인앱결제",
-        "coopPayment": "모바일상품권"
+        "coopPayment": "모바일상품권",
+        "autoPass": "자동결제"
     },
     "brandTag": {
         "hiParking": "하이파킹",

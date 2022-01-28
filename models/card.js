@@ -45,6 +45,10 @@ module.exports = (sequelize, DataTypes) => {
 			type: DataTypes.BOOLEAN,
 			defaultValue: false
 		},
+        isAutoPass: {
+            type: DataTypes.BOOLEAN,
+            defaultValue: false
+        },
 		maskingCardNumber: {
 			type: DataTypes.VIRTUAL,
 			get: function () {

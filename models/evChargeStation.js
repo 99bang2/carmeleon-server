@@ -15,9 +15,8 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.STRING,
         },
         statId: {
-            type: DataTypes.STRING,
-            unique: true,
-            allowNull: false
+            type:DataTypes.STRING,
+            unique: true
         },
         addr: {
             type: DataTypes.STRING
@@ -38,19 +37,23 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.DOUBLE
         },
         lat: {
-            type: DataTypes.DOUBLE
+            type:DataTypes.DOUBLE
         },
         lon: {
-            type: DataTypes.DOUBLE
+            type:DataTypes.DOUBLE
+        },
+        location: {
+            type: DataTypes.STRING,
+            comment: '주차장 상세위치'
         },
         sido: {
             type: DataTypes.STRING
         },
-        sigungu: {
+        sigungu:{
             type: DataTypes.STRING
         },
-        picture: {
-            type: DataTypes.JSON
+        picture:{
+            type: DataTypes.STRING
         },
         isRecommend: {
             type: DataTypes.BOOLEAN,
@@ -62,21 +65,29 @@ module.exports = (sequelize, DataTypes) => {
         phone: {
             type: DataTypes.STRING
         },
-        isRate: {
-            type: DataTypes.BOOLEAN,
-            defaultValue: true
-        },
         evType: {
             type: DataTypes.INTEGER,
             defaultValue: 0
         },
-        evTypeName: {
-            type: DataTypes.VIRTUAL,
-            get: function () {
-                if (this.getDataValue('evType') !== null) {
-                    return codes.evType[this.getDataValue('evType')]
-                }
-            }
+        isParkingFree: {
+            type: DataTypes.BOOLEAN,
+            comment: '주차료무료'
+        },
+        isLimit: {
+            type: DataTypes.BOOLEAN,
+            comment: '이용자 제한'
+        },
+        limitDetail: {
+            type: DataTypes.STRING,
+            comment: '이용제한 사유'
+        },
+        isChargerDelete: {
+            type : DataTypes.BOOLEAN,
+            comment: '충전기 삭제 여부'
+        },
+        chargerDeleteDetail: {
+            type: DataTypes.STRING,
+            comment: '충전기 삭제 사유'
         },
         // Todo: 테슬라 슈퍼차저 충전기 상태 일단 보류
         stall: {
@@ -96,13 +107,7 @@ module.exports = (sequelize, DataTypes) => {
         },
         parkingUid: {
             type: DataTypes.INTEGER
-        },
-        targetType: {
-            type: DataTypes.VIRTUAL,
-            get: function () {
-                return 1
-            }
-        },
+        }
     }, {
         timestamps: true,
         paranoid: true,
