@@ -156,6 +156,17 @@ exports.requestPayment = async function (ctx) {
         payLog.payResultUid = payResult.uid
         payLog.payOid = payResult.moid
         payLog.payTid = payResult.tid
+        if(payResult.resultCode !== '2001') {
+            await models.push.create({
+                pushType 	: 1,
+                title		: '자동결제가 완료되었습니다.',
+                body		: `결제된 금액은 총 ${totalPrice}원 입니다.`,
+                userToken	: user.token,
+                userUid		: user.uid,
+                sendDate	: Sequelize.fn('NOW')
+            })
+        }
+
     }
     payLog.status = 10
     payLog.activeStatus = true
