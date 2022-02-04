@@ -95,9 +95,7 @@ exports.getBadge = async function (ctx) {
             userUid: ctx.user.uid,
             activeStatus: true,
             payType: 'autoPass',
-            isRead: {
-                $or: [false, null]
-            },
+            isRead: false
         }
     })
 	let resBooking = await axios.get(carWashBookingAPI + `/api/carmeleon/bookings`, {
