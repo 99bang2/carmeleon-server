@@ -83,6 +83,10 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.BOOLEAN,
             defaultValue: true
         },
+        isRead: {
+            type: DataTypes.BOOLEAN,
+            defaultValue:false
+        },
         ///////////////////////
         userUid: {
             type: DataTypes.INTEGER

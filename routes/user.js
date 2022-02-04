@@ -126,11 +126,15 @@ api.get('/parkingInfo', commonController.parkingBookingList) // 판매 주차장
 api.post('/ticket/active', commonController.ticketActive) //주차권 판매 on off
 
 // 자동결제
-api.post('/autoPass/check', controller.autoPass.check)
-api.post('/autoPass/requestPayment', controller.autoPass.requestPayment)
+
 api.get('/autoPass/enableAutoPassList', controller.autoPass.enableAutoPassList)
 api.get('/autoPass/getAutoPass/:uid', controller.autoPass.getAutoPass)
 api.post('/autoPass/registerIsAutoPass', controller.autoPass.registerIsAutoPass)
 api.post('/autoPass/terminateIsAutoPass', controller.autoPass.terminateIsAutoPass)
+api.put('/autoPass/changeIsRead/:uid', controller.autoPass.changeIsRead)
+
+// 자동정산 서버 쪽
+api.post('/autoPass/check', controller.autoPass.check)
+api.post('/autoPass/requestPayment', controller.autoPass.requestPayment)
 
 module.exports = api

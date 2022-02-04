@@ -77,7 +77,8 @@ exports.getBadge = async function (ctx) {
 		notice: 0,
 		alarm: 0,
 		event: 0,
-		payLog: 0
+		payLog: 0,
+        autoPass:0,
 	}
 	//사용가능한 주차권
 	result.ticket = await models.payLog.count({
@@ -89,6 +90,16 @@ exports.getBadge = async function (ctx) {
 			expired: false
 		}
 	})
+    result.autoPass = await models.payLog.count({
+        where: {
+            userUid: ctx.user.uid,
+            activeStatus: true,
+            payType: 'autoPass',
+            isRead: {
+                $or: [false, null]
+            },
+        }
+    })
 	let resBooking = await axios.get(carWashBookingAPI + `/api/carmeleon/bookings`, {
 		params: {
 			onlyAccept: true,
@@ -152,7 +163,6 @@ exports.getBadge = async function (ctx) {
 			}
 		})
 	}
-
 	response.send(ctx, result)
 }
 

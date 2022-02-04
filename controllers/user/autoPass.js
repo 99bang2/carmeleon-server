@@ -190,3 +190,18 @@ exports.terminateIsAutoPass = async function(ctx) {
     await card.save()
     response.send(ctx, {user,car,card})
 }
+
+exports.changeIsRead = async function(ctx) {
+    let {uid} = ctx.params
+    let payLogs = await models.payLog.findAll({
+        where: {
+            userUid: uid,
+        }
+    })
+    for(let payLog of payLogs) {
+        let autoPassLog = await models.payLog.findByPk(payLog.uid)
+        autoPassLog.isRead = true
+        await autoPassLog.save()
+    }
+    response.send(ctx, payLogs)
+}
