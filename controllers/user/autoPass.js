@@ -4,6 +4,7 @@ const nicePay = require("../../libs/nicePay");
 const Sequelize = require('sequelize')
 const Op = Sequelize.Op
 exports.check = async function (ctx) {
+    console.log(ctx.request)
     let _ = ctx.request.body
     let parkingSite = await models.parkingSite.findOne({
         where: {
@@ -18,7 +19,6 @@ exports.check = async function (ctx) {
             carPlate: _.carPlate
         }
     })
-    console.log('##########', car.userUid)
 
     if(!car.isAutoPass) {
         response.badRequest()
