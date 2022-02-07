@@ -107,7 +107,13 @@ module.exports = (sequelize, DataTypes) => {
         },
         parkingUid: {
             type: DataTypes.INTEGER
-        }
+        },
+        targetType: {
+            type: DataTypes.VIRTUAL,
+            get: function () {
+                return 0
+            }
+        },
     }, {
         timestamps: true,
         paranoid: true,
