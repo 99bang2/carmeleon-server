@@ -110,7 +110,7 @@ exports.refundApprove = async function (ctx) {
 		cancelCompleteTime: Sequelize.fn('NOW')
 	}
 
-	if (payInfo.payType === 'card') {
+	if (payInfo.payType === 'card' || payInfo.payType === 'autoPass') {
 		let ediDate 		= moment().format('YYYYMMDDHHmmss')
 		let transactionID 	= payInfo.payTid
 		let amt 			= payInfo.totalPrice
