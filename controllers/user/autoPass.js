@@ -138,7 +138,7 @@ exports.requestPayment = async function (ctx) {
         expired				: false
     })
     // 결제금액이 있을 경우 결제 처리.
-    if (totalPrice) {
+    if (totalPrice && totalPrice > 0) {
         let payResult = await nicePay.pgPaymentNice({
             userUid: user.uid,
             billKey: card.billKey,
@@ -156,18 +156,15 @@ exports.requestPayment = async function (ctx) {
         payLog.payResultUid = payResult.uid
         payLog.payOid = payResult.moid
         payLog.payTid = payResult.tid
-        if(payResult.resultCode !== '2001') {
-            await models.push.create({
-                pushType 	: 1,
-                title		: '자동결제가 완료되었습니다.',
-                body		: `결제된 금액은 총 ${totalPrice}원 입니다.`,
-                userToken	: user.token,
-                userUid		: user.uid,
-                sendDate	: Sequelize.fn('NOW')
-            })
-        }
-
     }
+    await models.push.create({
+        pushType 	: 1,
+        title		: '자동정산이 완료되었습니다.',
+        body		: `결제된 금액은 총 ${totalPrice}원 입니다.`,
+        userToken	: user.token,
+        userUid		: user.uid,
+        sendDate	: Sequelize.fn('NOW')
+    })
     payLog.status = 10
     payLog.activeStatus = true
     await payLog.save()
