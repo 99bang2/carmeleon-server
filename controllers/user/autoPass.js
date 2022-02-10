@@ -45,6 +45,16 @@ exports.check = async function (ctx) {
     if(!card.isAutoPass){
         response.badRequest()
     }
+    if(_.type==='in'){
+        models.push.create({
+            pushType : 1,
+            title: '차량 입차 완료',
+            body: `${car.carPlate} 차량이 ${parkingSite.name}에 입차했습니다.`,
+            userToken: user.token,
+            userUid: user.uid,
+            sendDate: Sequelize.fn('NOW')
+        })
+    }
     response.send(ctx, {user: user.uid})
 }
 exports.enableAutoPassList = async function (ctx) {
