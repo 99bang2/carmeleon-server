@@ -126,7 +126,7 @@ api.get('/parkingInfo', commonController.parkingBookingList) // 판매 주차장
 api.post('/ticket/active', commonController.ticketActive) //주차권 판매 on off
 
 // 자동결제
-
+api.post('/autoPass/checkCarAutoPass', controller.autoPass.checkCarAutoPass)
 api.get('/autoPass/enableAutoPassList', controller.autoPass.enableAutoPassList)
 api.get('/autoPass/getAutoPass/:uid', controller.autoPass.getAutoPass)
 api.post('/autoPass/registerIsAutoPass', controller.autoPass.registerIsAutoPass)

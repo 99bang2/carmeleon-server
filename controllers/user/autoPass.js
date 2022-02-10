@@ -186,7 +186,6 @@ exports.registerIsAutoPass = async function(ctx) {
 }
 exports.terminateIsAutoPass = async function(ctx) {
     let _ = ctx.request.body
-    console.log(_)
     let user = await models.user.getByUid(ctx, _.userUid)
     let car =  await models.car.getByUid(ctx, _.carUid)
     let card = await models.card.getByUid(ctx,_.cardUid)
@@ -212,4 +211,24 @@ exports.changeIsRead = async function(ctx) {
         await autoPassLog.save()
     }
     response.send(ctx, payLogs)
+}
+
+exports.checkCarAutoPass = async function(ctx) {
+    let _ = ctx.request.body
+    let car = await models.car.findOne({
+        where: {
+            carPlate: _.carPlate
+        }
+    })
+    if(car.isAutoPass) {
+        response.send(ctx, {
+            data: false,
+            message: "이미 등록된 차량번호 입니다."
+        })
+    }else{
+        response.send(ctx, {
+            data: true,
+            message: "등록이 가능합니다."
+        })
+    }
 }
