@@ -109,9 +109,7 @@ exports.requestPayment = async function (ctx) {
     let carPlate = _.carPlate
     let parkingSite = await models.parkingSite.findOne({
         where: {
-            autoPassCode: {
-                [Op.ne]: null
-            }
+            autoPassCode: _.autoPassCode
         }
     })
 
