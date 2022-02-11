@@ -227,10 +227,11 @@ exports.checkCarAutoPass = async function(ctx) {
     let _ = ctx.request.body
     let car = await models.car.findOne({
         where: {
-            carPlate: _.carPlate
+            carPlate: _.carPlate,
+            isAutoPass: true
         }
     })
-    if(car.isAutoPass) {
+    if(car) {
         response.send(ctx, {
             data: false,
             message: "이미 등록된 차량번호 입니다."
