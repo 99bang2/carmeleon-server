@@ -18,10 +18,7 @@ exports.check = async function (ctx) {
         }
     })
     if (!parkingSite) {
-        response.send(ctx, {
-            data: false,
-            message: "자동결제가 가능한 주차장이 아닙니다."
-        })
+        response.customError(ctx, "자동결제가 가능한 주차장이 아닙니다.")
     }
     let car = await models.car.findOne({
         where: {
@@ -29,12 +26,8 @@ exports.check = async function (ctx) {
             isAutoPass: true
         }
     })
-
     if (!car) {
-        response.send(ctx, {
-            data: false,
-            message: '자동결제 등록된 차량이 없습니다.'
-        })
+        response.customError(ctx, '자동결제 등록된 차량이 없습니다.')
     }
     let user = await models.user.findOne({
         include: [
@@ -50,19 +43,13 @@ exports.check = async function (ctx) {
         }
     })
     if (!user.isAutoPass) {
-        response.send(ctx, {
-            data: false,
-            message: '자동결제를 등록한 사용자가 아닙니다.'
-        })
+        response.customError(ctx, '자동결제를 등록한 사용자가 아닙니다.')
     }
 
     let filteredCards = user.cards.filter((card) => card.isAutoPass)
     let card = filteredCards[0]
     if (!card.isAutoPass) {
-        response.send(ctx, {
-            data: false,
-            message: '자동결제 등록된 카드가 없습니다.'
-        })
+        response.customError(ctx, '자동결제 등록된 카드가 없습니다.')
     }
     if (_.type === 'in') {
         models.push.create({
@@ -73,9 +60,9 @@ exports.check = async function (ctx) {
             userUid: user.uid,
             sendDate: Sequelize.fn('NOW')
         })
-        await axios.post(`${pushAPI}/api/createPushes`,{
-            nowDate: moment.now()
-        })
+        // await axios.post(`${pushAPI}/api/createPushes`,{
+        //     nowDate: moment.now()
+        // })
     }
     response.send(ctx, {user: user.uid})
 }
@@ -195,9 +182,9 @@ exports.requestPayment = async function (ctx) {
         userUid: user.uid,
         sendDate: Sequelize.fn('NOW')
     })
-    await axios.post(`${pushAPI}/api/createPushes`,{
-        nowDate: moment.now()
-    })
+    // await axios.post(`${pushAPI}/api/createPushes`,{
+    //     nowDate: moment.now()
+    // })
     payLog.status = 10
     payLog.activeStatus = true
     await payLog.save()
