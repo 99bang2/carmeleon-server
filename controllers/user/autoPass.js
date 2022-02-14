@@ -3,6 +3,12 @@ const response = require('../../libs/response')
 const nicePay = require("../../libs/nicePay");
 const Sequelize = require('sequelize')
 const Op = Sequelize.Op
+const axios =require('axios')
+const moment = require("moment");
+const env = process.env.NODE_ENV || 'development'
+const config = require('../../configs/config.json')[env]
+const pushAPI = config.pushAPI
+
 exports.check = async function (ctx) {
     console.log(ctx.request)
     let _ = ctx.request.body
@@ -66,6 +72,9 @@ exports.check = async function (ctx) {
             userToken: user.token,
             userUid: user.uid,
             sendDate: Sequelize.fn('NOW')
+        })
+        await axios.post(`${pushAPI}/api/createPushes`,{
+            nowDate: moment.now()
         })
     }
     response.send(ctx, {user: user.uid})
@@ -185,6 +194,9 @@ exports.requestPayment = async function (ctx) {
         userToken: user.token,
         userUid: user.uid,
         sendDate: Sequelize.fn('NOW')
+    })
+    await axios.post(`${pushAPI}/api/createPushes`,{
+        nowDate: moment.now()
     })
     payLog.status = 10
     payLog.activeStatus = true
