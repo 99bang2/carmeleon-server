@@ -111,7 +111,7 @@ module.exports = (sequelize, DataTypes) => {
         targetType: {
             type: DataTypes.VIRTUAL,
             get: function () {
-                return 0
+                return 1
             }
         },
     }, {
