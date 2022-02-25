@@ -52,23 +52,24 @@ exports.check = async function (ctx) {
         response.customError(ctx, '자동결제 등록된 카드가 없습니다.')
     }
     if (_.type === 'in') {
-        // models.push.create({
-        //     pushType: 1,
-        //     title: '차량 입차 완료',
-        //     body: `${car.carPlate} 차량이 ${parkingSite.name}에 입차했습니다.`,
-        //     userToken: user.token,
-        //     userUid: user.uid,
-        //     sendDate: Sequelize.fn('NOW')
-        // })
-        await axios.post(`${pushAPI}/api/createPushes`,{
+        models.push.create({
             pushType: 1,
             title: '차량 입차 완료',
             body: `${car.carPlate} 차량이 ${parkingSite.name}에 입차했습니다.`,
             userToken: user.token,
             userUid: user.uid,
-            sendDate: Sequelize.fn('NOW'),
-            status:1
+            sendDate: Sequelize.fn('NOW')
         })
+        // Todo: 즉시 푸시하는부분
+        // await axios.post(`${pushAPI}/api/createPushes`,{
+        //     pushType: 1,
+        //     title: '차량 입차 완료',
+        //     body: `${car.carPlate} 차량이 ${parkingSite.name}에 입차했습니다.`,
+        //     userToken: user.token,
+        //     userUid: user.uid,
+        //     sendDate: Sequelize.fn('NOW'),
+        //     status:1
+        // })
     }
     response.send(ctx, {user: user.uid})
 }
@@ -180,24 +181,24 @@ exports.requestPayment = async function (ctx) {
         payLog.payOid = payResult.moid
         payLog.payTid = payResult.tid
     }
-    // await models.push.create({
-    //     pushType: 1,
-    //     title: '자동정산이 완료되었습니다.',
-    //     body: `결제된 금액은 총 ${totalPrice}원 입니다.`,
-    //     userToken: user.token,
-    //     userUid: user.uid,
-    //     sendDate: Sequelize.fn('NOW')
-    // })
-
-    await axios.post(`${pushAPI}/api/createPushes`,{
+    await models.push.create({
         pushType: 1,
         title: '자동정산이 완료되었습니다.',
         body: `결제된 금액은 총 ${totalPrice}원 입니다.`,
         userToken: user.token,
         userUid: user.uid,
-        sendDate: Sequelize.fn('NOW'),
-        status:1
+        sendDate: Sequelize.fn('NOW')
     })
+    //Todo: 즉시푸시하는부분
+    // await axios.post(`${pushAPI}/api/createPushes`,{
+    //     pushType: 1,
+    //     title: '자동정산이 완료되었습니다.',
+    //     body: `결제된 금액은 총 ${totalPrice}원 입니다.`,
+    //     userToken: user.token,
+    //     userUid: user.uid,
+    //     sendDate: Sequelize.fn('NOW'),
+    //     status:1
+    // })
 
     payLog.status = 10
     payLog.activeStatus = true
