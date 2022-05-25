@@ -75,8 +75,8 @@
     "teslaId": "81527cff06843c8634fdc09e8ac0abefb46ac849f38fe1e431c2ef2106796384",
     "teslaSecret": "c7257eb71a564034f9419ee651c7d0e5f7aa6bfbd18bafb5c5c033b093bb2fa3",
     "nicePay": {
-      "merchantKey": "5oFJj3cWy4mgFyAmHB+6Gdy7SmkM8+koJkgaIWichjyPJZmFwjBJkrhg2o9U5MKYw2ZRWuxB2D/+I8Ii2MfDtg==",
-      "merchantID": "mobilx001m"
+      "merchantKey": "jG4t8GeCT4zthG1a4u1BzcNgn5a8JyVMUmPPj5F2XWkNA/8zGhYmec9Jjt2mwpmWw8ytiWPNRyfDiTRSRGvVLQ==",
+      "merchantID": "hparcs002m"
     },
     "cardSecretKey": {
       "cardNumber": "1b4470edaeccff339d18407dcab3e19b",
